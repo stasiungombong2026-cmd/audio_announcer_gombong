@@ -58,14 +58,17 @@
 
   <!-- Script Logika dan Sintesis Suara -->
   <script>
-    // Konversi teks angka/nomor agar dibaca digit per digit (contoh: 207 -> dua nol tujuh)
+    // Konversi teks angka/nomor kereta agar dibaca digit per digit (contoh: 207 -> dua nol tujuh, 1009A -> satu nol nol sembilan a)
     function spellOutTrainNumber(trainNo) {
       if (!trainNo) return '';
-      const digitWords = {'0':'nol', '1':'satu', '2':'dua', '3':'tiga', '4':'empat', '5':'lima', '6':'enam', '7':'tujuh', '8':'delapan', '9':'sembilan'};
+      const digitWords = {
+        '0': 'nol', '1': 'satu', '2': 'dua', '3': 'tiga', '4': 'empat', 
+        '5': 'lima', '6': 'enam', '7': 'tujuh', '8': 'delapan', '9': 'sembilan'
+      };
       return trainNo.toString().toUpperCase().split('').map(char => digitWords[char] || char).join(' ');
     }
 
-    // Konversi waktu (HH:MM) agar dibaca natural ke Bahasa Indonesia
+    // Konversi waktu (HH:MM) agar dibaca natural ke Bahasa Indonesia (mengubah format waktu baku)
     function spellOutTime(timeStr) {
       if (!timeStr) return '';
       const parts = timeStr.split(':');
@@ -74,7 +77,14 @@
       const minute = parseInt(parts[1], 10);
       
       const numberToWords = (n) => {
-        const words = ["nol","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas","dua belas","tiga belas","empat belas","lima belas","enam belas","tujuh belas","delapan belas","sembilan belas","dua puluh","dua puluh satu","dua puluh dua","dua puluh tiga","dua puluh empat","dua puluh lima","dua puluh enam","dua puluh tujuh","dua puluh delapan","dua puluh sembilan","tiga puluh","tiga puluh satu","tiga puluh dua","tiga puluh tiga","tiga puluh empat","tiga puluh lima","tiga puluh enam","tiga puluh tujuh","tiga puluh delapan","tiga puluh sembilan","empat puluh","empat puluh satu","empat puluh dua","empat puluh tiga","empat puluh empat","empat puluh lima","empat puluh enam","empat puluh tujuh","empat puluh delapan","empat puluh sembilan","lima puluh","lima puluh satu","lima puluh dua","lima puluh tiga","lima puluh empat","lima puluh lima","lima puluh enam","lima puluh tujuh","lima puluh delapan","lima puluh sembilan"];
+        const words = [
+          "nol","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan",
+          "sepuluh","sebelas","dua belas","tiga belas","empat belas","lima belas","enam belas","tujuh belas","delapan belas","sembilan belas",
+          "dua puluh","dua puluh satu","dua puluh dua","dua puluh tiga","dua puluh empat","dua puluh lima","dua puluh enam","dua puluh tujuh","dua puluh delapan","dua puluh sembilan",
+          "tiga puluh","tiga puluh satu","tiga puluh dua","tiga puluh tiga","tiga puluh empat","tiga puluh lima","tiga puluh enam","tiga puluh tujuh","tiga puluh delapan","tiga puluh sembilan",
+          "empat puluh","empat puluh satu","empat puluh dua","empat puluh tiga","empat puluh empat","empat puluh lima","empat puluh enam","empat puluh tujuh","empat puluh delapan","empat puluh sembilan",
+          "lima puluh","lima puluh satu","lima puluh dua","lima puluh tiga","lima puluh empat","lima puluh lima","lima puluh enam","lima puluh tujuh","lima puluh delapan","lima puluh sembilan"
+        ];
         return words[n] || n;
       };
 
@@ -87,7 +97,7 @@
       return result + " waktu indonesia bagian barat";
     }
 
-    // Daftar Kereta & Stasiun Tujuan Akhir (Hanya mengambil stasiun tujuannya saja)
+    // Daftar Kereta & Stasiun Tujuan Akhir (Diambil stasiun tujuannya saja, misal: Bandung)
     const daftarKereta = [
       { nomor_kereta: "207", nama_kereta: "Kahuripan", tujuan_akhir: "Bandung" },
       { nomor_kereta: "1009A", nama_kereta: "Logawa", tujuan_akhir: "Purwokerto" }
@@ -104,7 +114,7 @@
       });
     });
 
-    // Template Pengumuman dalam 3 Bahasa dengan Variabel Bahasa Indonesia
+    // Template Pengumuman dalam 3 Bahasa (Variabel menggunakan Bahasa Indonesia)
     const templatePengumuman = {
       indonesia: (data) => `Perhatian kepada seluruh penumpang yang berada di area peron dan ruang tunggu, Kereta Api ${data.nama_kereta} dengan nomor ${spellOutTrainNumber(data.nomor_kereta)}, tujuan akhir ${data.tujuan_akhir}, yang diberangkatkan pada pukul ${spellOutTime(data.waktu)}, dipersilakan naik melalui peron jalur ${data.jalur}.`,
       
@@ -113,7 +123,7 @@
       jawa: (data) => `Kawigatosan dhumateng sedaya para penumpang wonten ing area peron saha ruang tunggu, Sepur ${data.nama_kereta} nomor ${spellOutTrainNumber(data.nomor_kereta)}, tujuwan pungkasan ${data.tujuan_akhir}, ingkang badhe berangkat tabuh ${spellOutTime(data.waktu)}, dipunaturan munggah liwat peron jalur ${data.jalur}.`
     };
 
-    // Fungsi utama untuk memutar suara dan menampilkan teks preview
+    // Fungsi utama untuk memutar suara dan menampilkan teks preview dengan intonasi petugas stasiun
     function jalankanPengumuman() {
       const indexKereta = document.getElementById('selectKereta').value;
       const keretaPilihan = daftarKereta[indexKereta];
@@ -132,11 +142,11 @@
       const teksFinal = templatePengumuman[bahasa](dataPengumuman);
       document.getElementById('previewTeks').innerText = teksFinal;
 
-      // Eksekusi Web Speech API dengan intonasi stabil khas pengumuman stasiun
+      // Eksekusi Web Speech API dengan pengaturan intonasi dan kecepatan khas pengumuman resmi
       const utterance = new SpeechSynthesisUtterance(teksFinal);
       utterance.lang = bahasa === 'inggris' ? 'en-US' : (bahasa === 'jawa' ? 'jv-ID' : 'id-ID');
-      utterance.rate = 0.88; // Tempo agak lambat agar terdengar jelas dan berwibawa
-      utterance.pitch = 0.95; // Nada sedikit lebih rendah agar mirip suara pengeras suara stasiun
+      utterance.rate = 0.88; // Tempo sedikit lambat agar artikulasi jelas
+      utterance.pitch = 0.95; // Nada sedikit lebih berat agar terdengar berwibawa layaknya pengeras suara stasiun
       window.speechSynthesis.speak(utterance);
     }
   </script>
