@@ -686,13 +686,25 @@
         }
 
         function formatSmartTTS(text, trainObj) {
-            // 1. Ambil nomor kereta, pastikan dieja per digit
+            // Fungsi pembantu untuk mengeja karakter per karakter (angka & huruf)
+            const spellCharacters = (str) => {
+                const map = {
+                    '0':'nol', '1':'satu', '2':'dua', '3':'tiga', '4':'empat',
+                    '5':'lima', '6':'enam', '7':'tujuh', '8':'delapan', '9':'sembilan',
+                    'a':'a', 'b':'b', 'c':'c', 'd':'d', 'e':'e', 'f':'f', 'g':'g',
+                    'h':'h', 'i':'i', 'j':'j', 'k':'k', 'l':'l', 'm':'m', 'n':'n',
+                    'o':'o', 'p':'p', 'q':'q', 'r':'r', 's':'s', 't':'t', 'u':'u',
+                    'v':'v', 'w':'w', 'x':'x', 'y':'y', 'z':'z'
+                };
+                return str.split('').map(char => {
+                    const lower = char.toLowerCase();
+                    return map[lower] || char;
+                }).join(' ');
+            };
+
             let spelledNo = "";
             if (trainObj && trainObj.no) {
-                spelledNo = trainObj.no.split('').map(char => {
-                    const map = {'0':'nol','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'};
-                    return map[char.toLowerCase()] || char.toLowerCase();
-                }).join(' ');
+                spelledNo = spellCharacters(trainObj.no);
             }
 
             let result = text
@@ -704,15 +716,9 @@
                 .replace(/{direction}/g, trainObj ? (trainObj.direction || "dari arah timur") : "")
                 .replace(/{composition}/g, trainObj ? (trainObj.composition || "") : "");
 
-            // 2. Paksa semua angka lepas (yang tidak ada titik/jam) di dalam teks untuk dibaca per digit
-            // Contoh: "67" diubah menjadi "enam tujuh" agar tidak dibaca "enam puluh tujuh"
-            result = result.replace(/\b\d+\b/g, (match) => {
-                // Jika formatnya jam (misal 21:15), biarkan ditangani oleh formatSpokenTime
-                if (match.includes(':')) return match; 
-                return match.split('').map(char => {
-                    const map = {'0':'nol','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'};
-                    return map[char] || char;
-                }).join(' ');
+            // Mengubah semua kode/kata yang mengandung kombinasi angka dan huruf lepas (misal: 143B, 1007A) agar dieja per karakter
+            result = result.replace(/\b[0-9]+[a-zA-Z0-9]*\b/g, (match) => {
+                return spellCharacters(match);
             });
 
             return formatSpokenTime(result).replace(/\bKA\b/g, "Kereta Api");
