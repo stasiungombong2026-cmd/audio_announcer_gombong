@@ -427,12 +427,12 @@
             <div>
                 <label class="block text-xs font-semibold text-slate-400 mb-1">Klik Variabel untuk Menyisipkan:</label>
                 <div class="flex flex-wrap gap-1.5">
-                    <button type="button" onclick="insertVariableToModal('{train_no}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{train_no}</button>
-                    <button type="button" onclick="insertVariableToModal('{train_name}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{train_name}</button>
-                    <button type="button" onclick="insertVariableToModal('{platform}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{platform}</button>
-                    <button type="button" onclick="insertVariableToModal('{direction}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{direction}</button>
-                    <button type="button" onclick="insertVariableToModal('{train_route}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{train_route}</button>
-                    <button type="button" onclick="insertVariableToModal('{composition}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{composition}</button>
+                    <button type="button" onclick="insertVariableToModal('{no_ka}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{train_no}</button>
+                    <button type="button" onclick="insertVariableToModal('{nama_ka}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{train_name}</button>
+                    <button type="button" onclick="insertVariableToModal('{jalur}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{platform}</button>
+                    <button type="button" onclick="insertVariableToModal('{dari_arah}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{direction}</button>
+                    <button type="button" onclick="insertVariableToModal('{relasi}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{train_route}</button>
+                    <button type="button" onclick="insertVariableToModal('{sf_rangkaian}')" class="px-2 py-1 bg-slate-900 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300 border border-slate-700">{composition}</button>
                 </div>
             </div>
 
@@ -663,19 +663,19 @@
             const numberMap = {
                 '0':'nol', '1':'satu', '2':'dua', '3':'tiga', '4':'empat',
                 '5':'lima', '6':'enam', '7':'tujuh', '8':'delapan', '9':'sembilan',
-                '10':'sepuluh', '11':'sebelas', '12':'dua belas', '13':'tiga belas',
-                '14':'empat belas', '15':'lima belas', '16':'enam belas', '17':'tujuh belas',
-                '18':'delapan belas', '19':'sembilan belas', '20':'dua puluh', '21':'dua puluh satu',
-                '22':'dua puluh dua', '23':'dua puluh tiga', '24':'dua puluh empat', '25':'dua puluh lima',
-                '26':'dua puluh enam', '27':'dua puluh tujuh', '28':'dua puluh delapan', '29':'dua puluh sembilan',
-                '30':'tiga puluh', '31':'tiga puluh satu', '32':'tiga puluh dua', '33':'tiga puluh tiga',
-                '34':'tiga puluh empat', '35':'tiga puluh lima', '36':'tiga puluh enam', '37':'tiga puluh tujuh',
-                '38':'tiga puluh delapan', '39':'tiga puluh sembilan', '40':'empat puluh', '41':'empat puluh satu',
-                '42':'empat puluh dua', '43':'empat puluh tiga', '44':'empat puluh empat', '45':'empat puluh lima',
-                '46':'empat puluh enam', '47':'empat puluh tujuh', '48':'empat puluh delapan', '49':'empat puluh sembilan',
-                '50':'lima puluh', '51':'lima puluh satu', '52':'lima puluh dua', '53':'lima puluh tiga',
-                '54':'lima puluh empat', '55':'lima puluh lima', '56':'lima puluh enam', '57':'lima puluh tujuh',
-                '58':'lima puluh delapan', '59':'lima puluh sembilan'
+                '10':'satu nol', '11':'satu satu', '12':'satu dua', '13':'satu tiga',
+                '14':'satu empat', '15':'satu lima', '16':'satu enam', '17':'satu tujuh',
+                '18':'satu delapan', '19':'satu sembilan', '20':'dua nol', '21':'dua satu',
+                '22':'dua dua', '23':'dua tiga', '24':'dua empat', '25':'dua lima',
+                '26':'dua enam', '27':'dua tujuh', '28':'dua delapan', '29':'dua sembilan',
+                '30':'tiga nol', '31':'tiga satu', '32':'tiga dua', '33':'tiga tiga',
+                '34':'tiga empat', '35':'tiga lima', '36':'tiga enam', '37':'tiga tujuh',
+                '38':'tiga delapan', '39':'tiga sembilan', '40':'empat nol', '41':'empat satu',
+                '42':'empat dua', '43':'empat tiga', '44':'empat empat', '45':'empat lima',
+                '46':'empat enam', '47':'empat tujuh', '48':'empat delapan', '49':'empat sembilan',
+                '50':'lima nol', '51':'lima satu', '52':'lima dua', '53':'lima tiga',
+                '54':'lima empat', '55':'lima lima', '56':'lima enam', '57':'lima tujuh',
+                '58':'lima delapan', '59':'lima sembilan'
             };
 
             return text.replace(/(\d{1,2}):(\d{2})(?:\s*WIB)?/gi, (match, h, m) => {
@@ -688,7 +688,7 @@
         function formatSmartTTS(text, trainObj) {
             if (!trainObj) return formatSpokenTime(text);
             let spelledNo = trainObj.no.split('').map(char => {
-                const map = {'0':'kosong','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'};
+                const map = {'0':'nol','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'};
                 return map[char.toLowerCase()] || char.toLowerCase();
             }).join(' ');
 
