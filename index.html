@@ -679,8 +679,10 @@
             };
 
             return text.replace(/(\d{1,2}):(\d{2})(?:\s*WIB)?/gi, (match, h, m) => {
-                let hourWord = numberMap[parseInt(h, 10)] || h;
-                let minWord = numberMap[parseInt(m, 10)] || m;
+                let hourNum = parseInt(h, 10);
+                let minNum = parseInt(m, 10);
+                let hourWord = numberMap[hourNum] || h;
+                let minWord = numberMap[minNum] || m;
                 return `${hourWord} lewat ${minWord} menit waktu indonesia bagian barat`;
             });
         }
