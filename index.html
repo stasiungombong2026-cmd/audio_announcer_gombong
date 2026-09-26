@@ -4,556 +4,406 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Audio Announcement Stasiun Gombong</title>
+    <!-- Tailwind CSS untuk Desain Modern -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .animate-pulse-slow { animation: pulse-slow 2s infinite; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
 
-    <!-- HEADER UTAMA -->
-    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+    <!-- Header / Navbar -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-2">
             <div class="flex items-center space-x-3">
-                <div class="bg-amber-500 text-slate-900 p-2.5 rounded-xl font-bold text-xl shadow-lg flex items-center justify-center">
-                    <i class="fa-solid fa-train-subway"></i>
-                </div>
+                <div class="bg-amber-500 text-slate-900 p-2 rounded-lg font-bold text-xl">🚂</div>
                 <div>
-                    <h1 class="text-xl font-extrabold tracking-wide text-white">STASIUN GOMBONG</h1>
-                    <p class="text-xs text-amber-400 font-medium">Sistem Audio Announcement & Pelafalan Waktu Otomatis</p>
+                    <h1 class="text-lg font-bold tracking-wide">Audio Announcement</h1>
+                    <p class="text-xs text-slate-400">Stasiun Gombong (DAOP 5 Purwokerto)</p>
                 </div>
             </div>
-            
-            <!-- Tombol Backup / Restore File JSON -->
-            <div class="flex items-center space-x-2">
-                <button onclick="exportDataJSON()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 border border-slate-600">
-                    <i class="fa-solid fa-download text-amber-400"></i>
-                    <span>Unduh Cadangan Data</span>
-                </button>
-                <label class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 shadow cursor-pointer">
-                    <i class="fa-solid fa-upload text-yellow-300"></i>
-                    <span>Muat Data</span>
-                    <input type="file" id="importFile" accept=".json" onchange="importDataJSON(event)" class="hidden">
-                </label>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                    Sistem Siap
+                </span>
             </div>
-        </div>
-
-        <!-- NAVIGATION TABS -->
-        <div class="max-w-7xl mx-auto px-4 flex space-x-2 overflow-x-auto pb-2 scrollbar-none border-t border-slate-700/60 pt-2">
-            <button onclick="switchTab('generator')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition bg-amber-500 text-slate-900 shadow" data-tab="generator">
-                <i class="fa-solid fa-bullhorn mr-2"></i>Generator Kereta
-            </button>
-            <button onclick="switchTab('darurat')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="darurat">
-                <i class="fa-solid fa-triangle-exclamation mr-2"></i>Informasi & Darurat
-            </button>
-            <button onclick="switchTab('kereta')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="kereta">
-                <i class="fa-solid fa-train mr-2"></i>Daftar Kereta & Stasiun
-            </button>
-            <button onclick="switchTab('templates')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="templates">
-                <i class="fa-solid fa-file-lines mr-2"></i>Teks Baku
-            </button>
-            <button onclick="switchTab('chime')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="chime">
-                <i class="fa-solid fa-bell mr-2"></i>Manajemen Chime & Narator
-            </button>
-            <button onclick="switchTab('narrator')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition bg-slate-700 text-slate-300 hover:bg-slate-600" data-tab="narrator">
-                <i class="fa-solid fa-microphone-lines mr-2"></i>Daftar Narator
-            </button>
         </div>
     </header>
 
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
-
-        <!-- TAB 1: GENERATOR KERETA -->
-        <section id="tab-generator" class="tab-content space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Form Input -->
-                <div class="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
-                    <h2 class="text-lg font-bold text-white border-b border-slate-700 pb-3 flex items-center">
-                        <i class="fa-solid fa-sliders text-amber-400 mr-2"></i>Parameter Pengumuman Kereta
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Jenis Pengumuman</label>
-                            <select id="genType" onchange="onGenTypeChange()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
-                                <option value="kedatangan">Kedatangan Kereta</option>
-                                <option value="keberangkatan">Keberangkatan Kereta</option>
-                                <option value="keterlambatan">Keterlambatan Kereta</option>
-                                <option value="perubahan_jalur">Perubahan Jalur Peron</option>
-                                <option value="melintas">Kereta Melintas Langsung</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Bahasa</label>
-                            <select id="genLang" onchange="applyTemplate()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
-                                <option value="indonesia">Bahasa Indonesia</option>
-                                <option value="inggris">English (Inggris)</option>
-                                <option value="jawa">Basa Jawa (Jawa)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Kereta (Nama / Nomor)</label>
-                            <input type="text" id="trainSearchInput" list="trainListOptions" oninput="onTrainSelect()" placeholder="Ketik nomor/nama kereta..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
-                            <datalist id="trainListOptions"></datalist>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Jalur / Melintas</label>
-                            <select id="genPlatform" onchange="onPlatformChange()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
-                                <option value="Jalur 1">Jalur 1</option>
-                                <option value="Jalur 2" selected>Jalur 2</option>
-                                <option value="Jalur 3">Jalur 3</option>
-                                <option value="Jalur 4">Jalur 4</option>
-                                <option value="Langsung Jalur 1">Langsung Jalur 1</option>
-                                <option value="Langsung Jalur 2">Langsung Jalur 2</option>
-                                <option value="Langsung Jalur 3">Langsung Jalur 3</option>
-                                <option value="Langsung Jalur 4">Langsung Jalur 4</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Waktu Pemberangkatan / Kedatangan (HH:MM)</label>
-                            <input type="text" id="genTimeInput" value="21:15" oninput="applyTemplate()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-amber-500" placeholder="Contoh: 21:15">
-                        </div>
-                    </div>
-
-                    <!-- Pengaturan Chime Pembuka & Penutup Spesifik -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
-                        <div>
-                            <label class="block text-xs font-semibold text-amber-400 mb-1"><i class="fa-solid fa-bell mr-1"></i>Chime Pembuka</label>
-                            <select id="genChimeOpening" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                                <option value="nada_a">Nada A (Klasik KAI)</option>
-                                <option value="nada_b">Nada B (Melodi Tinggi)</option>
-                                <option value="nada_c">Nada C (Gong Pendek)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-amber-400 mb-1"><i class="fa-solid fa-bell-slash mr-1"></i>Chime Penutup</label>
-                            <select id="genChimeClosing" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                                <option value="nada_b" selected>Nada B (Melodi Tinggi)</option>
-                                <option value="nada_a">Nada A (Klasik KAI)</option>
-                                <option value="nada_c">Nada C (Gong Pendek)</option>
-                                <option value="none">Tanpa Chime Penutup</option>
-                            </select>
-                        </div>
-                    </div>
-
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Panel Kontrol & Pilihan (Kiri & Tengah: 2 Kolom) -->
+        <div class="md:col-span-2 space-y-6">
+            
+            <!-- Pilih Kategori & Templat -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg space-y-4">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-amber-400">1. Pilih Jenis Pengumuman</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Skrip Teks Pengumuman (Otomatis dari Template Multi-Bahasa)</label>
-                        <textarea id="genScriptText" rows="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Kategori</label>
+                        <select id="categorySelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                            <option value="">-- Pilih Kategori --</option>
+                        </select>
                     </div>
-
-                    <div class="flex items-center space-x-3 pt-2">
-                        <button onclick="playAnnouncement()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-play"></i><span>Putar Pengumuman</span>
-                        </button>
-                        <button onclick="stopAnnouncement()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center">
-                            <i class="fa-solid fa-stop"></i>
-                        </button>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Templat Pesan</label>
+                        <select id="templateSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                            <option value="">-- Pilih Templat --</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Preview & Player Visualizer -->
-                <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl flex flex-col justify-between space-y-4">
-                    <div>
-                        <h2 class="text-lg font-bold text-white border-b border-slate-700 pb-3 flex items-center">
-                            <i class="fa-solid fa-circle-waveform-lines text-sky-400 mr-2"></i>Status & Player
-                        </h2>
-                        <div class="mt-4 p-4 bg-slate-900 rounded-xl border border-slate-700/60 text-center space-y-3">
-                            <div id="visualizerBox" class="flex justify-center items-center space-x-1.5 h-16">
-                                <span class="w-1.5 bg-slate-600 h-4 rounded-full"></span>
-                                <span class="w-1.5 bg-slate-600 h-8 rounded-full"></span>
-                                <span class="w-1.5 bg-slate-600 h-12 rounded-full"></span>
-                                <span class="w-1.5 bg-slate-600 h-6 rounded-full"></span>
-                                <span class="w-1.5 bg-slate-600 h-10 rounded-full"></span>
-                            </div>
-                            <p id="playerStatusLabel" class="text-xs font-medium text-slate-400 uppercase tracking-wider">Siap Diputar</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 2: INFORMASI UMUM & DARURAT -->
-        <section id="tab-darurat" class="tab-content hidden space-y-6">
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4 max-w-3xl mx-auto">
-                <h2 class="text-lg font-bold text-white border-b border-slate-700 pb-3 flex items-center">
-                    <i class="fa-solid fa-triangle-exclamation text-rose-400 mr-2"></i>Generator Pengumuman Darurat & Informasi Umum
-                </h2>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Template Darurat / Info Umum</label>
-                    <select id="generalTemplateSelect" onchange="onGeneralTemplateChange()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
-                        <option value="">-- Pilih Pesan Umum --</option>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Pilih Kereta (Opsional / Jika Terkait Kereta)</label>
+                    <select id="trainSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                        <option value="">-- Pilih Kereta Api --</option>
                     </select>
                 </div>
+            </div>
+
+            <!-- Preview & Editor Teks Tampil -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg space-y-4">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-amber-400">2. Teks Pengumuman</h2>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Teks Pesan</label>
-                    <textarea id="generalScriptText" rows="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
+                    <textarea id="announcementText" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500 leading-relaxed" placeholder="Teks pengumuman akan muncul di sini..."></textarea>
                 </div>
-                <div class="flex items-center space-x-3 pt-2">
-                    <button onclick="playGeneralAnnouncement()" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-bullhorn"></i><span>Putar Pengumuman Darurat/Umum</span>
-                    </button>
-                    <button onclick="stopAnnouncement()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center">
-                        <i class="fa-solid fa-stop"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
 
-        <!-- TAB 3: DAFTAR KERETA & STASIUN PERHENTIAN -->
-        <section id="tab-kereta" class="tab-content hidden space-y-6">
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
-                <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-700 pb-3">
-                    <h2 class="text-lg font-bold text-white flex items-center">
-                        <i class="fa-solid fa-train text-amber-400 mr-2"></i>Manajemen Daftar Kereta & Perhentian
-                    </h2>
-                    <button onclick="openTrainModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center space-x-2">
-                        <i class="fa-solid fa-plus"></i><span>Tambah Kereta Baru</span>
-                    </button>
-                </div>
-                <div id="trainTableContainer" class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="border-b border-slate-700 text-slate-400">
-                                <th class="p-3">No. Kereta</th>
-                                <th class="p-3">Nama Kereta</th>
-                                <th class="p-3">Tujuan Akhir</th>
-                                <th class="p-3">Jalur & Arah</th>
-                                <th class="p-3">Susunan Rangkaian</th>
-                                <th class="p-3">Stasiun Perhentian</th>
-                                <th class="p-3 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trainTableBody" class="divide-y divide-slate-700/50"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 4: TEKS BAKU -->
-        <section id="tab-templates" class="tab-content hidden space-y-6">
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
-                <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-700 pb-3">
+                <!-- Pengaturan Suara / Narator -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div>
-                        <h2 class="text-lg font-bold text-white flex items-center">
-                            <i class="fa-solid fa-file-lines text-amber-400 mr-2"></i>Manajemen Teks Baku (Template)
-                        </h2>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Pilih Narator / Suara</label>
+                        <select id="narratorSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                            <!-- Data dari JSON -->
+                        </select>
                     </div>
-                    <button onclick="openTemplateModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center space-x-2">
-                        <i class="fa-solid fa-plus"></i><span>Tambah Teks Baku</span>
-                    </button>
-                </div>
-                <div id="templateTableContainer" class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="border-b border-slate-700 text-slate-400">
-                                <th class="p-3">Kategori Jenis</th>
-                                <th class="p-3">Judul Template</th>
-                                <th class="p-3">Chime (Buka / Tutup)</th>
-                                <th class="p-3">Isi Teks Baku</th>
-                                <th class="p-3 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="templateTableBody" class="divide-y divide-slate-700/50"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 5: MANAJEMEN CHIME & NARATOR -->
-        <section id="tab-chime" class="tab-content hidden space-y-6">
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4 max-w-3xl mx-auto">
-                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                     <div>
-                        <h2 class="text-lg font-bold text-white flex items-center">
-                            <i class="fa-solid fa-bell text-amber-400 mr-2"></i>Manajemen Chime & Audio Narator Sistem
-                        </h2>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Efek Chime / Bel Stasiun</label>
+                        <select id="chimeSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                            <!-- Data dari JSON -->
+                        </select>
                     </div>
-                    <button onclick="openChimeModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center space-x-2">
-                        <i class="fa-solid fa-plus"></i><span>Tambah Chime / Audio</span>
-                    </button>
                 </div>
-                <div id="chimeListContainer" class="space-y-3"></div>
-            </div>
-        </section>
 
-        <!-- TAB 6: DAFTAR NARATOR -->
-        <section id="tab-narrator" class="tab-content hidden space-y-6">
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4 max-w-3xl mx-auto">
-                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                    <h2 class="text-lg font-bold text-white flex items-center">
-                        <i class="fa-solid fa-microphone-lines text-amber-400 mr-2"></i>Manajemen Narator
-                    </h2>
-                    <button onclick="openNarratorModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center space-x-2">
-                        <i class="fa-solid fa-plus"></i><span>Tambah Narator</span>
+                <!-- Tombol Aksi Putar -->
+                <div class="pt-3 flex flex-wrap gap-3">
+                    <button id="playBtn" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 px-6 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10">
+                        <span>▶ Putar Pengumuman</span>
+                    </button>
+                    <button id="stopBtn" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold py-3 px-5 rounded-xl transition duration-200">
+                        Stop
                     </button>
                 </div>
-                <div id="narratorListContainer" class="space-y-3"></div>
             </div>
-        </section>
+
+        </div>
+
+        <!-- Panel Informasi / Ringkasan (Kanan: 1 Kolom) -->
+        <div class="space-y-6">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg space-y-4">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-amber-400">Informasi Operasional</h2>
+                <div class="space-y-3 text-sm text-slate-300">
+                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
+                        <span class="block text-xs text-slate-400">Total Kereta Terdaftar</span>
+                        <span id="totalTrains" class="text-lg font-bold text-amber-400">-</span>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
+                        <span class="block text-xs text-slate-400">Lokasi Utama</span>
+                        <span class="font-semibold text-slate-200">Stasiun Gombong (Class 1)</span>
+                    </div>
+                    <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">
+                        <span class="block text-xs text-slate-400">Daerah Operasi</span>
+                        <span class="font-semibold text-slate-200">DAOP 5 Purwokerto</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </main>
 
-    <!-- MODAL TRAIN CRUD -->
-    <div id="trainModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                <h3 id="trainModalTitle" class="text-base font-bold text-white">Tambah Kereta Baru</h3>
-                <button onclick="closeTrainModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <input type="hidden" id="editTrainIndex" value="-1">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nomor Kereta</label>
-                    <input type="text" id="modalTrainNo" placeholder="Contoh: 142A" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nama Kereta</label>
-                    <input type="text" id="modalTrainName" placeholder="Contoh: Sawunggalih" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                </div>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-400 mb-1">Tujuan Akhir</label>
-                <input type="text" id="modalTrainRoute" placeholder="Contoh: Pasar Senen" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Jalur / Melintas Langsung</label>
-                    <select id="modalTrainPlatform" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                        <option value="Jalur 1">Jalur 1</option>
-                        <option value="Jalur 2" selected>Jalur 2</option>
-                        <option value="Jalur 3">Jalur 3</option>
-                        <option value="Jalur 4">Jalur 4</option>
-                        <option value="Langsung Jalur 1">Langsung Jalur 1</option>
-                        <option value="Langsung Jalur 2">Langsung Jalur 2</option>
-                        <option value="Langsung Jalur 3">Langsung Jalur 3</option>
-                        <option value="Langsung Jalur 4">Langsung Jalur 4</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Arah Kedatangan</label>
-                    <select id="modalTrainDirection" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                        <option value="dari arah timur">Dari Arah Timur</option>
-                        <option value="dari arah barat">Dari Arah Barat</option>
-                    </select>
-                </div>
-            </div>
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800">
+        &copy; 2026 Stasiun Gombong &bull; Audio Announcement Web App
+    </footer>
 
-            <!-- Bagian Susunan Rangkaian Interaktif -->
-            <div class="space-y-2 bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
-                <label class="block text-xs font-semibold text-amber-400 mb-1">Susunan Rangkaian (Klik item di bawah untuk menambahkan berurutan dari depan):</label>
-                <div class="flex flex-wrap gap-1.5 mb-2">
-                    <button type="button" onclick="addCarriage('Premium')" class="px-2 py-1 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-xs font-semibold rounded border border-slate-700 text-slate-300 transition">+ Premium</button>
-                    <button type="button" onclick="addCarriage('Bisnis')" class="px-2 py-1 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-xs font-semibold rounded border border-slate-700 text-slate-300 transition">+ Bisnis</button>
-                    <button type="button" onclick="addCarriage('Ekonomi')" class="px-2 py-1 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-xs font-semibold rounded border border-slate-700 text-slate-300 transition">+ Ekonomi</button>
-                    <button type="button" onclick="addCarriage('Eksekutif')" class="px-2 py-1 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-xs font-semibold rounded border border-slate-700 text-slate-300 transition">+ Eksekutif</button>
-                    <button type="button" onclick="addCarriage('Priority')" class="px-2 py-1 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-xs font-semibold rounded border border-slate-700 text-slate-300 transition">+ Priority</button>
-                    <button type="button" onclick="addCarriage('Kereta Makan')" class="px-2 py-1 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-xs font-semibold rounded border border-slate-700 text-slate-300 transition">+ Kereta Makan</button>
-                    <button type="button" onclick="addCarriage('Kereta Pembangkit')" class="px-2 py-1 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-xs font-semibold rounded border border-slate-700 text-slate-300 transition">+ Pembangkit</button>
-                </div>
-                <input type="text" id="modalTrainComposition" placeholder="Contoh: Premium 1, Premium 2, Kereta Makan, Eksekutif 1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white">
-                <button type="button" onclick="clearComposition()" class="text-[10px] text-rose-400 hover:underline">Reset Rangkaian</button>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-400 mb-1">Stasiun Perhentian (Pisahkan dengan koma)</label>
-                <input type="text" id="modalTrainStops" placeholder="Contoh: Kutoarjo, Kutowinangun, Gombong, Kroya" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-            </div>
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeTrainModal()" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold">Batal</button>
-                <button onclick="saveTrainData()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg text-xs font-bold">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL TEMPLATE CRUD -->
-    <div id="templateModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                <h3 id="templateModalTitle" class="text-base font-bold text-white">Tambah Teks Baku</h3>
-                <button onclick="closeTemplateModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <input type="hidden" id="editTemplateIndex" value="-1">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Kategori Jenis</label>
-                    <select id="modalTemplateCat" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                        <option value="kedatangan">Kedatangan</option>
-                        <option value="keberangkatan">Keberangkatan</option>
-                        <option value="keterlambatan">Keterlambatan</option>
-                        <option value="perubahan_jalur">Perubahan Jalur</option>
-                        <option value="melintas">Kereta Melintas Langsung</option>
-                        <option value="umum">Informasi Umum / Darurat</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Judul Template</label>
-                    <input type="text" id="modalTemplateTitle" placeholder="Contoh: Kedatangan Standar" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
-                <div>
-                    <label class="block text-xs font-semibold text-amber-400 mb-1">Chime Pembuka</label>
-                    <select id="modalTemplateOpening" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
-                        <option value="nada_a">Nada A (Klasik KAI)</option>
-                        <option value="nada_b">Nada B (Melodi Tinggi)</option>
-                        <option value="nada_c">Nada C (Gong Pendek)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-amber-400 mb-1">Chime Penutup</label>
-                    <select id="modalTemplateClosing" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
-                        <option value="nada_b">Nada B (Melodi Tinggi)</option>
-                        <option value="nada_a">Nada A (Klasik KAI)</option>
-                        <option value="nada_c">Nada C (Gong Pendek)</option>
-                        <option value="none">Tanpa Chime Penutup</option>
-                    </select>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-400 mb-1">Isi Teks Baku</label>
-                <textarea id="modalTemplateText" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white" placeholder="Contoh: Perhatian KA {nama_kereta} pukul {waktu}..."></textarea>
-            </div>
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeTemplateModal()" class="bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold">Batal</button>
-                <button onclick="saveTemplateData()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg text-xs font-bold">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCRIPT UTAMA & SISTEM KONVERSI OTOMATIS TEKS BAKU -->
+    <!-- Logika Aplikasi (JavaScript) -->
     <script>
-        // Kamus Data Template Teks Baku Multi-Bahasa
-        const templateTranslations = {
-            indonesia: {
-                kedatangan: "Perhatian, perhatian. Kereta api {nama} nomor {nomor} dari arah {arah} akan segera tiba di {jalur} Stasiun Gombong, pada pukul {waktu}. Penumpang dipersilakan bersiap di peron.",
-                keberangkatan: "Perhatian, perhatian. Kereta api {nama} tujuan akhir {tujuan} dipersilakan bersiap di {jalur}, keberangkatan pada pukul {waktu}.",
-                keterlambatan: "Perhatian, perjalanan kereta api {nama} mengalami keterlambatan kurang lebih {menit} menit dari jadwal semula.",
-                perubahan_jalur: "Perhatian, perubahan jalur pemberangkatan kereta api {nama} yang semula di jalur lama, dipindah ke {jalur}.",
-                melintas: "Perhatian, sesaat lagi akan melintas langsung kereta api {nama} dari arah {arah} melalui {jalur}. Demi keselamatan, dilarang mendekati jalur rel."
-            },
-            inggris: {
-                kedatangan: "Attention please. Train {nama}, train number {nomor} coming from the {arah}, is arriving at {jalur} of Gombong Station, at {waktu}. Passengers, please prepare at the platform.",
-                keberangkatan: "Attention please. Train {nama} bound for {tujuan} is now ready for boarding at {jalur}, departing at {waktu}.",
-                keterlambatan: "Attention, train {nama} is experiencing a delay of approximately {menit} minutes from schedule.",
-                perubahan_jalur: "Attention, platform change notice for train {nama}, now departing from {jalur}.",
-                melintas: "Attention, an express train {nama} from the {arah} is passing through {jalur} without stopping. For your safety, please stand clear of the platform edge."
-            },
-            jawa: {
-                kedatangan: "Kawigatosan, kawigatosan. Sepur {nama} nomor {nomor} saking arah {arah} badhe enggal rawuh ing {jalur} Stasiun Gombong, tabuh {waktu}. Para penumpang dipun suwun siyap-siyap ing peron.",
-                keberangkatan: "Kawigatosan, kawigatosan. Sepur {nama} tujuwan pungkasan {tujuan} dipun suwun siyap ing {jalur}, budhal tabuh {waktu}.",
-                keterlambatan: "Kawigatosan, lampahan sepur {nama} wonten kekilapan wekdal sawetawis {menit} menit saking jadwal.",
-                perubahan_jalur: "Kawigatosan, ewah-ewahan jalur tumpak sepur {nama} ingkang rumiyin dipindah dhateng {jalur}.",
-                melintas: "Kawigatosan, sekedhap malih badhe langkung sepur {nama} saking arah {arah} ngliwati {jalur}. Pramila para penonton saha penumpang dipun suwun emut wilujeng, sampun ngantos celak rel."
-            }
+        // Data Terpadu dari gombong_announcement_data.json
+        const appData = {
+          "trains": [
+            { "no": "67", "name": "Malabar", "route": "Malang - Bandung", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Maos, Sidareja, Banjar, Ciamis, Tasikmalaya, Cipeundeuy, Leles, Kiaracondong, Bandung" },
+            { "no": "80B", "name": "Lodaya", "route": "Bandung - Solobalapan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta, Klaten, Solobalapan" },
+            { "no": "108B", "name": "Senja Utama Yogyakarta", "route": "Pasarsenen - Yogyakarta", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta" },
+            { "no": "7", "name": "Bima", "route": "Surabaya Gubeng - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "306", "name": "Parcel Selatan", "route": "Bandung - Surabayakota", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "" },
+            { "no": "7005", "name": "Batavia", "route": "Solobalapan - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "302", "name": "Parcel Tengah", "route": "Kampungbandan - Malang", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "" },
+            { "no": "63B", "name": "Manahan", "route": "Solobalapan - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "72", "name": "Mutiara selatan", "route": "Bandung - Surabayagubeng", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Yogyakarta, Solobalapan, Madiun, Nganjuk, Kertosono, Jombang, Mojokerto, Surabayagubeng" },
+            { "no": "11", "name": "Turangga", "route": "Surabayagubeng - Bandung", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "116B", "name": "Sawunggalih", "route": "Pasarsenen - Kutoarjo", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "281", "name": "Bengawan", "route": "Purwosari - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "composition": "Ekonomi 1, Ekonomi 2, Ekonomi 3, Ekonomi 4, Ekonomi 5, Ekonomi 6", "stops": "Kroya, Kebasen, Purwokerto, Bumiayu, Cirebon Prujakan, Pegadenbaru, Cikarang, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "14", "name": "Argo Lawu", "route": "Gambir - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "273", "name": "Kahuripan", "route": "Blitar - Kiaracondong", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "255B", "name": "Jaka Tingkir", "route": "Solobalapan - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Cirebon Prujakan, Jatibarang, Haurgeulis, Cikarang, Jatinegara, Pasarsenen" },
+            { "no": "48", "name": "Taksaka", "route": "Gambir - Yogyakarta", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "7001A", "name": "Gajayana Tambahan", "route": "Malang - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "144B", "name": "Madiun Jaya", "route": "Pasarsenen - Madiun", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "301", "name": "Parcel Tengah", "route": "Malang - Kampungbandan", "platform": "Jalur 1", "direction": "dari arah timur", "stops": "" },
+            { "no": "7043A", "name": "Sangkuriang", "route": "Surabaya Gubeng - Bandung", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "76B", "name": "Mataram", "route": "Pasarsenen - Solobalapan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta, Klaten, Solobalapan" },
+            { "no": "292", "name": "Kutojaya Selatan", "route": "Kiaracondong - Kutoarjo", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Karanganyar, Kebumen, Kutowinangun, Kutoarjo" },
+            { "no": "169B", "name": "Malioboro Ekspres", "route": "Malang - Purwokerto", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "305", "name": "Parcel Selatan", "route": "Surabayakota - Bandung", "platform": "Jalur 1", "direction": "dari arah timur", "stops": "" },
+            { "no": "150", "name": "Singasari", "route": "Pasarsenen - Blitar", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Lempuyangan, Klaten, Purwosari, Sragen, Walikukun, Ngawi, Magetan, Madiun, Caruban, Nganjuk, Kertosono, Kediri, Tulungagung, Ngunut, Blitar" },
+            { "no": "64B", "name": "Manahan", "route": "Gambir - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "2711", "name": "Bungtalun Service", "route": "Solobalapan - Karangtalun", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "274", "name": "Kahuripan", "route": "Kiaracondong - Blitar", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Lempuyangan, Klaten, Purwosari, Sragen, Walikukun, Ngawi, Magetan, Madiun, Caruban, Nganjuk, Kertosono, Papar, Kediri, Tulungagung, Blitar" },
+            { "no": "258B", "name": "Progo", "route": "Pasarsenen - Lempuyangan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutowinangun, Kutoarjo, Wates, Lempuyangan" },
+            { "no": "2721", "name": "Kalem Service", "route": "Lempuyangan - Karangtalun", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "2712", "name": "Bungtalun Service", "route": "Karangtalun - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "2606", "name": "Cilawalu Tanker", "route": "Cilacap - Rewulu", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "7002A", "name": "Gajayana Tambahan", "route": "Gambir - Malang", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "202", "name": "Joglosemarkerto", "route": "Cilacap - Yogyakarta", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Karanganyar, Kebumen, Kutoarjo, Wates, Yogyakarta" },
+            { "no": "111B", "name": "Sawunggalih", "route": "Kutoarjo - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Cirebon, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "248C", "name": "Logawa", "route": "Purwokerto - Ketapang", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Karanganyar, Kebumen, Kutowinangun, Kutoarjo, Wates, Lempuyangan, Klaten, Purwosari, Sragen, Ngawi, Madiun, Caruban, Nganjuk, Kertosono, Jombang, Mojokerto, Wonokromo, Surabayagubeng, Sidoarjo, Bangil, Pasuruan, Probolinggo, Leces, Klakah, Tanggul, Bangsalsari, Rambipuji, Kalisat, Kalibaru, Kalisetail, Rogojampi, Banyuwangi Kota, Ketapang" },
+            { "no": "109B", "name": "Fajar Utama Yogyakarta", "route": "Yogayakarta - Pasarsenen", "platform": "Jalur 1", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Ciledug, Cirebon, Jatibarang, Terisi, Haurgeulis, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "43", "name": "Taksaka", "route": "Yogyakarta - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "193A", "name": "Joglosemarkerto", "route": "Solobalapan - Semarangtawang", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Sumpiuh, Kroya, Purwokerto, Bumiayu, Prupuk, Slawi, Tegal, Pemalang, Pekalongan, Batang, Weleri, Semarang Poncol, Semarang Tawang, Brumbung, Kedungjati, Telawa, Gundih, Salem, Solobalapan" },
+            { "no": "170B", "name": "Malioboro Ekspres", "route": "Purwokerto - Malang", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta, Klaten, Solobalapan, Sragen, Madiun, Caruban, Nganjuk, Kertosono, Kediri, Tulungagung, Blitar, Wlingi, Ngebruk, Kepanjen, Pakisaji, Malangkotalama, Malang" },
+            { "no": "2716", "name": "Karsolo Service", "route": "Karangtalun - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "77D", "name": "Lodaya", "route": "Solobalapan - Bandung", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Gandrungmangun, Sidareja, Meluwung, Banjar, Ciamis, Awipari, Tasikmalaya, Cipeundeuy, Bumiwaluya, Cibatu, Kiaracondong, Bandung" },
+            { "no": "154", "name": "Ranggajati", "route": "Cirebon - Jember", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutowinangun, Kutoarjo, Yogyakarta, Klaten, Solobalapan, Sragen, Ngawi, Madiun, Nganjuk, Kertosono, Jombang, Mojokerto, Surabayagubeng, Sidoarjo, Bangil, Pasuruan, Probolinggo, Klakah, Tanggul, Rambipuji, Jember" },
+            { "no": "103B", "name": "Bogowonto", "route": "Lempuyangan - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Cirebon Prujakan, Jatibarang, Cikarang, Bekasi, Pasarsenen" },
+            { "no": "13", "name": "Argo Lawu", "route": "Solobalapan - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "291A", "name": "Kutojaya Selatan", "route": "Kutoarjo - Kiaracondong", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Sumpiuh, Kroya, Maos, Jeruklegi, Gandrungmangun, Sidareja, Langen, Banjar, Ciamis, Awipari, Tasikmalaya, Indihiang, Cipeundeuy, Warungbandrek, Kiaracondong" },
+            { "no": "74B", "name": "Fajar Utama Solo", "route": "Pasarsenen - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "75B", "name": "Mataram", "route": "Solobalapan - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Cirebon, Jatibarang, Haurgeulis, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "6", "name": "Argo Semeru", "route": "Gambir - Surabayagubeng", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "143B", "name": "Madiun Jaya", "route": "Madiun - Pasarsenen", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "78B", "name": "Lodaya", "route": "Bandung - Solobalapan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta, Klaten, Solobalapan" },
+            { "no": "275B", "name": "Pasundan", "route": "Surabayagubeng - Kiaracondong", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Maos, Sidareja, Banjar, Ciamis, Tasikmalaya, Indihiang, Ciawi, Cipeundeuy, Cibatu, Leles, Nagreg, Rancaekek, Kiaracondong" },
+            { "no": "114C", "name": "Sawunggalih", "route": "Pasarsenen - Kutoarjo", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Karanganyar, Kebumen, Kutoarjo" },
+            { "no": "201", "name": "Joglosemarkerto", "route": "Yogyakarta - Cilacap", "platform": "Jalur 1", "direction": "dari arah timur", "stops": "Sumpiuh, Kroya, Maos, Gumilir, Cilacap" },
+            { "no": "61B", "name": "Manahan", "route": "Solobalapan - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "10C", "name": "Argo Wilis", "route": "Bandung - Surabayagubeng", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "161", "name": "Bangunkarta", "route": "Jombang - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Cirebon, Haurgeulis, Pegadenbaru, Cikarang, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "46", "name": "Taksaka", "route": "Gambir - Yogyakarta", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "89", "name": "Gayabaru Malam Selatan", "route": "Surabayagubeng - Pasarsenen", "platform": "Jalur 1", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Prupuk, Ketanggungan, Ciledug, Cirebon Prujakan, Arjawinangun, Jatibarang, Haurgeulis, Pegadenbaru, Cikarang, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "188A", "name": "Joglosemarkerto", "route": "Semarang Tawang - Solobalapan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutowinangun, Kutoarjo, Wojo, Wates, Yogyakarta, Lempuyangan, Klaten, Solobalapan" },
+            { "no": "69", "name": "Malabar", "route": "Malang - Bandung", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "110B", "name": "Fajar Utama Yogyakarta", "route": "Pasarsenen - Yogyakarta", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta" },
+            { "no": "9A", "name": "Argo Wilis", "route": "Surabayagubeng - Bandung", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "16", "name": "Argo Dwipangga", "route": "Gambir - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "106B", "name": "Gajahwong", "route": "Pasarsenen - Lempuyangan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Karanganyar, Kebumen, Kutowinangun, Kutoarjo, Wates, Lempuyangan" },
+            { "no": "5", "name": "Argo Semeru", "route": "Surabayagubeng - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "115B", "name": "Sawunggalih", "route": "Kutoarjo - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Cirebon, Jatinegara, Pasarsenen" },
+            { "no": "235F", "name": "Sancaka Utara", "route": "Surabaya Pasarturi - Cilacap", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Maos, Karangkandri, Gumilir, Cilacap" },
+            { "no": "70", "name": "Malabar", "route": "Bandung - Malang", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Yogyakarta, Klaten, Solobalapan, Sragen, Ngawi, Madiun, Nganjuk, Kertosono, Kediri, Tulungagung, Blitar, Wlingi, Kepanjen, Malangkotalama, Malang" },
+            { "no": "257B", "name": "Progo", "route": "Lempuyangan - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Prupuk, Ketanggungan, Cirebon Prujakan, Haurgeulis, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "282", "name": "Bengawan", "route": "Pasarsenen - Purwosari", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Lempuyangan, Klaten, Purwosari" },
+            { "no": "7006", "name": "Batavia", "route": "Gambir - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "62B", "name": "Manahan", "route": "Gambir - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "47", "name": "Taksaka", "route": "Yogyakarta - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "2722", "name": "Kalem Service", "route": "Karangtalun - Lempuyangan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "153", "name": "Ranggajati", "route": "Jember - Cirebon", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Ketanggungan, Ciledug, Cirebon" },
+            { "no": "167B", "name": "Kertanegara", "route": "Malang - Purwokerto", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto" },
+            { "no": "158", "name": "Wijaya Kusuma", "route": "Cilacap - Ketapang", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Karanganyar, Kebumen, Kutoarjo, Wates, Yogyakarta, Klaten, Solobalapan, Sragen, Ngawi, Madiun, Nganjuk, Kertosono, Jombang, Mojokerto, Surabayagubeng, Sidoarjo, Bangil, Pasuruan, Probolinggo, Klakah, Tanggul, Rambipuji, Jember, Kalibaru, Kalisetail, Rogojampi, Banyuwangi Kota, Ketapang" },
+            { "no": "90", "name": "Gayabaru Malam Selatan", "route": "Pasarsenen - Surabayagubeng", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Lempuyangan, Klaten, Purwosari, Sragen, Walikukun, Madiun, Caruban, Nganjuk, Kertosono, Jombang, Mojokerto, Wonokromo, Surabayagubeng" },
+            { "no": "256B", "name": "Jaka Tingkir", "route": "Pasarsenen - Solobalapan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutowinangun, Kutoarjo, Wates, Lempuyangan, Klaten, Purwosari, Solobalapan" },
+            { "no": "276", "name": "Pasundan", "route": "Kiaracondong - Surabayagubeng", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Lempuyangan, Klaten, Purwosari, Sragen, Walikukun, Ngawi, Madiun, Caruban, Nganjuk, Kertosono, Jombang, Mojokerto, Surabayagubeng" },
+            { "no": "162", "name": "Bangunkarta", "route": "Pasarsenen - Jombang", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "112B", "name": "Sawunggalih", "route": "Pasarsenen - Kutoarjo", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "236F", "name": "Sancaka Utara", "route": "Cilacap - Surabaya Pasarturi", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta, Klaten, Solobalapan, Kalioso, Salem, Sumberlawang, Gundih, Gambringan, Kradenan, Randublatung, Cepu, Bojonegoro, Babat, Lamongan, Surabaya Pasarturi" },
+            { "no": "2605", "name": "Cilawalu Tanker", "route": "Rewulu - Cilacap", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "44", "name": "Taksaka", "route": "Gambir - Yogyakarta", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "107B", "name": "Senja Utama Yogyakarta", "route": "Yogyakarta - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Cirebon, Jatibarang, Karawang, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "247C", "name": "Logawa", "route": "Ketapang - Purwokerto", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Sumpiuh, Kroya, Purwokerto" },
+            { "no": "168D", "name": "Kertanegara", "route": "Purwokerto - Malang", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, yogyakarta, Srowot, Klaten, Solobalapan, Sragen, Madiun, Caruban, Nganjuk, Ketosono, Kediri, Tulungagung, Blitar, Wlingi, Kepanjen, Malangkotalama, Malang" },
+            { "no": "7044A", "name": "Sangkuriang", "route": "Bandung - Surabayagubeng", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "251B", "name": "Jayakarta", "route": "Surabayagubeng - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Prupuk, Cirebon, Jatibarang, Cikampek, Karawang, Cikarang, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "2715", "name": "Karsolo Service", "route": "Solobalapan - Karangtalun", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "113B", "name": "Sawunggalih", "route": "Kutoarjo - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Sumpiuh, Kroya, Purwokerto, Cirebon, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "73B", "name": "Senja Utama Solo", "route": "Solobalapan - Pasarsenen", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "79B", "name": "Lodaya", "route": "Solobalapan - Bandung", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Jeruklegi, Sidareja, Banjar, Ciamis, Tasikmalaya, Cipeundeuy, Cibatu, Kiaracondong, Bandung" },
+            { "no": "35", "name": "Gajayana", "route": "Malang - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "8", "name": "Bima", "route": "Gambir - Surabayagubeng", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "45", "name": "Taksaka", "route": "Yogyakarta - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "12", "name": "Turangga", "route": "Bandung - Surabayagubeng", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "15", "name": "Argo Dwipangga", "route": "Solobalapan - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
+            { "no": "252B", "name": "Jayakarta", "route": "Pasarsenen - Surabayagubeng", "platform": "Jalur 3", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Lempuyangan, Klaten, Solobalapan, Sragen, Walikukun, Ngawi, Magetan, Madiun, Caruban, Nganjuk, Kertosono, Jombang, Mojokerto, Surabayagubeng" },
+            { "no": "105B", "name": "Gajahwong", "route": "Lempuyangan - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Prupuk, Cirebon Prujakan, Jatibarang, Bekasi, Pasarsenen" },
+            { "no": "149", "name": "Singasari", "route": "Blitar - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Cirebon, Jatibarang, Haurgeulis, Cikampek, Karawang, Bekasi, Jatinegara, Pasarsenen" },
+            { "no": "68", "name": "Malabar", "route": "Bandung - Malang", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Yogyakarta, Klaten, Solobalapan, Sragen, Ngawi, Madiun, Nganjuk, Kertosono, Kediri, Tulungagung, Blitar, Wlingi, Kepanjen, Malang" },
+            { "no": "71", "name": "Mutiara Selatan", "route": "Surabayagubeng - Bandung", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Maos, Sidareja, Banjar, Ciamis, Tasikmalaya, Cipeundeuy, Kiaracondong, Bandung" },
+            { "no": "104B", "name": "Bogowonto", "route": "Pasarsenen - Lempuyangan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutowinangun, Kutoarjo, Wates, Yogyakarta, Lempuyangan" },
+            { "no": "36", "name": "Gajayana", "route": "Gambir - Malang", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "157", "name": "Wijaya Kusuma", "route": "Ketapang - Cilacap", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Sikampuh, Maos, Gumilir, Cilacap" }
+          ],
+          "templates": [
+            { "cat": "kedatangan", "title": "Kedatangan Standar", "text": "Perhatian kepada seluruh penumpang, Kereta Api {train_name} dengan nomor {train_no} relasi {train_route} {direction} sesaat lagi akan tiba di {platform}, Stasiun Gombong. Dihimbau kepada para penumpang untuk berdiri di belakang garis aman peron." },
+            { "cat": "keberangkatan", "title": "Keberangkatan Standar", "text": "Pengumuman untuk penumpang Kereta Api {train_name} tujuan {train_route} diberangkatkan dari {platform}, Stasiun Gombong. Silakan naik ke kereta dan pastikan barang bawaan tidak tertinggal." },
+            { "cat": "keterlambatan", "title": "Keterlambatan Kereta", "text": "Mohon perhatian, Kereta Api {train_name} relasi {train_route} {direction} mengalami keterlambatan diperkirakan 15 menit. Kami mohon maaf atas ketidaknyamanan ini." },
+            { "cat": "perubahan_jalur", "title": "Perubahan Jalur", "text": "Perhatian, pemberitahuan perubahan jalur peron untuk Kereta Api {train_name} nomor {train_no}, kini dialihkan ke {platform} Stasiun Gombong." },
+            { "cat": "melintas", "title": "Kereta Melintas Langsung", "text": "Perhatian kepada seluruh pengunjung dan petugas stasiun, sesaat lagi akan melintas langsung Kereta Api {train_name} nomor {train_no} relasi {train_route} {direction} melalui {platform}, Stasiun Gombong. Dihimbau agar tidak mendekati garis aman peron." },
+            { "cat": "umum", "title": "Barang Tertinggal", "text": "Kepada seluruh penumpang Stasiun Gombong, harap selalu menjaga barang bawaan Anda. Apabila menemukan barang mencurigakan atau tertinggal, segera laporkan kepada petugas." },
+            { "cat": "umum", "title": "Larangan Merokok", "text": "Dihimbau kepada seluruh pengunjung dan penumpang untuk tidak merokok di area peron dan ruang tunggu Stasiun Gombong. Kawasan ini adalah kawasan tanpa rokok." }
+          ],
+          "chimes": [
+            { "id": "kai_default", "name": "Chime KAI (Synthesizer Chime)" }
+          ],
+          "narrators": [
+            { "id": "nar_1", "name": "Ibu Narator (TTS ID)" },
+            { "id": "nar_2", "name": "Bapak Petugas Stasiun (TTS ID)" },
+            { "id": "nar_ka_style", "name": "Petugas PPKA / Announcer Stasiun (Gaya KAI)" }
+          ]
         };
 
-        // Fungsi Otomatis untuk Mengonversi Teks Baku Berdasarkan Bahasa Terpilih
-        function applyTemplate() {
-            const lang = document.getElementById('genLang').value;
-            const type = document.getElementById('genType').value;
-            const time = document.getElementById('genTimeInput').value || "21:15";
-            const platform = document.getElementById('genPlatform').value || "Jalur 2";
-            
-            // Ambil data kereta aktif jika ada
-            const trainName = window.activeTrainName || "Logawa";
-            const trainNo = window.activeTrainNo || "142A";
-            const destination = window.activeTrainRoute || "Purwokerto - Jember";
-            const direction = window.activeTrainDirection || "timur";
+        // Inisialisasi Elemen HTML
+        const categorySelect = document.getElementById('categorySelect');
+        const templateSelect = document.getElementById('templateSelect');
+        const trainSelect = document.getElementById('trainSelect');
+        const announcementText = document.getElementById('announcementText');
+        const narratorSelect = document.getElementById('narratorSelect');
+        const chimeSelect = document.getElementById('chimeSelect');
+        const totalTrains = document.getElementById('totalTrains');
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
 
-            const dict = templateTranslations[lang] || templateTranslations['indonesia'];
-            let textTemplate = dict[type] || dict['kedatangan'];
+        // Render Data Awal
+        function initApp() {
+            totalTrains.textContent = appData.trains.length;
 
-            // Ganti variabel dinamis di dalam templat teks baku
-            textTemplate = textTemplate
-                .replace(/{nama}/g, trainName)
-                .replace(/{nomor}/g, trainNo)
-                .replace(/{tujuan}/g, destination)
-                .replace(/{arah}/g, direction)
-                .replace(/{jalur}/g, platform)
-                .replace(/{waktu}/g, time)
-                .replace(/{menit}/g, "15");
-
-            document.getElementById('genScriptText').value = textTemplate;
-        }
-
-        function onGenTypeChange() {
-            applyTemplate();
-        }
-
-        function onPlatformChange() {
-            applyTemplate();
-        }
-
-        function onTrainSelect() {
-            const val = document.getElementById('trainSearchInput').value;
-            // Cari data kereta dari penyimpanan atau array lokal Anda
-            window.activeTrainName = val || "Logawa";
-            applyTemplate();
-        }
-
-        // Fungsi Navigasi Tab Asli
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-amber-500', 'text-slate-900', 'shadow');
-                btn.classList.add('bg-slate-700', 'text-slate-300');
+            // Kategori Unik
+            const categories = [...new Set(appData.templates.map(t => t.cat))];
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat.toUpperCase();
+                categorySelect.appendChild(opt);
             });
-            const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
-            if(activeBtn) {
-                activeBtn.classList.remove('bg-slate-700', 'text-slate-300');
-                activeBtn.classList.add('bg-amber-500', 'text-slate-900', 'shadow');
+
+            // Daftar Kereta
+            appData.trains.forEach(train => {
+                const opt = document.createElement('option');
+                opt.value = JSON.stringify(train);
+                opt.textContent = `KA ${train.name} (${train.no}) - ${train.route}`;
+                trainSelect.appendChild(opt);
+            });
+
+            // Narator
+            appData.narrators.forEach(nar => {
+                const opt = document.createElement('option');
+                opt.value = nar.id;
+                opt.textContent = nar.name;
+                narratorSelect.appendChild(opt);
+            });
+
+            // Chime
+            appData.chimes.forEach(chime => {
+                const opt = document.createElement('option');
+                opt.value = chime.id;
+                opt.textContent = chime.name;
+                chimeSelect.appendChild(opt);
+            });
+        }
+
+        // Filter Templat Berdasarkan Kategori
+        categorySelect.addEventListener('change', () => {
+            const selectedCat = categorySelect.value;
+            templateSelect.innerHTML = '<option value="">-- Pilih Templat --</option>';
+            
+            const filtered = appData.templates.filter(t => t.cat === selectedCat);
+            filtered.forEach((t, index) => {
+                const opt = document.createElement('option');
+                opt.value = JSON.stringify(t);
+                opt.textContent = t.title;
+                templateSelect.appendChild(opt);
+            });
+        });
+
+        // Update Teks Pengumuman Otomatis
+        function updateTextPreview() {
+            let text = "";
+            if (templateSelect.value) {
+                const template = JSON.parse(templateSelect.value);
+                text = template.text;
+
+                if (trainSelect.value) {
+                    const train = JSON.parse(trainSelect.value);
+                    text = text
+                        .replace(/{train_name}/g, train.name)
+                        .replace(/{train_no}/g, train.no)
+                        .replace(/{train_route}/g, train.route)
+                        .replace(/{platform}/g, train.platform)
+                        .replace(/{direction}/g, train.direction);
+                }
+            }
+            announcementText.value = text;
+        }
+
+        templateSelect.addEventListener('change', updateTextPreview);
+        trainSelect.addEventListener('change', updateTextPreview);
+
+        // Simulasi Audio Chime & Speech Synthesis Web API
+        function playChime(callback) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                // Nada Chime KAI sederhana (Melodi 4 nada)
+                const notes = [523.25, 659.25, 783.99, 1046.50]; 
+                notes.forEach((freq, index) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime + index * 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + index * 0.2 + 0.6);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start(audioCtx.currentTime + index * 0.2);
+                    osc.stop(audioCtx.currentTime + index * 0.2 + 0.6);
+                });
+
+                setTimeout(callback, notes.length * 200 + 300);
+            } catch (e) {
+                callback();
             }
         }
 
-        // Simulasi Aksi Putar Audio & Animasi Visualizer
-        function playAnnouncement() {
-            const statusLabel = document.getElementById('playerStatusLabel');
-            statusLabel.innerText = "Memutar Audio...";
-            statusLabel.className = "text-xs font-medium text-emerald-400 uppercase tracking-wider animate-pulse-slow";
+        playBtn.addEventListener('click', () => {
+            const textToSpeak = announcementText.value;
+            if (!textToSpeak) return alert("Silakan pilih templat atau masukkan teks pengumuman terlebih dahulu.");
 
-            const text = document.getElementById('genScriptText').value;
-            const speech = new SpeechSynthesisUtterance(text);
-            const lang = document.getElementById('genLang').value;
-            
-            if (lang === 'inggris') speech.lang = 'en-US';
-            else speech.lang = 'id-ID';
+            window.speechSynthesis.cancel(); // Hentikan suara sebelumnya
 
-            window.speechSynthesis.speak(speech);
+            playChime(() => {
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'id-ID';
+                utterance.rate = 0.95; // Kecepatan mirip pengumuman stasiun
 
-            speech.onend = function() {
-                statusLabel.innerText = "Siap Diputar";
-                statusLabel.className = "text-xs font-medium text-slate-400 uppercase tracking-wider";
-            };
-        }
+                // Pilih suara browser jika tersedia
+                const voices = window.speechSynthesis.getVoices();
+                const indonesianVoice = voices.find(v => v.lang.includes('id') || v.lang.includes('ID'));
+                if (indonesianVoice) utterance.voice = indonesianVoice;
 
-        function stopAnnouncement() {
-            window.speechSynthesis.cancel();
-            const statusLabel = document.getElementById('playerStatusLabel');
-            statusLabel.innerText = "Dihentikan";
-            statusLabel.className = "text-xs font-medium text-rose-400 uppercase tracking-wider";
-        }
-
-        // Dummy Fungsi Modal Pendukung
-        function openTrainModal() { document.getElementById('trainModal').classList.remove('hidden'); }
-        function closeTrainModal() { document.getElementById('trainModal').classList.add('hidden'); }
-        function openTemplateModal() { document.getElementById('templateModal').classList.remove('hidden'); }
-        function closeTemplateModal() { document.getElementById('templateModal').classList.add('hidden'); }
-
-        // Inisialisasi awal saat halaman dimuat
-        window.addEventListener('DOMContentLoaded', () => {
-            applyTemplate();
+                window.speechSynthesis.speak(utterance);
+            });
         });
+
+        stopBtn.addEventListener('click', () => {
+            window.speechSynthesis.cancel();
+        });
+
+        // Jalankan Inisialisasi
+        initApp();
     </script>
 </body>
 </html>
