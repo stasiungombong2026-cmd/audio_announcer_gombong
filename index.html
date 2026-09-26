@@ -686,26 +686,37 @@
         }
 
         function formatSmartTTS(text, trainObj) {
-            if (!trainObj) return formatSpokenTime(text);
-            
-            // Eja nomor kereta per digit (misal: 67 menjadi "enam tujuh")
-            let spelledNo = trainObj.no.split('').map(char => {
-                const map = {'0':'nol','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'};
-                return map[char.toLowerCase()] || char.toLowerCase();
-            }).join(' ');
+            // 1. Ambil nomor kereta, pastikan dieja per digit
+            let spelledNo = "";
+            if (trainObj && trainObj.no) {
+                spelledNo = trainObj.no.split('').map(char => {
+                    const map = {'0':'nol','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'};
+                    return map[char.toLowerCase()] || char.toLowerCase();
+                }).join(' ');
+            }
 
             let result = text
                 .replace(/{train_type}/g, "Kereta Api")
-                .replace(/{train_name}/g, trainObj.name)
+                .replace(/{train_name}/g, trainObj ? trainObj.name : "")
                 .replace(/{train_no}/g, spelledNo)
-                .replace(/{train_route}/g, trainObj.route)
+                .replace(/{train_route}/g, trainObj ? trainObj.route : "")
                 .replace(/{platform}/g, document.getElementById('genPlatform').value)
-                .replace(/{direction}/g, trainObj.direction || "dari arah timur")
-                .replace(/{composition}/g, trainObj.composition || "");
+                .replace(/{direction}/g, trainObj ? (trainObj.direction || "dari arah timur") : "")
+                .replace(/{composition}/g, trainObj ? (trainObj.composition || "") : "");
+
+            // 2. Paksa semua angka lepas (yang tidak ada titik/jam) di dalam teks untuk dibaca per digit
+            // Contoh: "67" diubah menjadi "enam tujuh" agar tidak dibaca "enam puluh tujuh"
+            result = result.replace(/\b\d+\b/g, (match) => {
+                // Jika formatnya jam (misal 21:15), biarkan ditangani oleh formatSpokenTime
+                if (match.includes(':')) return match; 
+                return match.split('').map(char => {
+                    const map = {'0':'nol','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'};
+                    return map[char] || char;
+                }).join(' ');
+            });
 
             return formatSpokenTime(result).replace(/\bKA\b/g, "Kereta Api");
         }
-
         function onGenTypeChange() {
             const type = document.getElementById('genType').value;
             const sel = document.getElementById('genTemplateSelect');
