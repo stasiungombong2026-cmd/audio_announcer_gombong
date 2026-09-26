@@ -659,6 +659,23 @@
             }
         }
 
+        // Fungsi untuk mengeja karakter per karakter (angka & huruf, misal: 143B -> "satu empat tiga b")
+        function spellCharacters(str) {
+            const map = {
+                '0':'nol', '1':'satu', '2':'dua', '3':'tiga', '4':'empat',
+                '5':'lima', '6':'enam', '7':'tujuh', '8':'delapan', '9':'sembilan',
+                'a':'a', 'b':'b', 'c':'c', 'd':'d', 'e':'e', 'f':'f', 'g':'g',
+                'h':'h', 'i':'i', 'j':'j', 'k':'k', 'l':'l', 'm':'m', 'n':'n',
+                'o':'o', 'p':'p', 'q':'q', 'r':'r', 's':'s', 't':'t', 'u':'u',
+                'v':'v', 'w':'w', 'x':'x', 'y':'y', 'z':'z'
+            };
+            return str.split('').map(char => {
+                const lower = char.toLowerCase();
+                return map[lower] || char;
+            }).join(' ');
+        }
+
+        // Fungsi pengubah format waktu jam, menit, dan WIB
         function formatSpokenTime(text) {
             if (!text) return "";
             
@@ -680,8 +697,8 @@
                 '58':'lima puluh delapan', '59':'lima puluh sembilan'
             };
 
-            // Mengubah format jam (misal 15:34 atau 15.34) menjadi "lewat ... menit"
-            let result = text.replace(/(\d{1,2})[.:](\d{2})(?:\s*WIB)?/gi, (match, h, m) => {
+            // 1. Ubah format jam (misal 21:15 atau 21.15) menjadi teks "lewat ... menit"
+            let result = text.replace(/\b(\d{1,2})[.:](\d{2})\b/g, (match, h, m) => {
                 let hourKey = String(parseInt(h, 10));
                 let minKey = String(parseInt(m, 10));
                 
@@ -691,34 +708,25 @@
                 return `${hourWord} lewat ${minWord} menit`;
             });
 
-            // Mengubah singkatan WIB menjadi kepanjangannya
+            // 2. Ubah singkatan WIB menjadi kepanjangannya
             result = result.replace(/\bWIB\b/gi, "waktu indonesia bagian barat");
 
             return result;
         }
+
+        // Fungsi Utama Penggabung Teks & Variabel TTS
         function formatSmartTTS(text, trainObj) {
-            // Fungsi pembantu untuk mengeja karakter per karakter (angka & huruf)
-            const spellCharacters = (str) => {
-                const map = {
-                    '0':'nol', '1':'satu', '2':'dua', '3':'tiga', '4':'empat',
-                    '5':'lima', '6':'enam', '7':'tujuh', '8':'delapan', '9':'sembilan',
-                    'a':'a', 'b':'b', 'c':'c', 'd':'d', 'e':'e', 'f':'f', 'g':'g',
-                    'h':'h', 'i':'i', 'j':'j', 'k':'k', 'l':'l', 'm':'m', 'n':'n',
-                    'o':'o', 'p':'p', 'q':'q', 'r':'r', 's':'s', 't':'t', 'u':'u',
-                    'v':'v', 'w':'w', 'x':'x', 'y':'y', 'z':'z'
-                };
-                return str.split('').map(char => {
-                    const lower = char.toLowerCase();
-                    return map[lower] || char;
-                }).join(' ');
-            };
+            // LANGKAH 1: Jalankan format waktu terlebih dahulu di awal 
+            // agar format jam (seperti 21:15) tidak terganggu oleh fungsi eja angka.
+            let result = formatSpokenTime(text);
 
             let spelledNo = "";
             if (trainObj && trainObj.no) {
                 spelledNo = spellCharacters(trainObj.no);
             }
 
-            let result = text
+            // LANGKAH 2: Ganti semua variabel template sistem
+            result = result
                 .replace(/{train_type}/g, "Kereta Api")
                 .replace(/{train_name}/g, trainObj ? trainObj.name : "")
                 .replace(/{train_no}/g, spelledNo)
@@ -727,12 +735,19 @@
                 .replace(/{direction}/g, trainObj ? (trainObj.direction || "dari arah timur") : "")
                 .replace(/{composition}/g, trainObj ? (trainObj.composition || "") : "");
 
-            // Mengubah semua kode/kata yang mengandung kombinasi angka dan huruf lepas (misal: 143B, 1007A) agar dieja per karakter
-            result = result.replace(/\b[0-9]+[a-zA-Z0-9]*\b/g, (match) => {
+            // LANGKAH 3: Pengejaan nomor kereta/kode lepas (misal 143B, 1007A) per karakter,
+            // dengan pengaman agar tidak menyentuh angka yang ada di dalam jam.
+            result = result.replace(/\b[0-9]+[a-zA-Z0-9]*\b/g, (match, offset, string) => {
+                let charBefore = string[offset - 1];
+                let charAfter = string[offset + match.length];
+                if (charBefore === ':' || charBefore === '.' || charAfter === ':' || charAfter === '.') {
+                    return match; 
+                }
+                if (match.includes(':') || match.includes('.')) return match;
                 return spellCharacters(match);
             });
 
-            return formatSpokenTime(result).replace(/\bKA\b/g, "Kereta Api");
+            return result.replace(/\bKA\b/g, "Kereta Api");
         }
         function onGenTypeChange() {
             const type = document.getElementById('genType').value;
