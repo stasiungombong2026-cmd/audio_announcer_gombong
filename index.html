@@ -660,6 +660,8 @@
         }
 
         function formatSpokenTime(text) {
+            if (!text) return "";
+            
             const numberMap = {
                 '0':'nol', '1':'satu', '2':'dua', '3':'tiga', '4':'empat',
                 '5':'lima', '6':'enam', '7':'tujuh', '8':'delapan', '9':'sembilan',
@@ -678,11 +680,14 @@
                 '58':'lima puluh delapan', '59':'lima puluh sembilan'
             };
 
-            return text.replace(/(\d{1,2}):(\d{2})(?:\s*WIB)?/gi, (match, h, m) => {
-                let hourNum = parseInt(h, 10);
-                let minNum = parseInt(m, 10);
-                let hourWord = numberMap[hourNum] || h;
-                let minWord = numberMap[minNum] || m;
+            // Mengubah format jam seperti 15:34 atau 15:34 WIB
+            return text.replace(/\b(\d{1,2}):(\d{2})(?:\s*WIB)?\b/gi, (match, h, m) => {
+                let hourKey = String(parseInt(h, 10));
+                let minKey = String(parseInt(m, 10));
+                
+                let hourWord = numberMap[hourKey] || h;
+                let minWord = numberMap[minKey] || m;
+                
                 return `${hourWord} lewat ${minWord} menit waktu indonesia bagian barat`;
             });
         }
