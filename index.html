@@ -671,7 +671,7 @@
                 '22':'dua puluh dua', '23':'dua puluh tiga', '24':'dua puluh empat', '25':'dua puluh lima',
                 '26':'dua puluh enam', '27':'dua puluh tujuh', '28':'dua puluh delapan', '29':'dua puluh sembilan',
                 '30':'tiga puluh', '31':'tiga puluh satu', '32':'tiga puluh dua', '33':'tiga puluh tiga',
-                '34':'tiga puluh empat', '35':'tiga puluh lima', '36':'tiga puluh छह', '37':'tiga puluh tujuh',
+                '34':'tiga puluh empat', '35':'tiga puluh lima', '36':'tiga puluh enam', '37':'tiga puluh tujuh',
                 '38':'tiga puluh delapan', '39':'tiga puluh sembilan', '40':'empat puluh', '41':'empat puluh satu',
                 '42':'empat puluh dua', '43':'empat puluh tiga', '44':'empat puluh empat', '45':'empat puluh lima',
                 '46':'empat puluh enam', '47':'empat puluh tujuh', '48':'empat puluh delapan', '49':'empat puluh sembilan',
@@ -680,16 +680,21 @@
                 '58':'lima puluh delapan', '59':'lima puluh sembilan'
             };
 
-            // Mendukung format jam dengan titik (.) atau titik dua (:) serta opsional kata "pukul"
-            return text.replace(/\b(?:pukul\s+)?(\d{1,2})[.:](\d{2})(?:\s*WIB)?\b/gi, (match, h, m) => {
+            // Mengubah format jam (misal 15:34 atau 15.34) menjadi "lewat ... menit"
+            let result = text.replace(/(\d{1,2})[.:](\d{2})(?:\s*WIB)?/gi, (match, h, m) => {
                 let hourKey = String(parseInt(h, 10));
                 let minKey = String(parseInt(m, 10));
                 
                 let hourWord = numberMap[hourKey] || h;
                 let minWord = numberMap[minKey] || m;
                 
-                return `${hourWord} lewat ${minWord} menit waktu indonesia bagian barat`;
+                return `${hourWord} lewat ${minWord} menit`;
             });
+
+            // Mengubah singkatan WIB menjadi kepanjangannya
+            result = result.replace(/\bWIB\b/gi, "waktu indonesia bagian barat");
+
+            return result;
         }
         function formatSmartTTS(text, trainObj) {
             // Fungsi pembantu untuk mengeja karakter per karakter (angka & huruf)
