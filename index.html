@@ -47,13 +47,13 @@
                 ⚠️ Informasi & Darurat
             </button>
             <button onclick="switchTab('daftar-kereta')" class="nav-tab whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-4 py-2 rounded-xl text-xs transition duration-200 border border-slate-700">
-                🚉 Daftar Kereta & Stasiun
+                🚉 Daftar Kereta
             </button>
             <button onclick="switchTab('teks-baku')" class="nav-tab whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-4 py-2 rounded-xl text-xs transition duration-200 border border-slate-700">
-                📄 Teks Baku
+                📄 Teks Baku & Templat
             </button>
             <button onclick="switchTab('manajemen-chime')" class="nav-tab whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-4 py-2 rounded-xl text-xs transition duration-200 border border-slate-700">
-                🔔 Manajemen Chime & Narrator
+                🔔 Manajemen Chime
             </button>
             <button onclick="switchTab('daftar-narrator')" class="nav-tab whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-4 py-2 rounded-xl text-xs transition duration-200 border border-slate-700">
                 🎙️ Daftar Narrator
@@ -105,18 +105,19 @@
                                 <button type="button" onclick="insertVariable('{direction}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded border border-slate-700">{direction}</button>
                                 <button type="button" onclick="insertVariable('{composition}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded border border-slate-700">{composition}</button>
                                 <button type="button" onclick="insertVariable('{time}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded border border-slate-700">{time}</button>
+                                <button type="button" onclick="insertVariable('{stops}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-2.5 py-1 rounded border border-slate-700">{stops}</button>
                             </div>
                         </div>
                     </div>
 
                     <!-- Editor Teks & Audio -->
                     <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-lg space-y-4">
-                        <h2 class="text-sm font-semibold uppercase tracking-wider text-amber-400">2. Hasil Teks Pengumuman</h2>
+                        <h2 class="text-sm font-semibold uppercase tracking-wider text-amber-400">2. Hasil Teks Pengumuman & Multi-Bahasa</h2>
                         <div>
                             <textarea id="announcementText" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-amber-500 leading-relaxed" placeholder="Teks pengumuman otomatis atau kustom..."></textarea>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Pilih Narator / Suara</label>
                                 <select id="narratorSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500"></select>
@@ -124,6 +125,14 @@
                             <div>
                                 <label class="block text-xs font-medium text-slate-400 mb-1">Efek Chime / Bel Stasiun</label>
                                 <select id="chimeSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Mode Multi-Bahasa</label>
+                                <select id="multiLangSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                                    <option value="id">Bahasa Indonesia Saja</option>
+                                    <option value="id-en" selected>Indonesia + English (Otomatis)</option>
+                                    <option value="id-en-jv">ID + EN + Jawa (Lengkap 3 Bahasa)</option>
+                                </select>
                             </div>
                         </div>
 
@@ -170,7 +179,7 @@
             </div>
         </div>
 
-        <!-- TAB 3: DAFTAR KERETA & PERHENTIAN -->
+        <!-- TAB 3: DAFTAR KERETA -->
         <div id="tab-daftar-kereta" class="tab-content space-y-6">
             <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg space-y-4">
                 <div class="flex justify-between items-center">
@@ -183,12 +192,12 @@
                     <table class="w-full text-left text-sm text-slate-300">
                         <thead class="bg-slate-900 text-slate-400 text-xs uppercase border-b border-slate-700">
                             <tr>
-                                <th class="p-3">No. Kereta</th>
+                                <th class="p-3">No. KA</th>
                                 <th class="p-3">Nama Kereta</th>
-                                <th class="p-3">Tujuan Akhir</th>
+                                <th class="p-3">Relasi</th>
                                 <th class="p-3">Jalur & Arah</th>
-                                <th class="p-3">Susunan Rangkaian</th>
-                                <th class="p-3">Stasiun Perhentian</th>
+                                <th class="p-3">Susunan</th>
+                                <th class="p-3">Perhentian</th>
                                 <th class="p-3 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -198,34 +207,41 @@
             </div>
         </div>
 
-        <!-- TAB 4: TEKS BAKU -->
+        <!-- TAB 4: TEKS BAKU & TEMPLAT -->
         <div id="tab-teks-baku" class="tab-content space-y-6">
             <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg space-y-4">
-                <h2 class="text-base font-bold text-amber-400">Pengelolaan Templat & Teks Baku</h2>
-                <p class="text-sm text-slate-300">Daftar templat kalimat standar operasional stasiun beserta variabel format yang aktif:</p>
+                <div class="flex justify-between items-center">
+                    <h2 class="text-base font-bold text-amber-400">Pengelolaan Templat & Teks Baku</h2>
+                    <button onclick="openTemplateModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold py-2.5 px-4 rounded-xl transition duration-200">
+                        + Tambah Templat Baru
+                    </button>
+                </div>
                 <div class="space-y-3" id="templateListContainer"></div>
             </div>
         </div>
 
-        <!-- TAB 5: MANAJEMEN CHIME & NARRATOR -->
+        <!-- TAB 5: MANAJEMEN CHIME -->
         <div id="tab-manajemen-chime" class="tab-content space-y-6">
             <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg space-y-4">
-                <h2 class="text-base font-bold text-amber-400">Manajemen Chime Stasiun</h2>
-                <p class="text-sm text-slate-300">Pengaturan berkas audio bel masuk/keluar jalur peron.</p>
-                <div class="p-4 bg-slate-900 rounded-xl border border-slate-700 flex justify-between items-center">
-                    <div>
-                        <h3 class="font-semibold text-sm">Chime KAI (Synthesizer Default)</h3>
-                        <p class="text-xs text-slate-400">Nada standar operasional perkeretaapian.</p>
-                    </div>
-                    <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium">Aktif</span>
+                <div class="flex justify-between items-center">
+                    <h2 class="text-base font-bold text-amber-400">Manajemen Chime Stasiun</h2>
+                    <button onclick="openChimeModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold py-2.5 px-4 rounded-xl transition duration-200">
+                        + Tambah Chime Baru
+                    </button>
                 </div>
+                <div class="space-y-3" id="chimeListContainer"></div>
             </div>
         </div>
 
         <!-- TAB 6: DAFTAR NARRATOR -->
         <div id="tab-daftar-narrator" class="tab-content space-y-6">
             <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-lg space-y-4">
-                <h2 class="text-base font-bold text-amber-400">Daftar Pengisi Suara (Narrator)</h2>
+                <div class="flex justify-between items-center">
+                    <h2 class="text-base font-bold text-amber-400">Daftar Pengisi Suara (Narrator)</h2>
+                    <button onclick="openNarratorModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold py-2.5 px-4 rounded-xl transition duration-200">
+                        + Tambah Narrator Baru
+                    </button>
+                </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="narratorCardsContainer"></div>
             </div>
         </div>
@@ -235,40 +251,106 @@
     <!-- Modal Form Tambah/Edit Kereta -->
     <div id="trainModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-lg w-full mx-4 space-y-4">
-            <h3 id="modalTitle" class="text-base font-bold text-amber-400">Tambah Kereta Baru</h3>
-            <input type="hidden" id="editIndex" value="-1">
+            <h3 id="trainModalTitle" class="text-base font-bold text-amber-400">Tambah Kereta Baru</h3>
+            <input type="hidden" id="editTrainIndex" value="-1">
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Nomor Kereta</label>
-                    <input type="text" id="inputNo" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
+                    <input type="text" id="inputTrainNo" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Nama Kereta</label>
-                    <input type="text" id="inputName" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
+                    <input type="text" id="inputTrainName" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Relasi / Tujuan Akhir</label>
-                    <input type="text" id="inputRoute" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200" placeholder="Contoh: Malang - Bandung">
+                    <input type="text" id="inputTrainRoute" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200" placeholder="Contoh: Malang - Bandung">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Jalur Peron & Arah</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="inputPlatform" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200" placeholder="Jalur 2">
-                        <input type="text" id="inputDirection" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200" placeholder="dari arah timur">
+                        <input type="text" id="inputTrainPlatform" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200" placeholder="Jalur 2">
+                        <input type="text" id="inputTrainDirection" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200" placeholder="dari arah timur">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Susunan Rangkaian</label>
-                    <input type="text" id="inputComposition" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
+                    <input type="text" id="inputTrainComposition" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Stasiun Perhentian</label>
-                    <textarea id="inputStops" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200"></textarea>
+                    <textarea id="inputTrainStops" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200"></textarea>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeTrainModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs font-semibold py-2 px-4 rounded-xl">Batal</button>
                 <button onclick="saveTrain()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold py-2 px-4 rounded-xl">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form Tambah/Edit Templat -->
+    <div id="templateModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-lg w-full mx-4 space-y-4">
+            <h3 id="templateModalTitle" class="text-base font-bold text-amber-400">Tambah Templat Baru</h3>
+            <input type="hidden" id="editTemplateIndex" value="-1">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Kategori</label>
+                    <input type="text" id="inputTemplateCat" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200" placeholder="kedatangan / keberangkatan / dll">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Judul Templat</label>
+                    <input type="text" id="inputTemplateTitle" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Isi Teks Baku (Gunakan variabel)</label>
+                    <textarea id="inputTemplateText" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeTemplateModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs font-semibold py-2 px-4 rounded-xl">Batal</button>
+                <button onclick="saveTemplate()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold py-2 px-4 rounded-xl">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form Tambah/Edit Narrator -->
+    <div id="narratorModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md w-full mx-4 space-y-4">
+            <h3 id="narratorModalTitle" class="text-base font-bold text-amber-400">Tambah Narrator Baru</h3>
+            <input type="hidden" id="editNarratorIndex" value="-1">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Nama Narrator</label>
+                    <input type="text" id="inputNarratorName" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Tipe</label>
+                    <input type="text" id="inputNarratorType" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200" value="tts">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeNarratorModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs font-semibold py-2 px-4 rounded-xl">Batal</button>
+                <button onclick="saveNarrator()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold py-2 px-4 rounded-xl">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form Tambah/Edit Chime -->
+    <div id="chimeModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md w-full mx-4 space-y-4">
+            <h3 id="chimeModalTitle" class="text-base font-bold text-amber-400">Tambah Chime Baru</h3>
+            <input type="hidden" id="editChimeIndex" value="-1">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Nama Chime</label>
+                    <input type="text" id="inputChimeName" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeChimeModal()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs font-semibold py-2 px-4 rounded-xl">Batal</button>
+                <button onclick="saveChime()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs font-bold py-2 px-4 rounded-xl">Simpan</button>
             </div>
         </div>
     </div>
@@ -280,7 +362,6 @@
 
     <!-- Logika Aplikasi (JavaScript) -->
     <script>
-        // Data Default Lengkap Komprehensif
         const defaultData = {
           "trains": [
             { "no": "67", "name": "Malabar", "route": "Malang - Bandung", "platform": "Jalur 2", "direction": "dari arah timur", "composition": "Eksekutif, Ekonomi", "stops": "Kroya, Maos, Sidareja, Banjar, Ciamis, Tasikmalaya, Cipeundeuy, Leles, Kiaracondong, Bandung" },
@@ -322,7 +403,6 @@
             localStorage.setItem('gombong_audio_data', JSON.stringify(appData));
         }
 
-        // Fungsi Navigasi Tab
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(el => {
@@ -335,7 +415,6 @@
             event.currentTarget.classList.add('bg-amber-500', 'text-slate-900', 'font-semibold', 'shadow-md');
         }
 
-        // Inisialisasi Tampilan & Dropdown
         function initApp() {
             document.getElementById('totalTrains').textContent = appData.trains.length;
 
@@ -408,6 +487,10 @@
                 div.innerHTML = `
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-bold uppercase tracking-wider text-amber-400">${t.cat} &bull; ${t.title}</span>
+                        <div class="space-x-1">
+                            <button onclick="editTemplate(${index})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-2.5 py-1 rounded border border-slate-600 font-medium">Edit</button>
+                            <button onclick="deleteTemplate(${index})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs px-2.5 py-1 rounded border border-rose-500/20 font-medium">Hapus</button>
+                        </div>
                     </div>
                     <p class="text-sm text-slate-300 leading-relaxed bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-xs">${t.text}</p>
                 `;
@@ -417,19 +500,44 @@
             // Kartu Narrator
             const narratorCardsContainer = document.getElementById('narratorCardsContainer');
             narratorCardsContainer.innerHTML = '';
-            appData.narrators.forEach(n => {
+            appData.narrators.forEach((n, index) => {
                 const card = document.createElement('div');
-                card.className = "bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-2";
+                card.className = "bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3";
                 card.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-amber-500/10 text-amber-400 p-2.5 rounded-xl font-bold">🎙️</div>
-                        <div>
-                            <h3 class="font-semibold text-sm text-slate-200">${n.name}</h3>
-                            <p class="text-xs text-slate-400">Tipe: ${n.type.toUpperCase()}</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-amber-500/10 text-amber-400 p-2.5 rounded-xl font-bold">🎙️</div>
+                            <div>
+                                <h3 class="font-semibold text-sm text-slate-200">${n.name}</h3>
+                                <p class="text-xs text-slate-400">Tipe: ${n.type.toUpperCase()}</p>
+                            </div>
                         </div>
+                    </div>
+                    <div class="flex justify-end gap-1 pt-1 border-t border-slate-800">
+                        <button onclick="editNarrator(${index})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-2.5 py-1 rounded border border-slate-600 font-medium">Edit</button>
+                        <button onclick="deleteNarrator(${index})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs px-2.5 py-1 rounded border border-rose-500/20 font-medium">Hapus</button>
                     </div>
                 `;
                 narratorCardsContainer.appendChild(card);
+            });
+
+            // List Chime
+            const chimeListContainer = document.getElementById('chimeListContainer');
+            chimeListContainer.innerHTML = '';
+            appData.chimes.forEach((c, index) => {
+                const div = document.createElement('div');
+                div.className = "bg-slate-900 p-4 rounded-xl border border-slate-700/60 flex justify-between items-center";
+                div.innerHTML = `
+                    <div>
+                        <h3 class="font-semibold text-sm text-slate-200">${c.name}</h3>
+                        <p class="text-xs text-slate-400">Tipe Audio: ${c.type || 'synth'}</p>
+                    </div>
+                    <div class="space-x-1">
+                        <button onclick="editChime(${index})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-2.5 py-1 rounded border border-slate-600 font-medium">Edit</button>
+                        <button onclick="deleteChime(${index})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs px-2.5 py-1 rounded border border-rose-500/20 font-medium">Hapus</button>
+                    </div>
+                `;
+                chimeListContainer.appendChild(div);
             });
 
             // Tombol Darurat Cepat
@@ -456,7 +564,6 @@
             });
         }
 
-        // Filter Templat Berdasarkan Kategori
         function filterTemplates() {
             const cat = document.getElementById('categorySelect').value;
             const templateSelect = document.getElementById('templateSelect');
@@ -470,7 +577,6 @@
             });
         }
 
-        // Sisipkan Variabel
         function insertVariable(variableTag) {
             const textarea = document.getElementById('announcementText');
             const startPos = textarea.selectionStart;
@@ -483,7 +589,6 @@
             textarea.selectionEnd = startPos + variableTag.length;
         }
 
-        // Sinkronisasi Teks Otomatis
         function updateTextPreview() {
             const templateSelectVal = document.getElementById('templateSelect').value;
             const trainSelectVal = document.getElementById('trainSelect').value;
@@ -501,36 +606,37 @@
                     .replace(/{platform}/g, train.platform)
                     .replace(/{direction}/g, train.direction)
                     .replace(/{composition}/g, train.composition || "rangkaian standar")
-                    .replace(/{time}/g, "15 menit");
+                    .replace(/{time}/g, "15 menit")
+                    .replace(/{stops}/g, train.stops);
             }
             document.getElementById('announcementText').value = text;
         }
 
-        // Modal Form Kereta
+        // --- Modals & CRUD Kereta ---
         function openTrainModal() {
-            document.getElementById('modalTitle').textContent = "Tambah Kereta Baru";
-            document.getElementById('editIndex').value = "-1";
-            document.getElementById('inputNo').value = "";
-            document.getElementById('inputName').value = "";
-            document.getElementById('inputRoute').value = "";
-            document.getElementById('inputPlatform').value = "Jalur ";
-            document.getElementById('inputDirection').value = "dari arah ";
-            document.getElementById('inputComposition').value = "";
-            document.getElementById('inputStops').value = "";
+            document.getElementById('trainModalTitle').textContent = "Tambah Kereta Baru";
+            document.getElementById('editTrainIndex').value = "-1";
+            document.getElementById('inputTrainNo').value = "";
+            document.getElementById('inputTrainName').value = "";
+            document.getElementById('inputTrainRoute').value = "";
+            document.getElementById('inputTrainPlatform').value = "Jalur ";
+            document.getElementById('inputTrainDirection').value = "dari arah ";
+            document.getElementById('inputTrainComposition').value = "";
+            document.getElementById('inputTrainStops').value = "";
             document.getElementById('trainModal').classList.remove('hidden');
         }
 
         function editTrain(index) {
             const train = appData.trains[index];
-            document.getElementById('modalTitle').textContent = "Edit Data Kereta";
-            document.getElementById('editIndex').value = index;
-            document.getElementById('inputNo').value = train.no;
-            document.getElementById('inputName').value = train.name;
-            document.getElementById('inputRoute').value = train.route;
-            document.getElementById('inputPlatform').value = train.platform;
-            document.getElementById('inputDirection').value = train.direction;
-            document.getElementById('inputComposition').value = train.composition || "";
-            document.getElementById('inputStops').value = train.stops;
+            document.getElementById('trainModalTitle').textContent = "Edit Data Kereta";
+            document.getElementById('editTrainIndex').value = index;
+            document.getElementById('inputTrainNo').value = train.no;
+            document.getElementById('inputTrainName').value = train.name;
+            document.getElementById('inputTrainRoute').value = train.route;
+            document.getElementById('inputTrainPlatform').value = train.platform;
+            document.getElementById('inputTrainDirection').value = train.direction;
+            document.getElementById('inputTrainComposition').value = train.composition || "";
+            document.getElementById('inputTrainStops').value = train.stops;
             document.getElementById('trainModal').classList.remove('hidden');
         }
 
@@ -539,15 +645,15 @@
         }
 
         function saveTrain() {
-            const index = parseInt(document.getElementById('editIndex').value);
+            const index = parseInt(document.getElementById('editTrainIndex').value);
             const trainData = {
-                no: document.getElementById('inputNo').value,
-                name: document.getElementById('inputName').value,
-                route: document.getElementById('inputRoute').value,
-                platform: document.getElementById('inputPlatform').value,
-                direction: document.getElementById('inputDirection').value,
-                composition: document.getElementById('inputComposition').value,
-                stops: document.getElementById('inputStops').value
+                no: document.getElementById('inputTrainNo').value,
+                name: document.getElementById('inputTrainName').value,
+                route: document.getElementById('inputTrainRoute').value,
+                platform: document.getElementById('inputTrainPlatform').value,
+                direction: document.getElementById('inputTrainDirection').value,
+                composition: document.getElementById('inputTrainComposition').value,
+                stops: document.getElementById('inputTrainStops').value
             };
 
             if (!trainData.no || !trainData.name) {
@@ -574,9 +680,135 @@
             }
         }
 
-        // Audio Player
+        // --- CRUD Templat ---
+        function openTemplateModal() {
+            document.getElementById('templateModalTitle').textContent = "Tambah Templat Baru";
+            document.getElementById('editTemplateIndex').value = "-1";
+            document.getElementById('inputTemplateCat').value = "";
+            document.getElementById('inputTemplateTitle').value = "";
+            document.getElementById('inputTemplateText').value = "";
+            document.getElementById('templateModal').classList.remove('hidden');
+        }
+
+        function editTemplate(index) {
+            const t = appData.templates[index];
+            document.getElementById('templateModalTitle').textContent = "Edit Templat";
+            document.getElementById('editTemplateIndex').value = index;
+            document.getElementById('inputTemplateCat').value = t.cat;
+            document.getElementById('inputTemplateTitle').value = t.title;
+            document.getElementById('inputTemplateText').value = t.text;
+            document.getElementById('templateModal').classList.remove('hidden');
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('templateModal').classList.add('hidden');
+        }
+
+        function saveTemplate() {
+            const index = parseInt(document.getElementById('editTemplateIndex').value);
+            const tData = {
+                cat: document.getElementById('inputTemplateCat').value,
+                title: document.getElementById('inputTemplateTitle').value,
+                text: document.getElementById('inputTemplateText').value
+            };
+            if (!tData.cat || !tData.title) return alert("Kategori dan Judul wajib diisi!");
+            if (index === -1) appData.templates.push(tData);
+            else appData.templates[index] = tData;
+            saveToLocalStorage();
+            closeTemplateModal();
+            initApp();
+        }
+
+        function deleteTemplate(index) {
+            if (confirm("Yakin ingin menghapus templat ini?")) {
+                appData.templates.splice(index, 1);
+                saveToLocalStorage();
+                initApp();
+            }
+        }
+
+        // --- CRUD Narrator ---
+        function openNarratorModal() {
+            document.getElementById('narratorModalTitle').textContent = "Tambah Narrator Baru";
+            document.getElementById('editNarratorIndex').value = "-1";
+            document.getElementById('inputNarratorName').value = "";
+            document.getElementById('narratorModal').classList.remove('hidden');
+        }
+
+        function editNarrator(index) {
+            const n = appData.narrators[index];
+            document.getElementById('narratorModalTitle').textContent = "Edit Narrator";
+            document.getElementById('editNarratorIndex').value = index;
+            document.getElementById('inputNarratorName').value = n.name;
+            document.getElementById('narratorModal').classList.remove('hidden');
+        }
+
+        function closeNarratorModal() {
+            document.getElementById('narratorModal').classList.add('hidden');
+        }
+
+        function saveNarrator() {
+            const index = parseInt(document.getElementById('editNarratorIndex').value);
+            const nData = { id: "nar_" + Date.now(), name: document.getElementById('inputNarratorName').value, type: "tts" };
+            if (!nData.name) return alert("Nama narrator wajib diisi!");
+            if (index === -1) appData.narrators.push(nData);
+            else { appData.narrators[index].name = nData.name; }
+            saveToLocalStorage();
+            closeNarratorModal();
+            initApp();
+        }
+
+        function deleteNarrator(index) {
+            if (confirm("Yakin ingin menghapus narrator ini?")) {
+                appData.narrators.splice(index, 1);
+                saveToLocalStorage();
+                initApp();
+            }
+        }
+
+        // --- CRUD Chime ---
+        function openChimeModal() {
+            document.getElementById('chimeModalTitle').textContent = "Tambah Chime Baru";
+            document.getElementById('editChimeIndex').value = "-1";
+            document.getElementById('inputChimeName').value = "";
+            document.getElementById('chimeModal').classList.remove('hidden');
+        }
+
+        function editChime(index) {
+            const c = appData.chimes[index];
+            document.getElementById('chimeModalTitle').textContent = "Edit Chime";
+            document.getElementById('editChimeIndex').value = index;
+            document.getElementById('inputChimeName').value = c.name;
+            document.getElementById('chimeModal').classList.remove('hidden');
+        }
+
+        function closeChimeModal() {
+            document.getElementById('chimeModal').classList.add('hidden');
+        }
+
+        function saveChime() {
+            const index = parseInt(document.getElementById('editChimeIndex').value);
+            const cData = { id: "chime_" + Date.now(), name: document.getElementById('inputChimeName').value, type: "synth" };
+            if (!cData.name) return alert("Nama chime wajib diisi!");
+            if (index === -1) appData.chimes.push(cData);
+            else { appData.chimes[index].name = cData.name; }
+            saveToLocalStorage();
+            closeChimeModal();
+            initApp();
+        }
+
+        function deleteChime(index) {
+            if (confirm("Yakin ingin menghapus chime ini?")) {
+                appData.chimes.splice(index, 1);
+                saveToLocalStorage();
+                initApp();
+            }
+        }
+
+        // --- Audio Player & Multi-Bahasa Otomatis ---
         function playAnnouncement() {
             const textToSpeak = document.getElementById('announcementText').value;
+            const multiLangMode = document.getElementById('multiLangSelect').value;
             if (!textToSpeak) return alert("Silakan pilih templat atau ketik teks pengumuman terlebih dahulu.");
 
             window.speechSynthesis.cancel();
@@ -598,19 +830,64 @@
                 });
 
                 setTimeout(() => {
-                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                    utterance.lang = 'id-ID';
-                    utterance.rate = 0.95;
-                    const voices = window.speechSynthesis.getVoices();
-                    const indonesianVoice = voices.find(v => v.lang.includes('id') || v.lang.includes('ID'));
-                    if (indonesianVoice) utterance.voice = indonesianVoice;
-                    window.speechSynthesis.speak(utterance);
+                    speakMultiLanguage(textToSpeak, multiLangMode);
                 }, notes.length * 200 + 200);
 
             } catch (e) {
-                const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                utterance.lang = 'id-ID';
-                window.speechSynthesis.speak(utterance);
+                speakMultiLanguage(textToSpeak, multiLangMode);
+            }
+        }
+
+        function speakMultiLanguage(textID, mode) {
+            const voices = window.speechSynthesis.getVoices();
+            
+            // Bahasa 1: Indonesia
+            const utterID = new SpeechSynthesisUtterance(textID);
+            utterID.lang = 'id-ID';
+            utterID.rate = 0.95;
+            const voiceID = voices.find(v => v.lang.includes('id') || v.lang.includes('ID'));
+            if (voiceID) utterID.voice = voiceID;
+            window.speechSynthesis.speak(utterID);
+
+            if (mode === 'id-en' || mode === 'id-en-jv') {
+                // Konversi sederhana teks ke Inggris untuk pengumuman stasiun
+                let textEN = "Attention, " + textID
+                    .replace(/Kereta Api/g, "Train")
+                    .replace(/Stasiun Gombong/g, "Gombong Station")
+                    .replace(/Jalur/g, "Platform")
+                    .replace(/dari arah timur/g, "from the east direction")
+                    .replace(/dari arah barat/g, "from the west direction")
+                    .replace(/tujuan/g, "destined for")
+                    .replace(/relasi/g, "with route");
+
+                const utterEN = new SpeechSynthesisUtterance(textEN);
+                utterEN.lang = 'en-US';
+                utterEN.rate = 0.95;
+                const voiceEN = voices.find(v => v.lang.includes('en') || v.lang.includes('EN'));
+                if (voiceEN) utterEN.voice = voiceEN;
+                
+                // Beri jeda setelah bahasa Indonesia selesai
+                utterID.onend = () => {
+                    setTimeout(() => {
+                        window.speechSynthesis.speak(utterEN);
+                        
+                        if (mode === 'id-en-jv') {
+                            let textJV = "Kawigatosan dumateng sedaya para penumpang, " + textID
+                                .replace(/Kereta Api/g, "Sepur")
+                                .replace(/Stasiun Gombong/g, "Stasiun Gombong")
+                                .replace(/Jalur/g, "Jalur");
+                            
+                            const utterJV = new SpeechSynthesisUtterance(textJV);
+                            utterJV.lang = 'id-ID'; // Menggunakan pelafalan lokal/ID untuk aksen Jawa
+                            utterJV.rate = 0.90;
+                            utterEN.onend = () => {
+                                setTimeout(() => {
+                                    window.speechSynthesis.speak(utterJV);
+                                }, 800);
+                            };
+                        }
+                    }, 800);
+                };
             }
         }
 
@@ -618,7 +895,6 @@
             window.speechSynthesis.cancel();
         }
 
-        // Ekspor & Impor Data
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
             const dlAnchor = document.createElement('a');
@@ -646,7 +922,6 @@
             reader.readAsText(file);
         }
 
-        // Inisialisasi Saat Halaman Dimuat
         initApp();
     </script>
 </body>
