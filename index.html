@@ -1,308 +1,56 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Announcement Stasiun Modern</title>
-    <style>
-        :root {
-            --primary-color: #0284c7;
-            --primary-dark: #0369a1;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
+<!-- Bagian JavaScript yang diperbarui untuk penanganan pelafalan, variabel, dan multi-bahasa -->
+<script>
+  // Konversi teks angka/nomor agar dibaca digit per digit (contoh: 207 -> dua nol tujuh)
+  function spellOutTrainNumber(trainNo) {
+    if (!trainNo) return '';
+    const digitWords = {'0':'nol', '1':'satu', '2':'dua', '3':'tiga', '4':'empat', '5':'lima', '6':'enam', '7':'tujuh', '8':'delapan', '9':'sembilan'};
+    return trainNo.toString().toUpperCase().split('').map(char => digitWords[char] || char).join(' ');
+  }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
+  // Konversi waktu (HH:MM WIB) agar dibaca natural (contoh: 22:15 -> dua puluh dua lewat lima belas menit waktu indonesia bagian barat)
+  function spellOutTime(timeStr) {
+    if (!timeStr) return '';
+    const parts = timeStr.split(':');
+    if (parts.length < 2) return timeStr;
+    const hour = parseInt(parts[0], 10);
+    const minute = parseInt(parts[1], 10);
+    
+    // Konversi angka jam dan menit sederhana ke kata-kata bahasa Indonesia
+    const numberToWords = (n) => {
+      const words = ["nol","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas","dua belas","tiga belas","empat belas","lima belas","enam belas","tujuh belas","delapan belas","sembilan belas","dua puluh","dua puluh satu","dua puluh dua","dua puluh tiga","dua puluh empat","dua puluh lima","dua puluh enam","dua puluh tujuh","dua puluh delapan","dua puluh sembilan","tiga puluh","tiga puluh satu","tiga puluh dua","tiga puluh tiga","tiga puluh empat","tiga puluh lima","tiga puluh enam","tiga puluh tujuh","tiga puluh delapan","tiga puluh sembilan","empat puluh","empat puluh satu","empat puluh dua","empat puluh tiga","empat puluh empat","empat puluh lima","empat puluh enam","empat puluh tujuh","empat puluh delapan","empat puluh sembilan","lima puluh","lima puluh satu","lima puluh dua","lima puluh tiga","lima puluh empat","lima puluh lima","lima puluh enam","lima puluh tujuh","lima puluh delapan","lima puluh sembilan"];
+      return words[n] || n;
+    };
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+    let result = numberToWords(hour) + " lewat ";
+    if (minute === 0) {
+      result = numberToWords(hour) + " tepat";
+    } else {
+      result += numberToWords(minute) + " menit";
+    }
+    return result + " waktu indonesia bagian barat";
+  }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            padding: 24px;
-            border: 1px solid var(--border-color);
-        }
+  // Daftar Kereta & Stasiun Tujuan Akhir (Diambil stasiun tujuannya saja, misal: "Bandung")
+  const daftarKereta = [
+    { nomor_kereta: "207", nama_kereta: "Kahuripan", tujuan_akhir: "Bandung" },
+    { nomor_kereta: "1009A", nama_kereta: "Logawa", tujuan_akhir: "Purwokerto" }
+  ];
 
-        h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: var(--text-main);
-        }
+  // Template Pengumuman dalam 3 Bahasa dengan Logat/Gaya Natural Petugas Stasiun
+  const templatePengumuman = {
+    indonesia: (data) => `Perhatian kepada seluruh penumpang, Kereta Api ${data.nama_kereta} dengan nomor ${spellOutTrainNumber(data.nomor_kereta)}, tujuan akhir ${data.tujuan_akhir}, yang diberangkatkan pada pukul ${spellOutTime(data.waktu)}, dipersilakan naik melalui peron jalur ${data.jalur}.`,
+    
+    inggris: (data) => `Attention to all passengers, Train ${data.nama_kereta} with number ${spellOutTrainNumber(data.nomor_kereta)}, with final destination ${data.tujuan_akhir}, departing at ${data.waktu}, please board from platform track ${data.jalur}.`,
+    
+    jawa: (data) => `Kawigatosan dhumateng sedaya para penumpang, Sepur ${data.nama_kereta} nomor ${spellOutTrainNumber(data.nomor_kereta)}, tujuwan pungkasan ${data.tujuan_akhir}, ingkang badhe berangkat tabuh ${data.waktu}, dipunaturan munggah liwat peron jalur ${data.jalur}.`
+  };
 
-        .subtitle {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-main);
-        }
-
-        select, input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            background-color: #fff;
-            color: var(--text-main);
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        select:focus, input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .btn-container {
-            margin-top: 24px;
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            flex: 1;
-            padding: 12px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background-color: #e2e8f0;
-            color: var(--text-main);
-        }
-
-        .btn-secondary:hover {
-            background-color: #cbd5e1;
-        }
-
-        .status-box {
-            margin-top: 16px;
-            padding: 12px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            display: none;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h1>Audio Announcement Stasiun</h1>
-        <p class="subtitle">Sistem Pengumuman Informasi Kereta Api Otomatis</p>
-
-        <div class="form-group">
-            <label for="pilihan_bahasa">Pilih Bahasa Pengumuman</label>
-            <select id="pilihan_bahasa">
-                <option value="id">Bahasa Indonesia</option>
-                <option value="en">English (Inggris)</option>
-                <option value="jv">Basa Jawa (Krama Alus)</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="pilihan_jenis">Jenis Pengumuman</label>
-            <select id="pilihan_jenis">
-                <option value="kedatangan">Kereta Akan Masuk / Tiba</option>
-                <option value="keberangkatan">Pengumuman Pemberangkatan</option>
-                <option value="keterlambatan">Informasi Keterlambatan Kereta</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="pilihan_kereta">Pilih Kereta Api & Tujuan Akhir</label>
-            <select id="pilihan_kereta">
-                <option value="Argo Wilis" data-nomor="6" data-tujuan="Surabaya Gubeng">KA Argo Wilis (No. 6) - Tujuan: Surabaya Gubeng</option>
-                <option value="Gaya Baru Malam Selatan" data-nomor="104" data-tujuan="Pasar Senen">KA Gaya Baru Malam Selatan (No. 104) - Tujuan: Pasar Senen</option>
-                <option value="Logawa" data-nomor="207" data-tujuan="Jember">KA Logawa (No. 207) - Tujuan: Jember</option>
-                <option value="Commuter Line" data-nomor="1009A" data-tujuan="Yogyakarta">Commuter Line (No. 1009A) - Tujuan: Yogyakarta</option>
-            </select>
-        </div>
-
-        <div class="row">
-            <div class="form-group">
-                <label for="nomor_peron">Nomor Peron / Jalur</label>
-                <input type="text" id="nomor_peron" value="Jalur 2">
-            </div>
-            <div class="form-group">
-                <label for="waktu_kejadian">Waktu (Jam:Menit)</label>
-                <input type="text" id="waktu_kejadian" value="22:15">
-            </div>
-        </div>
-
-        <div class="btn-container">
-            <button class="btn-primary" id="putar_audio">Putar Pengumuman</button>
-            <button class="btn-secondary" id="berhenti_audio">Berhenti</button>
-        </div>
-
-        <div class="status-box" id="kotak_status">Memproses pengumuman...</div>
-    </div>
-
-    <script>
-        // Fungsi untuk melafalkan nomor per digit (Angka & Huruf) ala petugas stasiun
-        function formatPelafalanNomor(teksNomor) {
-            let hasil = '';
-            const kamusAngka = {
-                '0': 'nol ', '1': 'satu ', '2': 'dua ', '3': 'tiga ', '4': 'empat ',
-                '5': 'lima ', '6': 'enam ', '7': 'tujuh ', '8': 'delapan ', '9': 'sembilan '
-            };
-            
-            for (let i = 0; i < teksNomor.length; i++) {
-                let char = teksNomor[i].toLowerCase();
-                if (kamusAngka[char] !== undefined) {
-                    hasil += kamusAngka[char];
-                } else if (char === 'a') {
-                    hasil += 'a ';
-                } else if (char === 'b') {
-                    hasil += 'b ';
-                } else {
-                    hasil += char + ' ';
-                }
-            }
-            return hasil.trim();
-        }
-
-        // Fungsi melafalkan waktu jam dan menit secara rinci
-        function formatPelafalanWaktu(jamMenitStr) {
-            let bagian = jamMenitStr.split(':');
-            if (bagian.length !== 2) return jamMenitStr;
-            
-            let jamPelafalan = formatPelafalanNomor(bagian[0]);
-            let menitPelafalan = formatPelafalanNomor(bagian[1]);
-            
-            return `${jamPelafalan}, lewat ${menitPelafalan} menit waktu indonesia bagian barat`;
-        }
-
-        document.getElementById('putar_audio').addEventListener('click', function() {
-            if (!('speechSynthesis' in window)) {
-                alert('Maaf, browser Anda tidak mendukung fitur suara audio.');
-                return;
-            }
-
-            window.speechSynthesis.cancel();
-
-            let bahasa = document.getElementById('pilihan_bahasa').value;
-            let jenis = document.getElementById('pilihan_jenis').value;
-            let selectKereta = document.getElementById('pilihan_kereta');
-            let opsiTerpilih = selectKereta.options[selectKereta.selectedIndex];
-            
-            let namaKereta = opsiTerpilih.value;
-            let rawNomorKereta = opsiTerpilih.getAttribute('data-nomor');
-            let tujuanAkhir = opsiTerpilih.getAttribute('data-tujuan');
-            let peron = document.getElementById('nomor_peron').value;
-            let rawWaktu = document.getElementById('waktu_kejadian').value;
-
-            // Variabel pelafalan khusus
-            let nomorKeretaLafal = formatPelafalanNomor(rawNomorKereta);
-            let waktuLafal = formatPelafalanWaktu(rawWaktu);
-            let peronLafal = formatPelafalanNomor(peron.replace(/[^0-9]/g, ''));
-
-            let teksPengumuman = "";
-
-            // Skrip Berdasarkan Bahasa & Logat Natural Petugas Stasiun
-            if (bahasa === 'id') {
-                if (jenis === 'kedatangan') {
-                    teksPengumuman = `Perhatian, kepada seluruh penumpang. Sesaat lagi, di ${peron}, akan segera tiba, Kereta Api ${namaKereta}, dengan nomor perjalanan, ${nomorKeretaLafal}, tujuan akhir, ${tujuanAkhir}. Bagi para penumpang yang akan naik, dipersilakan untuk bersiap-siap dan menunggu di garis aman peron. Terima kasih.`;
-                } else if (jenis === 'keberangkatan') {
-                    teksPengumuman = `Pengumuman, Kereta Api ${namaKereta}, dengan nomor, ${nomorKeretaLafal}, tujuan akhir, ${tujuanAkhir}, yang dijadwalkan berangkat pada pukul, ${waktuLafal}, sesaat lagi akan diberangkatkan dari ${peron}. Kepada penumpang yang belum naik, disilakan segera naik ke dalam kereta. Selamat jalan dan semoga selamat sampai tujuan.`;
-                } else {
-                    teksPengumuman = `Informasi perjalanan kereta api. Diberitahukan bahwa Kereta Api ${namaKereta}, dengan nomor, ${nomorKeretaLafal}, tujuan ${tujuanAkhir}, mengalami keterlambatan perjalanan. Kami mohon maaf atas ketidaknyamanan ini, terima kasih atas kesetiaan Anda menggunakan layanan kereta api.`;
-                }
-            } else if (bahasa === 'en') {
-                if (jenis === 'kedatangan') {
-                    teksPengumuman = `Attention please, passengers. Arriving shortly at platform ${peron}, Train ${namaKereta}, train number ${rawNomorKereta}, with final destination ${tujuanAkhir}. Please stand back from the platform edge. Thank you.`;
-                } else if (jenis === 'keberangkatan') {
-                    teksPengumuman = `Announcement, Train ${namaKereta}, number ${rawNomorKereta}, bound for ${tujuanAkhir}, scheduled at ${rawWaktu}, is now ready for departure from platform ${peron}. All passengers, please board the train immediately. Have a safe journey.`;
-                } else {
-                    teksPengumuman = `Train travel information. Please be advised that Train ${namaKereta}, number ${rawNomorKereta}, heading to ${tujuanAkhir}, is experiencing a delay. We sincerely apologize for any inconvenience caused.`;
-                }
-            } else if (bahasa === 'jv') {
-                // Logat Jawa Krama Alus Pengumuman Stasiun
-                if (jenis === 'kedatangan') {
-                    teksPengumuman = `Kawigatosan dumateng sedaya para penumpang. Bentar malih, wonten ing ${peron}, badhe prapteng rawuh Kereta Api ${namaKereta}, nomor perjalanan ${nomorKeretaLafal}, nituju dhateng ${tujuanAkhir}. Dumateng para penumpang ingkang badhe tumumpang, dipun suwun sumadya lan ngantos wonten ing wates aman peron. Matur nuwun.`;
-                } else if (jenis === 'keberangkatan') {
-                    teksPengumuman = `Pengaosan penting, Kereta Api ${namaKereta}, nomor ${nomorKeretaLafal}, tujuwan ${tujuanAkhir}, ingkang sampun jangkep titi wancine wanci pukul ${rawWaktu}, sakmenika badhe budhal saking ${peron}. Dumateng para penumpang dipun suwun enggal tumumpang wonten gerbong piyambak-piyambak. Wilujeng tindak.`;
-                } else {
-                    teksPengumuman = `Wartos lampahing sepur. Katur dumateng para sesarengan, bilih Kereta Api ${namaKereta}, nomor ${nomorKeretaLafal}, tujuwan ${tujuanAkhir}, ngalami kalajengan wekdal. Awit saking menika, kula sakanca ngaturaken agunging samudra pangaksami.`;
-                }
-            }
-
-            let utterance = new SpeechSynthesisUtterance(teksPengumuman);
-            utterance.lang = bahasa === 'id' ? 'id-ID' : (bahasa === 'en' ? 'en-US' : 'jv-ID');
-            utterance.rate = 0.9; // Kecepatan sedikit diperlambat agar intonasi lebih berwibawa ala pengumuman resmi
-            utterance.pitch = 1.0;
-
-            let kotakStatus = document.getElementById('kotak_status');
-            kotakStatus.style.display = 'block';
-            kotakStatus.innerText = `Memutar audio (${bahasa.toUpperCase()}): "${teksPengumuman}"`;
-
-            utterance.onend = function() {
-                kotakStatus.innerText = 'Pemutaran pengumuman selesai.';
-            };
-
-            window.speechSynthesis.speak(utterance);
-        });
-
-        document.getElementById('berhenti_audio').addEventListener('click', function() {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                let kotakStatus = document.getElementById('kotak_status');
-                kotakStatus.innerText = 'Audio dihentikan.';
-            }
-        });
-    </script>
-</body>
-</html>
+  // Fungsi untuk memutar Web Speech API dengan intonasi petugas (mengatur pitch dan rate agar stabil)
+  function putarPengumuman(teks, bahasa) {
+    const utterance = new SpeechSynthesisUtterance(teks);
+    utterance.lang = bahasa === 'inggris' ? 'en-US' : (bahasa === 'jawa' ? 'jv-ID' : 'id-ID');
+    utterance.rate = 0.90; // Kecepatan sedikit lambat ala pengumuman stasiun profesional
+    utterance.pitch = 1.0;  // Nada stabil dan tegas
+    window.speechSynthesis.speak(utterance);
+  }
+</script>
