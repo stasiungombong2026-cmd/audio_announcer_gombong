@@ -133,7 +133,7 @@
 
     <!-- Logika Aplikasi (JavaScript) -->
     <script>
-        // Data Terpadu dari gombong_announcement_data.json
+        // Data lengkap dari gombong_announcement_data.json[cite: 3]
         const appData = {
           "trains": [
             { "no": "67", "name": "Malabar", "route": "Malang - Bandung", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Maos, Sidareja, Banjar, Ciamis, Tasikmalaya, Cipeundeuy, Leles, Kiaracondong, Bandung" },
@@ -174,7 +174,7 @@
             { "no": "248C", "name": "Logawa", "route": "Purwokerto - Ketapang", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Karanganyar, Kebumen, Kutowinangun, Kutoarjo, Wates, Lempuyangan, Klaten, Purwosari, Sragen, Ngawi, Madiun, Caruban, Nganjuk, Kertosono, Jombang, Mojokerto, Wonokromo, Surabayagubeng, Sidoarjo, Bangil, Pasuruan, Probolinggo, Leces, Klakah, Tanggul, Bangsalsari, Rambipuji, Kalisat, Kalibaru, Kalisetail, Rogojampi, Banyuwangi Kota, Ketapang" },
             { "no": "109B", "name": "Fajar Utama Yogyakarta", "route": "Yogayakarta - Pasarsenen", "platform": "Jalur 1", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Ciledug, Cirebon, Jatibarang, Terisi, Haurgeulis, Bekasi, Jatinegara, Pasarsenen" },
             { "no": "43", "name": "Taksaka", "route": "Yogyakarta - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
-            { "no": "193A", "name": "Joglosemarkerto", "route": "Solobalapan - Semarangtawang", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Sumpiuh, Kroya, Purwokerto, Bumiayu, Prupuk, Slawi, Tegal, Pemalang, Pekalongan, Batang, Weleri, Semarang Poncol, Semarang Tawang, Brumbung, Kedungjati, Telawa, Gundih, Salem, Solobalapan" },
+            { "no": "193A", "name": "Joglosemarkerto", "route": "Solobalapan - Semarangtawang", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "SUmpiuh, Kroya, Purwokerto, Bumiayu, Prupuk, Slawi, Tegal, Pemalang, Pekalongan, Batang, Weleri, Semarang Poncol, Semarang Tawang, Brumbung, Kedungjati, Telawa, Gundih, Salem, Solobalapan" },
             { "no": "170B", "name": "Malioboro Ekspres", "route": "Purwokerto - Malang", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta, Klaten, Solobalapan, Sragen, Madiun, Caruban, Nganjuk, Kertosono, Kediri, Tulungagung, Blitar, Wlingi, Ngebruk, Kepanjen, Pakisaji, Malangkotalama, Malang" },
             { "no": "2716", "name": "Karsolo Service", "route": "Karangtalun - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
             { "no": "77D", "name": "Lodaya", "route": "Solobalapan - Bandung", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Gandrungmangun, Sidareja, Meluwung, Banjar, Ciamis, Awipari, Tasikmalaya, Cipeundeuy, Bumiwaluya, Cibatu, Kiaracondong, Bandung" },
@@ -184,10 +184,10 @@
             { "no": "291A", "name": "Kutojaya Selatan", "route": "Kutoarjo - Kiaracondong", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Sumpiuh, Kroya, Maos, Jeruklegi, Gandrungmangun, Sidareja, Langen, Banjar, Ciamis, Awipari, Tasikmalaya, Indihiang, Cipeundeuy, Warungbandrek, Kiaracondong" },
             { "no": "74B", "name": "Fajar Utama Solo", "route": "Pasarsenen - Solobalapan", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
             { "no": "75B", "name": "Mataram", "route": "Solobalapan - Pasarsenen", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Purwokerto, Bumiayu, Cirebon, Jatibarang, Haurgeulis, Bekasi, Jatinegara, Pasarsenen" },
-            { "no": "6", "name": "Argo Semeru", "route": "Gambir - Surabayagubeng", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
+            { "no": "6", "name": "Argo Semeru", "route": "Gambir _ Surabayagubeng", "platform": "Langsung Jalur 3", "direction": "dari arah barat", "stops": "" },
             { "no": "143B", "name": "Madiun Jaya", "route": "Madiun - Pasarsenen", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
             { "no": "78B", "name": "Lodaya", "route": "Bandung - Solobalapan", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Kebumen, Kutoarjo, Wates, Yogyakarta, Klaten, Solobalapan" },
-            { "no": "275B", "name": "Pasundan", "route": "Surabayagubeng - Kiaracondong", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Maos, Sidareja, Banjar, Ciamis, Tasikmalaya, Indihiang, Ciawi, Cipeundeuy, Cibatu, Leles, Nagreg, Rancaekek, Kiaracondong" },
+            { "no": "275B", "name": "Pasundan", "route": "Suarabayagubeng - Kiaracondong", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Maos, Sidareja, Banjar, Ciamis, Tasikmalaya, Indihiang, Ciawi, Cipeundeuy, Cibatu, Leles, Nagreg, Rancaekek, Kiaracondong" },
             { "no": "114C", "name": "Sawunggalih", "route": "Pasarsenen - Kutoarjo", "platform": "Jalur 4", "direction": "dari arah barat", "stops": "Karanganyar, Kebumen, Kutoarjo" },
             { "no": "201", "name": "Joglosemarkerto", "route": "Yogyakarta - Cilacap", "platform": "Jalur 1", "direction": "dari arah timur", "stops": "Sumpiuh, Kroya, Maos, Gumilir, Cilacap" },
             { "no": "61B", "name": "Manahan", "route": "Solobalapan - Gambir", "platform": "Langsung Jalur 2", "direction": "dari arah timur", "stops": "" },
@@ -246,22 +246,85 @@
             { "no": "157", "name": "Wijaya Kusuma", "route": "Ketapang - Cilacap", "platform": "Jalur 2", "direction": "dari arah timur", "stops": "Kroya, Sikampuh, Maos, Gumilir, Cilacap" }
           ],
           "templates": [
-            { "cat": "kedatangan", "title": "Kedatangan Standar", "text": "Perhatian kepada seluruh penumpang, Kereta Api {train_name} dengan nomor {train_no} relasi {train_route} {direction} sesaat lagi akan tiba di {platform}, Stasiun Gombong. Dihimbau kepada para penumpang untuk berdiri di belakang garis aman peron." },
-            { "cat": "keberangkatan", "title": "Keberangkatan Standar", "text": "Pengumuman untuk penumpang Kereta Api {train_name} tujuan {train_route} diberangkatkan dari {platform}, Stasiun Gombong. Silakan naik ke kereta dan pastikan barang bawaan tidak tertinggal." },
-            { "cat": "keterlambatan", "title": "Keterlambatan Kereta", "text": "Mohon perhatian, Kereta Api {train_name} relasi {train_route} {direction} mengalami keterlambatan diperkirakan 15 menit. Kami mohon maaf atas ketidaknyamanan ini." },
-            { "cat": "perubahan_jalur", "title": "Perubahan Jalur", "text": "Perhatian, pemberitahuan perubahan jalur peron untuk Kereta Api {train_name} nomor {train_no}, kini dialihkan ke {platform} Stasiun Gombong." },
-            { "cat": "melintas", "title": "Kereta Melintas Langsung", "text": "Perhatian kepada seluruh pengunjung dan petugas stasiun, sesaat lagi akan melintas langsung Kereta Api {train_name} nomor {train_no} relasi {train_route} {direction} melalui {platform}, Stasiun Gombong. Dihimbau agar tidak mendekati garis aman peron." },
-            { "cat": "umum", "title": "Barang Tertinggal", "text": "Kepada seluruh penumpang Stasiun Gombong, harap selalu menjaga barang bawaan Anda. Apabila menemukan barang mencurigakan atau tertinggal, segera laporkan kepada petugas." },
-            { "cat": "umum", "title": "Larangan Merokok", "text": "Dihimbau kepada seluruh pengunjung dan penumpang untuk tidak merokok di area peron dan ruang tunggu Stasiun Gombong. Kawasan ini adalah kawasan tanpa rokok." }
+            {
+              "cat": "kedatangan",
+              "title": "Kedatangan Standar",
+              "opening": "nada_a",
+              "closing": "nada_b",
+              "text": "Perhatian kepada seluruh penumpang, {train_type} {train_name} dengan nomor {train_no} relasi {train_route} {direction} sesaat lagi akan tiba di {platform}, Stasiun Gombong. Dihimbau kepada para penumpang untuk berdiri di belakang garis aman peron, {composition}"
+            },
+            {
+              "cat": "keberangkatan",
+              "title": "Keberangkatan Standar",
+              "opening": "nada_a",
+              "closing": "nada_b",
+              "text": "Pengumuman untuk penumpang {train_type} {train_name} tujuan {train_route} diberangkatkan dari {platform}, Stasiun Gombong. Silakan naik ke kereta dan pastikan barang bawaan tidak tertinggal."
+            },
+            {
+              "cat": "keterlambatan",
+              "title": "Keterlambatan Kereta",
+              "opening": "nada_c",
+              "closing": "nada_b",
+              "text": "Mohon perhatian, {train_type} {train_name} relasi {train_route} {direction} mengalami keterlambatan diperkirakan {time}. Kami mohon maaf atas ketidaknyamanan ini."
+            },
+            {
+              "cat": "perubahan_jalur",
+              "title": "Perubahan Jalur",
+              "opening": "nada_b",
+              "closing": "nada_a",
+              "text": "Perhatian, pemberitahuan perubahan jalur peron untuk {train_type} {train_name} nomor {train_no}, kini dialihkan ke {platform} Stasiun Gombong."
+            },
+            {
+              "cat": "melintas",
+              "title": "Kereta Melintas Langsung",
+              "opening": "nada_b",
+              "closing": "nada_c",
+              "text": "Perhatian kepada seluruh pengunjung dan petugas stasiun, sesaat lagi akan melintas langsung {train_type} {train_name} nomor {train_no} relasi {train_route} {direction} melalui {platform}, Stasiun Gombong. Dihimbau agar tidak mendekati garis aman peron."
+            },
+            {
+              "cat": "umum",
+              "title": "Barang Tertinggal",
+              "opening": "nada_a",
+              "closing": "nada_b",
+              "text": "Kepada seluruh penumpang Stasiun Gombong, harap selalu menjaga barang bawaan Anda. Apabila menemukan barang mencurigakan atau tertinggal, segera laporkan kepada petugas."
+            },
+            {
+              "cat": "umum",
+              "title": "Larangan Merokok",
+              "opening": "nada_a",
+              "closing": "nada_b",
+              "text": "Dihimbau kepada seluruh pengunjung dan penumpang untuk tidak merokok di area peron dan ruang tunggu Stasiun Gombong. Kawasan ini adalah kawasan tanpa rokok."
+            }
           ],
           "chimes": [
-            { "id": "kai_default", "name": "Chime KAI (Synthesizer Chime)" }
+            {
+              "id": "kai_default",
+              "name": "Chime KAI (Synthesizer)",
+              "type": "synth",
+              "url": ""
+            }
           ],
           "narrators": [
-            { "id": "nar_1", "name": "Ibu Narator (TTS ID)" },
-            { "id": "nar_2", "name": "Bapak Petugas Stasiun (TTS ID)" },
-            { "id": "nar_ka_style", "name": "Petugas PPKA / Announcer Stasiun (Gaya KAI)" }
-          ]
+            {
+              "id": "nar_1",
+              "name": "Ibu Narator (TTS ID)",
+              "type": "tts",
+              "url": ""
+            },
+            {
+              "id": "nar_2",
+              "name": "Bapak Petugas Stasiun (TTS ID)",
+              "type": "tts",
+              "url": ""
+            },
+            {
+              "id": "nar_ka_style",
+              "name": "Petugas PPKA / Announcer Stasiun (Gaya KAI)",
+              "type": "tts",
+              "url": ""
+            }
+          ],
+          "selectedChime": "kai_default"
         };
 
         // Inisialisasi Elemen HTML
@@ -319,7 +382,7 @@
             templateSelect.innerHTML = '<option value="">-- Pilih Templat --</option>';
             
             const filtered = appData.templates.filter(t => t.cat === selectedCat);
-            filtered.forEach((t, index) => {
+            filtered.forEach((t) => {
                 const opt = document.createElement('option');
                 opt.value = JSON.stringify(t);
                 opt.textContent = t.title;
@@ -337,11 +400,14 @@
                 if (trainSelect.value) {
                     const train = JSON.parse(trainSelect.value);
                     text = text
+                        .replace(/{train_type}/g, "Kereta Api")
                         .replace(/{train_name}/g, train.name)
                         .replace(/{train_no}/g, train.no)
                         .replace(/{train_route}/g, train.route)
                         .replace(/{platform}/g, train.platform)
-                        .replace(/{direction}/g, train.direction);
+                        .replace(/{direction}/g, train.direction)
+                        .replace(/{composition}/g, train.composition || "")
+                        .replace(/{time}/g, "15 menit");
                 }
             }
             announcementText.value = text;
