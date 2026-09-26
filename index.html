@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Announcement Stasiun Gombong</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rail: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar & smooth transitions */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .fade-in { animation: fadeIn 0.25s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="h-full bg-slate-100 text-slate-800 font-sans antialiased overflow-hidden">
+
+    <!-- WELCOME / ONBOARDING OVERLAY (Tanpa Login) -->
+    <div id="welcome-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl text-center fade-in">
+            <div class="w-20 h-20 bg-rail-100 text-rail-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-inner">
+                <i class="fa-solid fa-train-subway"></i>
+            </div>
+            <span class="bg-rail-100 text-rail-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Console Stasiun Gombong</span>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-3 mb-2">Selamat Datang di Audio Announcement Stasiun Gombong</h1>
+            <p class="text-slate-600 text-sm sm:text-base mb-6 leading-relaxed">
+                Sistem panel audio profesional untuk membuat, mengelola, menghasilkan, dan memutar pengumuman perjalanan kereta api secara cepat & akurat.
+            </p>
+            <div class="space-y-3">
+                <button onclick="closeWelcome()" class="w-full bg-rail-600 hover:bg-rail-700 text-white font-medium py-3 px-6 rounded-xl shadow-lg shadow-rail-600/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> Mulai Menggunakan
+                </button>
+                <p class="text-xs text-slate-400">Tidak perlu login. Data tersimpan aman di perangkat Anda.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP CONTAINER -->
+    <div id="app" class="flex h-full w-full overflow-hidden">
+        
+        <!-- DESKTOP / TABLET SIDEBAR -->
+        <aside id="sidebar" class="hidden md:flex flex-col w-64 lg:w-72 bg-slate-900 text-slate-300 border-r border-slate-800 transition-all duration-300 z-30">
+            <div class="p-4 border-b border-slate-800 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-rail-600 text-white flex items-center justify-center font-bold text-lg shrink-0 shadow">
+                    <i class="fa-solid fa-train"></i>
+                </div>
+                <div class="overflow-hidden sidebar-text">
+                    <h2 class="font-bold text-white text-sm truncate">Stasiun Gombong</h2>
+                    <p class="text-xs text-slate-400 truncate">Audio Console v2.6</p>
+                </div>
+            </div>
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+                <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="dashboard">
+                    <i class="fa-solid fa-house w-5 text-center"></i> <span class="sidebar-text">Dashboard</span>
+                </button>
+                <button onclick="switchTab('generator')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="generator">
+                    <i class="fa-solid fa-bolt w-5 text-center"></i> <span class="sidebar-text">Generator Announcement</span>
+                </button>
+                <button onclick="switchTab('quick')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="quick">
+                    <i class="fa-solid fa-volume-high w-5 text-center"></i> <span class="sidebar-text">Quick Announcement</span>
+                </button>
+                <button onclick="switchTab('voice')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="voice">
+                    <i class="fa-solid fa-microphone w-5 text-center"></i> <span class="sidebar-text">Voice Profile</span>
+                </button>
+                <button onclick="switchTab('templates')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="templates">
+                    <i class="fa-solid fa-file-lines w-5 text-center"></i> <span class="sidebar-text">Template Teks Baku</span>
+                </button>
+                <button onclick="switchTab('journeys')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="journeys">
+                    <i class="fa-solid fa-train-subway w-5 text-center"></i> <span class="sidebar-text">Template Perjalanan</span>
+                </button>
+                <button onclick="switchTab('ready')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="ready">
+                    <i class="fa-solid fa-bullhorn w-5 text-center"></i> <span class="sidebar-text">Pengumuman Siap Pakai</span>
+                </button>
+                <button onclick="switchTab('player')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="player">
+                    <i class="fa-solid fa-circle-play w-5 text-center"></i> <span class="sidebar-text">Audio Player</span>
+                </button>
+                <button onclick="switchTab('history')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="history">
+                    <i class="fa-solid fa-clock-rotate-left w-5 text-center"></i> <span class="sidebar-text">Riwayat Audio</span>
+                </button>
+                <button onclick="switchTab('favorites')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="favorites">
+                    <i class="fa-solid fa-star w-5 text-center text-amber-400"></i> <span class="sidebar-text">Favorit</span>
+                </button>
+                <button onclick="switchTab('settings')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300" data-tab="settings">
+                    <i class="fa-solid fa-gear w-5 text-center"></i> <span class="sidebar-text">Pengaturan</span>
+                </button>
+                <button onclick="switchTab('admin')" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition hover:bg-slate-800 text-slate-300 border-t border-slate-800 mt-4 pt-4" data-tab="admin">
+                    <i class="fa-solid fa-lock w-5 text-center text-rose-400"></i> <span class="sidebar-text">Admin Panel</span>
+                </button>
+            </nav>
+            <div class="p-3 border-t border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-slate-400 sidebar-text">Mode: Device ID</span>
+                <button onclick="toggleSidebarCollapse()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-angles-left" id="collapse-icon"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="flex-1 flex flex-col h-full overflow-hidden">
+            
+            <!-- TOPBAR HEADER -->
+            <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 sm:px-6 z-20 shrink-0">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleMobileMenu()" class="md:hidden text-slate-600 hover:text-rail-600 p-2 rounded-lg text-lg">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h2 id="current-page-title" class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Dashboard</h2>
+                        <p id="current-page-subtitle" class="text-xs text-slate-500 hidden sm:block">Ringkasan aktivitas dan kontrol audio Stasiun Gombong</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="switchTab('generator')" class="bg-rail-600 hover:bg-rail-700 text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> <span class="hidden xs:inline">Buat Pengumuman</span>
+                    </button>
+                    <div class="w-9 h-9 rounded-full bg-rail-100 text-rail-700 flex items-center justify-center font-bold text-sm border border-rail-200" title="Device User">
+                        GB
+                    </div>
+                </div>
+            </header>
+
+            <!-- SCROLLABLE CONTENT -->
+            <main id="main-content" class="flex-1 overflow-y-auto p-4 sm:p-6 pb-24 md:pb-6">
+                <!-- Tab contents will be rendered dynamically here via JS -->
+            </main>
+
+            <!-- HP BOTTOM NAVIGATION -->
+            <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around items-center h-16 z-30 px-2 shadow-lg">
+                <button onclick="switchTab('dashboard')" class="mobile-nav-btn flex flex-col items-center justify-center w-12 text-slate-500" data-tab="dashboard">
+                    <i class="fa-solid fa-house text-lg"></i>
+                    <span class="text-[10px] mt-1 font-medium">Home</span>
+                </button>
+                <button onclick="switchTab('generator')" class="mobile-nav-btn flex flex-col items-center justify-center w-12 text-slate-500" data-tab="generator">
+                    <i class="fa-solid fa-bolt text-lg"></i>
+                    <span class="text-[10px] mt-1 font-medium">Buat</span>
+                </button>
+                <button onclick="switchTab('quick')" class="mobile-nav-btn flex flex-col items-center justify-center w-12 text-slate-500" data-tab="quick">
+                    <i class="fa-solid fa-volume-high text-lg"></i>
+                    <span class="text-[10px] mt-1 font-medium">Quick</span>
+                </button>
+                <button onclick="switchTab('player')" class="mobile-nav-btn flex flex-col items-center justify-center w-12 text-slate-500" data-tab="player">
+                    <i class="fa-solid fa-circle-play text-lg"></i>
+                    <span class="text-[10px] mt-1 font-medium">Player</span>
+                </button>
+                <button onclick="switchTab('settings')" class="mobile-nav-btn flex flex-col items-center justify-center w-12 text-slate-500" data-tab="settings">
+                    <i class="fa-solid fa-bars-staggered text-lg"></i>
+                    <span class="text-[10px] mt-1 font-medium">Menu</span>
+                </button>
+            </nav>
+
+        </div>
+    </div>
+
+    <!-- MODAL CONTAINER (Global Confirmation & Dialogs) -->
+    <div id="modal-container" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
+            <!-- Dynamic Modal Content -->
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENT & TOAST NOTIFICATION -->
+    <audio id="audio-engine" class="hidden"></audio>
+    <div id="toast-container" class="fixed bottom-20 md:bottom-6 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // --- INITIAL STATE & LOCAL STORAGE ---
+        const DEFAULT_STATE = {
+            activeTab: 'dashboard',
+            sidebarCollapsed: false,
+            announcements: [
+                { id: '1', title: 'Kedatangan KA Sawunggalih', train_name: 'Sawunggalih', train_number: 'KA 152', destination: 'Pasar Senen', announcement_type: 'Kedatangan', language: 'Tiga Bahasa', narrator: 'Announcer Stasiun (AI)', duration: '0:35', created_at: '2026-09-24 10:30', is_favorite: true, platform: '2', arrival_direction: 'Timur', text: 'Perhatian kepada seluruh penumpang...' },
+                { id: '2', title: 'Keberangkatan KA Kutojaya Selatan', train_name: 'Kutojaya Selatan', train_number: 'KA 320', destination: 'Kiaracondong', announcement_type: 'Keberangkatan', language: 'Indonesia', narrator: 'Perempuan Formal', duration: '0:20', created_at: '2026-09-24 09:15', is_favorite: false, platform: '1', arrival_direction: 'Barat', text: 'Kereta api Kutojaya Selatan...' }
+            ],
+            voice_profiles: [
+                { id: 'v1', name: 'Announcer Stasiun Gombong (Default)', voice_type: 'AI Announcer', gender: 'Perempuan', language: 'Indonesia', privacy: 'Dibagikan', created_at: '2026-01-10' },
+                { id: 'v2', name: 'Suara Petugas TP (Bpk. Joko)', voice_type: 'Rekaman', gender: 'Laki-laki', language: 'Indonesia', privacy: 'Private', created_at: '2026-02-15' }
+            ],
+            templates: [
+                { id: 't1', name: 'Standard Kedatangan Kereta', category: 'Kedatangan', language: 'Tiga Bahasa', is_global: true, is_favorite: true, content: 'Perhatian kepada seluruh penumpang. Kereta api {nama_kereta} tujuan {tujuan} akan segera memasuki Stasiun Gombong dari arah {arah_kedatangan} melalui jalur {jalur}.' },
+                { id: 't2', name: 'Standard Keberangkatan Kereta', category: 'Keberangkatan', language: 'Indonesia', is_global: true, is_favorite: false, content: 'Kereta api {nama_kereta} dengan nomor {nomor_kereta} tujuan {tujuan} sesaat lagi akan diberangkatkan dari jalur {jalur}.' },
+                { id: 't3', name: 'Pengumuman Keterlambatan', category: 'Keterlambatan', language: 'Indonesia', is_global: true, is_favorite: false, content: 'Pemberitahuan kepada calon penumpang, perjalanan kereta api {nama_kereta} tujuan {tujuan} mengalami keterlambatan diperkirakan selama {keterangan_tambahan}.' }
+            ],
+            journeys: [
+                { id: 'j1', train_name: 'Sawunggalih', train_number: 'KA 152', origin: 'Kutoarjo', destination: 'Pasar Senen', current_station: 'Gombong', next_station: 'Kroya', platform: '2', arrival_direction: 'Timur', travel_direction: 'Timur → Barat' },
+                { id: 'j2', train_name: 'Kutojaya Selatan', train_number: 'KA 320', origin: 'Kiaracondong', destination: 'Kutoarjo', current_station: 'Gombong', next_station: 'Karanganyar', platform: '1', arrival_direction: 'Barat', travel_direction: 'Barat → Timur' }
+            ],
+            stopping_stations: [
+                { id: 's1', journey_id: 'j1', name: 'Kebumen', status: 'Berhenti' },
+                { id: 's2', journey_id: 'j1', name: 'Gombong', status: 'Berhenti' },
+                { id: 's3', journey_id: 'j1', name: 'Kroya', status: 'Berhenti' }
+            ],
+            settings: {
+                autoPlayAudio: true,
+                defaultVoice: 'v1',
+                defaultSpeed: '1.0',
+                pauseBetweenLang: '2 detik'
+            },
+            currentPlaying: null
+        };
+
+        let appState = JSON.parse(localStorage.getItem('gombong_audio_state')) || DEFAULT_STATE;
+
+        function saveState() {
+            localStorage.setItem('gombong_audio_state', JSON.stringify(appState));
+        }
+
+        // --- INIT APP ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderActiveTab();
+            updateNavUI();
+        });
+
+        function closeWelcome() {
+            document.getElementById('welcome-modal').classList.add('hidden');
+        }
+
+        // --- NAVIGATION & TABS ---
+        function switchTab(tabId) {
+            appState.activeTab = tabId;
+            saveState();
+            renderActiveTab();
+            updateNavUI();
+            // Scroll to top
+            document.getElementById('main-content').scrollTop = 0;
+        }
+
+        function updateNavUI() {
+            // Desktop sidebar
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.tab === appState.activeTab) {
+                    btn.classList.add('bg-rail-600', 'text-white');
+                    btn.classList.remove('text-slate-300', 'hover:bg-slate-800');
+                } else {
+                    btn.classList.remove('bg-rail-600', 'text-white');
+                    btn.classList.add('text-slate-300', 'hover:bg-slate-800');
+                }
+            });
+
+            // Mobile bottom nav
+            document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+                if (btn.dataset.tab === appState.activeTab) {
+                    btn.classList.add('text-rail-600', 'font-bold');
+                    btn.classList.remove('text-slate-500');
+                } else {
+                    btn.classList.remove('text-rail-600', 'font-bold');
+                    btn.classList.add('text-slate-500');
+                }
+            });
+
+            const titles = {
+                dashboard: { title: 'Dashboard Utama', sub: 'Ringkasan aktivitas dan kontrol audio Stasiun Gombong' },
+                generator: { title: 'Generator Announcement', sub: 'Buat pengumuman perjalanan kereta api secara cepat dan dinamis' },
+                quick: { title: 'Quick Announcement', sub: 'Mode instan untuk pengumuman darurat atau operasional cepat' },
+                voice: { title: 'Voice Profile', sub: 'Kelola narator suara, rekaman mikrofon, dan voice AI' },
+                templates: { title: 'Template Teks Baku', sub: 'Prinsip tulis sekali, gunakan berkali-kali' },
+                journeys: { title: 'Template Perjalanan', sub: 'Kelola data relasi kereta dan stasiun perhentian' },
+                ready: { title: 'Pengumuman Siap Pakai', sub: 'Pintasan pengumuman operasional stasiun rutin' },
+                player: { title: 'Audio Player Console', sub: 'Pemutar audio utama dengan kontrol kecepatan dan volume' },
+                history: { title: 'Riwayat Audio', sub: 'Dokumentasi seluruh pengumuman yang pernah dibuat' },
+                favorites: { title: 'Announcement Favorit', sub: 'Koleksi pengumuman pilihan untuk akses kilat' },
+                settings: { title: 'Pengaturan Sistem', sub: 'Konfigurasi mesin audio, provider, dan preferensi aplikasi' },
+                admin: { title: 'Admin Panel', sub: 'Moderasi sistem, template global, dan manajemen data stasiun' }
+            };
+
+            const meta = titles[appState.activeTab] || { title: 'Audio Stasiun Gombong', sub: '' };
+            document.getElementById('current-page-title').innerText = meta.title;
+            document.getElementById('current-page-subtitle').innerText = meta.sub;
+        }
+
+        function toggleSidebarCollapse() {
+            appState.sidebarCollapsed = !appState.sidebarCollapsed;
+            const sidebar = document.getElementById('sidebar');
+            const icon = document.getElementById('collapse-icon');
+            const texts = document.querySelectorAll('.sidebar-text');
+            
+            if (appState.sidebarCollapsed) {
+                sidebar.classList.remove('w-64', 'lg:w-72');
+                sidebar.classList.add('w-20');
+                texts.forEach(el => el.classList.add('hidden'));
+                icon.classList.remove('fa-angles-left');
+                icon.classList.add('fa-angles-right');
+            } else {
+                sidebar.classList.remove('w-20');
+                sidebar.classList.add('w-64', 'lg:w-72');
+                texts.forEach(el => el.classList.remove('hidden'));
+                icon.classList.remove('fa-angles-right');
+                icon.classList.add('fa-angles-left');
+            }
+            saveState();
+        }
+
+        function toggleMobileMenu() {
+            // Mobile sidebar drawer toggle simulation or quick jump
+            switchTab('settings');
+        }
+
+        // --- RENDER ROUTER ---
+        function renderActiveTab() {
+            const container = document.getElementById('main-content');
+            container.innerHTML = '';
+            
+            switch(appState.activeTab) {
+                case 'dashboard': renderDashboard(container); break;
+                case 'generator': renderGenerator(container); break;
+                case 'quick': renderQuick(container); break;
+                case 'voice': renderVoiceProfile(container); break;
+                case 'templates': renderTemplates(container); break;
+                case 'journeys': renderJourneys(container); break;
+                case 'ready': renderReadyAnnouncements(container); break;
+                case 'player': renderPlayer(container); break;
+                case 'history': renderHistory(container); break;
+                case 'favorites': renderFavorites(container); break;
+                case 'settings': renderSettings(container); break;
+                case 'admin': renderAdmin(container); break;
+                default: renderDashboard(container);
+            }
+        }
+
+        // --- 1. DASHBOARD ---
+        function renderDashboard(container) {
+            const totalAnn = appState.announcements.length;
+            const totalVoice = appState.voice_profiles.length;
+            const totalTemp = appState.templates.length;
+            const favCount = appState.announcements.filter(a => a.is_favorite).length;
+
+            container.innerHTML = `
+                <div class="space-y-6 fade-in">
+                    <!-- Quick Stats Grid -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase">Total Announcement</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalAnn}</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-bullhorn"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase">Voice Profile</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalVoice}</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-microphone"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase">Total Template</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalTemp}</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-file-lines"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase">Favorit</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">${favCount}</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-star"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons Bar -->
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="switchTab('generator')" class="bg-rail-600 hover:bg-rail-700 text-white font-medium px-5 py-3 rounded-xl shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> Buat Announcement Cepat
+                        </button>
+                        <button onclick="switchTab('voice')" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-medium px-5 py-3 rounded-xl shadow-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-plus text-rail-600"></i> Tambah Suara
+                        </button>
+                        <button onclick="switchTab('player')" class="bg-slate-900 hover:bg-slate-800 text-white font-medium px-5 py-3 rounded-xl shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-circle-play text-emerald-400"></i> Putar Audio Player
+                        </button>
+                    </div>
+
+                    <!-- Kartu Perjalanan Aktif (Live Status) -->
+                    <div class="bg-gradient-to-r from-slate-900 to-rail-900 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden">
+                        <div class="absolute -right-6 -bottom-6 opacity-10 text-9xl"><i class="fa-solid fa-train"></i></div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Kereta Posisi Stasiun Gombong
+                            </span>
+                            <span class="text-xs text-slate-300">Jalur 2 • Datang dari Timur</span>
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold tracking-wide mb-1">🚆 KA SAWUNGGALIH (KA 152)</h3>
+                        <p class="text-slate-300 text-sm mb-4">Kutoarjo → <strong class="text-white underline">Gombong</strong> → Kroya (Arah Timur → Barat)</p>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <button onclick="playQuickAudioDemo('Sawunggalih')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-5 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+                                <i class="fa-solid fa-play"></i> PUTAR ANNOUNCEMENT
+                            </button>
+                            <button onclick="switchTab('generator')" class="bg-white/10 hover:bg-white/20 text-white font-medium px-4 py-2.5 rounded-xl backdrop-blur transition">
+                                Edit Perjalanan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Announcements Table / Cards -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-rail-600"></i> Announcement Terakhir
+                            </h3>
+                            <button onclick="switchTab('history')" class="text-xs font-semibold text-rail-600 hover:text-rail-700">Lihat Semua</button>
+                        </div>
+                        <div class="divide-y divide-slate-100 overflow-x-auto">
+                            ${appState.announcements.length === 0 ? `
+                                <div class="p-8 text-center text-slate-400">Belum ada announcement. Silakan buat baru.</div>
+                            ` : appState.announcements.map(item => `
+                                <div class="p-4 sm:px-6 flex items-center justify-between hover:bg-slate-50 transition gap-4 min-w-[700px]">
+                                    <div class="flex items-center gap-4">
+                                        <button onclick="playAnnouncementItem('${item.id}')" class="w-10 h-10 rounded-xl bg-rail-100 text-rail-600 hover:bg-rail-600 hover:text-white transition flex items-center justify-center shrink-0 shadow-sm">
+                                            <i class="fa-solid fa-play"></i>
+                                        </button>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-sm">${item.title}</h4>
+                                            <p class="text-xs text-slate-500">Kereta: ${item.train_name} (${item.train_number}) • Tujuan: ${item.destination} • Jenis: ${item.announcement_type}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-lg font-medium">${item.language}</span>
+                                        <span class="text-xs text-slate-400 font-mono">${item.duration}</span>
+                                        <button onclick="toggleFavorite('${item.id}')" class="p-2 text-slate-400 hover:text-amber-400 transition" title="Favorit">
+                                            <i class="${item.is_favorite ? 'fa-solid text-amber-400' : 'fa-regular'} fa-star"></i>
+                                        </button>
+                                        <button onclick="reuseAnnouncement('${item.id}')" class="px-3 py-1.5 bg-rail-50 text-rail-600 hover:bg-rail-100 font-medium text-xs rounded-lg transition" title="Gunakan Lagi">
+                                            <i class="fa-solid fa-rotate-right mr-1"></i> Gunakan
+                                        </button>
+                                        <button onclick="deleteAnnouncement('${item.id}')" class="p-2 text-slate-400 hover:text-rose-600 transition" title="Hapus">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- 2. GENERATOR ANNOUNCEMENT (Core Workflow) ---
+        let genForm = {
+            template_id: 't1',
+            train_name: 'Sawunggalih',
+            train_number: 'KA 152',
+            origin: 'Kutoarjo',
+            prev_station: 'Kebumen',
+            current_station: 'Gombong',
+            next_station: 'Kroya',
+            destination: 'Pasar Senen',
+            platform: '2',
+            time: '14:25',
+            arrival_direction: 'Timur',
+            travel_direction: 'Timur → Barat',
+            stopping_list: ['Kebumen', 'Gombong', 'Kroya', 'Maos', 'Cilacap'],
+            status: 'Normal',
+            extra: 'Tepat Waktu',
+            language_mode: 'Tiga Bahasa',
+            voice_id: 'v1'
+        };
+
+        function renderGenerator(container) {
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6 pb-12 fade-in">
+                    <!-- Progress Step Indicator -->
+                    <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-600">
+                        <div class="flex items-center gap-2 text-rail-600"><span class="w-6 h-6 rounded-full bg-rail-600 text-white flex items-center justify-center text-xs">1</span> Pilih Template</div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs">2</span> Data Kereta</div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                        <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs">3</span> Preview & Audio</div>
+                    </div>
+
+                    <!-- Step 1: Template & Jenis -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2"><i class="fa-solid fa-file-lines text-rail-600"></i> 1. Pilih Template & Jenis Announcement</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Template Baku</label>
+                                <select id="gen-template" onchange="updateGenField('template_id', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-rail-500 outline-none">
+                                    ${appState.templates.map(t => `<option value="${t.id}" ${genForm.template_id === t.id ? 'selected' : ''}>${t.name} (${t.category})</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Mode Bahasa</label>
+                                <select id="gen-lang-mode" onchange="updateGenField('language_mode', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-rail-500 outline-none">
+                                    <option value="Tiga Bahasa" ${genForm.language_mode === 'Tiga Bahasa' ? 'selected' : ''}>Tiga Bahasa (Indonesia → English → Jawa Halus)</option>
+                                    <option value="Indonesia" ${genForm.language_mode === 'Indonesia' ? 'selected' : ''}>Indonesia Saja</option>
+                                    <option value="English" ${genForm.language_mode === 'English' ? 'selected' : ''}>English Saja</option>
+                                    <option value="Jawa" ${genForm.language_mode === 'Jawa' ? 'selected' : ''}>Jawa Krama Halus Saja</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Data Kereta & Perjalanan -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2"><i class="fa-solid fa-train text-rail-600"></i> 2. Isi Data Perjalanan Kereta</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nama Kereta</label>
+                                <input type="text" id="g-train-name" value="${genForm.train_name}" oninput="updateGenField('train_name', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nomor Kereta</label>
+                                <input type="text" id="g-train-num" value="${genForm.train_number}" oninput="updateGenField('train_number', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Stasiun Tujuan</label>
+                                <input type="text" id="g-destination" value="${genForm.destination}" oninput="updateGenField('destination', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Stasiun Asal</label>
+                                <input type="text" id="g-origin" value="${genForm.origin}" oninput="updateGenField('origin', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Stasiun Sebelumnya</label>
+                                <input type="text" id="g-prev" value="${genForm.prev_station}" oninput="updateGenField('prev_station', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Stasiun Berikutnya</label>
+                                <input type="text" id="g-next" value="${genForm.next_station}" oninput="updateGenField('next_station', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Jalur / Platform</label>
+                                <select id="g-platform" onchange="updateGenField('platform', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                                    <option value="1" ${genForm.platform === '1' ? 'selected' : ''}>Jalur 1</option>
+                                    <option value="2" ${genForm.platform === '2' ? 'selected' : ''}>Jalur 2</option>
+                                    <option value="3" ${genForm.platform === '3' ? 'selected' : ''}>Jalur 3</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Arah Kedatangan</label>
+                                <select id="g-arr-dir" onchange="updateGenField('arrival_direction', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                                    <option value="Timur" ${genForm.arrival_direction === 'Timur' ? 'selected' : ''}>🟢 Datang dari Timur</option>
+                                    <option value="Barat" ${genForm.arrival_direction === 'Barat' ? 'selected' : ''}>🔵 Datang dari Barat</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Arah Perjalanan</label>
+                                <select id="g-trav-dir" onchange="updateGenField('travel_direction', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                                    <option value="Timur → Barat" ${genForm.travel_direction === 'Timur → Barat' ? 'selected' : ''}>Timur → Barat</option>
+                                    <option value="Barat → Timur" ${genForm.travel_direction === 'Barat → Timur' ? 'selected' : ''}>Barat → Timur</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Stasiun Perhentian Dinamis (Section 5) -->
+                        <div class="pt-4 border-t border-slate-100">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs font-semibold text-slate-600 uppercase">Stasiun Perhentian Otomatis (Format Natural)</label>
+                                <button onclick="addStoppingStationModal()" class="text-xs font-medium text-rail-600 hover:text-rail-700"><i class="fa-solid fa-plus mr-1"></i> Tambah Stasiun</button>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-wrap gap-2 items-center">
+                                ${genForm.stopping_list.map((st, idx) => `
+                                    <span class="bg-white px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-medium flex items-center gap-2 shadow-sm">
+                                        ${idx + 1}.${st}
+                                        <button onclick="removeStoppingStation(${idx})" class="text-slate-400 hover:text-rose-600"><i class="fa-solid fa-xmark"></i></button>
+                                    </span>
+                                `).join('')}
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">Hasil natural: <strong class="text-slate-700">${formatStoppingStationsNatural(genForm.stopping_list)}</strong></p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Voice Profile & Preview Teks -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2"><i class="fa-solid fa-microphone text-rail-600"></i> 3. Pilih Narator & Preview</h3>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Voice Profile Narator</label>
+                            <select id="gen-voice" onchange="updateGenField('voice_id', this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-rail-500">
+                                ${appState.voice_profiles.map(v => `<option value="${v.id}" ${genForm.voice_id === v.id ? 'selected' : ''}>${v.name} (${v.voice_type})</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <!-- 3 Bahasa Preview Boxes -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                                <span class="text-xs font-bold text-rail-600 uppercase flex items-center gap-1">🇮🇩 Bahasa Indonesia</span>
+                                <textarea id="preview-id" rows="3" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs outline-none focus:ring-1 focus:ring-rail-500">${generatePreviewText('id')}</textarea>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                                <span class="text-xs font-bold text-blue-600 uppercase flex items-center gap-1">🇬🇧 English (Formal)</span>
+                                <textarea id="preview-en" rows="3" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs outline-none focus:ring-1 focus:ring-rail-500">${generatePreviewText('en')}</textarea>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-emerald-600 uppercase flex items-center gap-1">🟢 Jawa Krama Halus</span>
+                                    <span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold" title="Pemeriksaan AI">✅ Valid</span>
+                                </div>
+                                <textarea id="preview-jv" rows="3" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-xs outline-none focus:ring-1 focus:ring-rail-500">${generatePreviewText('jv')}</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Action Button Generate Audio -->
+                        <div class="pt-4 flex flex-wrap gap-3">
+                            <button onclick="executeGenerateAudio()" class="flex-1 bg-rail-600 hover:bg-rail-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-rail-600/30 transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-bolt"></i> GENERATE AUDIO & SIMPAN ANNOUNCEMENT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateGenField(key, val) {
+            genForm[key] = val;
+        }
+
+        function formatStoppingStationsNatural(list) {
+            if (list.length === 0) return '-';
+            if (list.length === 1) return list[0];
+            if (list.length === 2) return `${list[0]} dan ${list[1]}`;
+            return list.slice(0, -1).join(', ') + ', dan ' + list[list.length - 1];
+        }
+
+        function addStoppingStationModal() {
+            const stName = prompt("Masukkan nama stasiun perhentian baru:");
+            if (stName) {
+                genForm.stopping_list.push(stName);
+                renderActiveTab();
+                showToast("Stasiun berhasil ditambahkan", "success");
+            }
+        }
+
+        function removeStoppingStation(idx) {
+            genForm.stopping_list.splice(idx, 1);
+            renderActiveTab();
+        }
+
+        function generatePreviewText(lang) {
+            if (lang === 'id') {
+                return `Perhatian kepada seluruh penumpang. Kereta api ${genForm.train_name} (${genForm.train_number}) tujuan ${genForm.destination} akan segera memasuki Stasiun Gombong dari arah ${genForm.arrival_direction} melalui jalur ${genForm.platform}.`;
+            } else if (lang === 'en') {
+                return `Attention please. ${genForm.train_name} train bound for ${genForm.destination} will shortly arrive at Gombong Station from the ${genForm.arrival_direction} through platform ${genForm.platform}.`;
+            } else {
+                return `Kawigatosan para penumpang. Sepur ${genForm.train_name} tujuan ${genForm.destination} badhe enggal mlebet Stasiun Gombong saking arah ${genForm.arrival_direction} lumantar jalur ${genForm.platform}.`;
+            }
+        }
+
+        function executeGenerateAudio() {
+            const newAnn = {
+                id: 'ann_' + Date.now(),
+                title: `${genForm.train_name} (${genForm.train_number}) - ${genForm.destination}`,
+                train_name: genForm.train_name,
+                train_number: genForm.train_number,
+                destination: genForm.destination,
+                announcement_type: 'Kedatangan',
+                language: genForm.language_mode,
+                narrator: 'Announcer Stasiun (AI)',
+                duration: '0:28',
+                created_at: new Date().toISOString().slice(0, 16).replace('T', ' '),
+                is_favorite: false,
+                platform: genForm.platform,
+                arrival_direction: genForm.arrival_direction,
+                text: document.getElementById('preview-id').value
+            };
+            appState.announcements.unshift(newAnn);
+            saveState();
+            showToast("Audio Announcement berhasil digenerate & disimpan!", "success");
+            switchTab('dashboard');
+        }
+
+        // --- 3. QUICK ANNOUNCEMENT ---
+        function renderQuick(container) {
+            container.innerHTML = `
+                <div class="max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6 fade-in">
+                    <div class="text-center pb-4 border-b border-slate-100">
+                        <span class="bg-rail-50 text-rail-600 text-xs font-semibold px-3 py-1 rounded-full">Mode Super Cepat</span>
+                        <h3 class="text-xl font-bold text-slate-900 mt-2">Quick Announcement Console</h3>
+                        <p class="text-slate-500 text-xs mt-1">Pilih parameter dan langsung putar audio pengumuman stasiun</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Pilih Kereta</label>
+                            <select id="quick-train" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm">
+                                <option>KA Sawunggalih (KA 152)</option>
+                                <option>KA Kutojaya Selatan (KA 320)</option>
+                                <option>KA Logawa (KA 210)</option>
+                                <option>KA Serayu (KA 302)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Jenis Announcement</label>
+                            <select id="quick-type" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm">
+                                <option>Kedatangan Kereta</option>
+                                <option>Keberangkatan Kereta</option>
+                                <option>Boarding / Naik Penumpang</option>
+                                <option>Kereta Akan Lewat Langsung</option>
+                                <option>Keterlambatan</option>
+                                <option>Perubahan Jalur</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Arah Kedatangan / Perjalanan</label>
+                            <select id="quick-dir" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm">
+                                <option>🟢 Datang dari Timur (Kutoarjo / Yogya)</option>
+                                <option>🔵 Datang dari Barat (Kroya / Purwokerto)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nomor Jalur / Platform</label>
+                            <select id="quick-platform" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm">
+                                <option>Jalur 1</option>
+                                <option selected>Jalur 2</option>
+                                <option>Jalur 3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex gap-3">
+                        <button onclick="executeQuickGenerateAndPlay()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-base">
+                            <i class="fa-solid fa-volume-high"></i> 🔊 GENERATE & PLAY AUDIO INSTANT
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function executeQuickGenerateAndPlay() {
+            showToast("Memproses engine audio cepat Stasiun Gombong...", "success");
+            setTimeout(() => {
+                switchTab('player');
+            }, 800);
+        }
+
+        // --- 4. VOICE PROFILE ---
+        function renderVoiceProfile(container) {
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6 fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-lg">Kelola Voice Profile Narator</h3>
+                            <p class="text-xs text-slate-500">Mendukung rekaman mikrofon langsung atau file upload (MP3, WAV, M4A, OGG)</p>
+                        </div>
+                        <button onclick="openRecordModal()" class="bg-rail-600 hover:bg-rail-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm shadow flex items-center gap-2">
+                            <i class="fa-solid fa-microphone"></i> Rekam Suara Baru
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${appState.voice_profiles.map(v => `
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-rail-50 text-rail-600 flex items-center justify-center text-xl font-bold">
+                                        <i class="fa-solid fa-microphone-lines"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 text-sm">${v.name}</h4>
+                                        <p class="text-xs text-slate-500">Tipe: ${v.voice_type} • Bahasa: ${v.language}</p>
+                                        <span class="inline-block mt-1 text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">${v.privacy}</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="previewVoice('${v.name}')" class="p-2.5 bg-rail-50 hover:bg-rail-100 text-rail-600 rounded-xl transition" title="Preview Suara">
+                                        <i class="fa-solid fa-play"></i>
+                                    </button>
+                                    <button onclick="deleteVoice('${v.id}')" class="p-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition" title="Hapus">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openRecordModal() {
+            const name = prompt("Masukkan nama Voice Profile baru (misal: Suara Petugas Shift Pagi):");
+            if (name) {
+                appState.voice_profiles.push({
+                    id: 'v_' + Date.now(),
+                    name: name,
+                    voice_type: 'Rekaman',
+                    gender: 'Laki-laki',
+                    language: 'Indonesia',
+                    privacy: 'Private',
+                    created_at: new Date().toISOString().slice(0, 10)
+                });
+                saveState();
+                renderActiveTab();
+                showToast("Voice profile berhasil direkam & disimpan", "success");
+            }
+        }
+
+        function previewVoice(name) {
+            showToast(`Memutar preview suara dari narator: ${name}`, "success");
+        }
+
+        function deleteVoice(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus voice profile ini?")) {
+                appState.voice_profiles = appState.voice_profiles.filter(v => v.id !== id);
+                saveState();
+                renderActiveTab();
+                showToast("Voice profile dihapus", "success");
+            }
+        }
+
+        // --- 5. TEMPLATE TEKS BAKU ---
+        function renderTemplates(container) {
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6 fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-lg">Template Teks Baku</h3>
+                            <p class="text-xs text-slate-500">“Tulis sekali, gunakan berkali-kali.” Sistem otomatis mengganti variable.</p>
+                        </div>
+                        <button onclick="openNewTemplateModal()" class="bg-rail-600 hover:bg-rail-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm shadow flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Buat Template Baru
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        ${appState.templates.map(t => `
+                            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <span class="bg-rail-100 text-rail-700 text-xs px-3 py-1 rounded-lg font-bold">${t.category}</span>
+                                        <h4 class="font-bold text-slate-900 text-base">${t.name}</h4>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs text-slate-400 font-medium">${t.is_global ? '🌐 Global Template' : '👤 Custom Template'}</span>
+                                        <button onclick="duplicateTemplate('${t.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg transition">Duplikasi</button>
+                                    </div>
+                                </div>
+                                <p class="text-slate-600 text-xs sm:text-sm bg-slate-50 p-3.5 rounded-xl font-mono border border-slate-100">${t.content}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openNewTemplateModal() {
+            const tName = prompt("Nama Template Baru:");
+            const tCat = prompt("Kategori (Kedatangan/Keberangkatan/Umum):", "Kedatangan");
+            const tContent = prompt("Isi Template (Gunakan variable {nama_kereta}, {tujuan}, {jalur}):");
+            if (tName && tContent) {
+                appState.templates.push({
+                    id: 't_' + Date.now(),
+                    name: tName,
+                    category: tCat || 'Umum',
+                    language: 'Indonesia',
+                    is_global: false,
+                    is_favorite: false,
+                    content: tContent
+                });
+                saveState();
+                renderActiveTab();
+                showToast("Template baru berhasil dibuat", "success");
+            }
+        }
+
+        function duplicateTemplate(id) {
+            const target = appState.templates.find(t => t.id === id);
+            if (target) {
+                appState.templates.push({
+                    ...target,
+                    id: 't_' + Date.now(),
+                    name: target.name + ' (Copy)',
+                    is_global: false
+                });
+                saveState();
+                renderActiveTab();
+                showToast("Template berhasil diduplikasi ke Template Saya", "success");
+            }
+        }
+
+        // --- 6. TEMPLATE PERJALANAN ---
+        function renderJourneys(container) {
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6 fade-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-lg">Template Perjalanan Kereta</h3>
+                            <p class="text-xs text-slate-500">Kelola relasi perjalanan kereta yang singgah di Stasiun Gombong</p>
+                        </div>
+                        <button onclick="showToast('Fitur tambah perjalanan aktif', 'success')" class="bg-rail-600 hover:bg-rail-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm shadow">Tambah Perjalanan</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        ${appState.journeys.map(j => `
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-slate-900">${j.train_name} (${j.train_number})</h4>
+                                    <span class="text-xs bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-lg font-bold">Jalur ${j.platform}</span>
+                                </div>
+                                <p class="text-xs text-slate-500">Relasi: ${j.origin} → <strong>${j.current_station}</strong> →${j.destination}</p>
+                                <p class="text-xs text-slate-400">Arah: ${j.arrival_direction}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- 7. PENGUMUMAN SIAP PAKAI ---
+        function renderReadyAnnouncements(container) {
+            const readyItems = [
+                { title: 'Pengumuman Keselamatan Jalur 1 & 2', desc: 'Himbauan kepada penumpang agar tetap berada di belakang garis kuning.', cat: 'Keselamatan' },
+                { title: 'Informasi Keterlambatan Kereta', desc: 'Pemberitahuan resmi estimasi waktu keterlambatan kereta api.', cat: 'Informasi' },
+                { title: 'Pengumuman Kereta Akan Lewat Langsung', desc: 'Peringatan siaga kereta melintas tanpa berhenti di Stasiun Gombong.', cat: 'Operasional' },
+                { title: 'Boarding Gate Dibuka', desc: 'Panggilan bagi calon penumpang untuk bersiap naik ke peron.', cat: 'Boarding' }
+            ];
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6 fade-in">
+                    <h3 class="font-bold text-slate-900 text-lg">Pengumuman Siap Pakai Operasional</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        ${readyItems.map(r => `
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[10px] bg-rail-50 text-rail-600 font-bold px-2.5 py-1 rounded-lg">${r.cat}</span>
+                                    <h4 class="font-bold text-slate-900 text-sm mt-2">${r.title}</h4>
+                                    <p class="text-xs text-slate-500 mt-1">${r.desc}</p>
+                                </div>
+                                <button onclick="playQuickAudioDemo('${r.title}')" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-play"></i> Putar Audio Instan
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- 8. AUDIO PLAYER ---
+        function renderPlayer(container) {
+            container.innerHTML = `
+                <div class="max-w-xl mx-auto bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6 text-center fade-in">
+                    <div class="w-24 h-24 rounded-3xl bg-rail-100 text-rail-600 flex items-center justify-center mx-auto text-4xl shadow-inner animate-pulse">
+                        <i class="fa-solid fa-compact-disc"></i>
+                    </div>
+                    <div>
+                        <span class="bg-rail-50 text-rail-600 text-xs font-semibold px-3 py-1 rounded-full uppercase">Audio Console Player</span>
+                        <h3 class="text-xl font-bold text-slate-900 mt-2">KA Sawunggalih (KA 152)</h3>
+                        <p class="text-xs text-slate-500 mt-1">Narator: Announcer Stasiun (AI) • Tiga Bahasa</p>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="space-y-2">
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-rail-600 h-full w-2/3 rounded-full"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400 font-mono">
+                            <span>0:18</span>
+                            <span>0:35</span>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="flex items-center justify-center gap-4 pt-2">
+                        <button onclick="showToast('Memutar ulang', 'success')" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition text-lg"><i class="fa-solid fa-backward-step"></i></button>
+                        <button onclick="togglePlayState()" id="play-btn-main" class="w-16 h-16 rounded-2xl bg-rail-600 hover:bg-rail-700 text-white flex items-center justify-center shadow-lg shadow-rail-600/40 transition text-2xl"><i class="fa-solid fa-play" id="play-icon-main"></i></button>
+                        <button onclick="showToast('Next audio', 'success')" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition text-lg"><i class="fa-solid fa-forward-step"></i></button>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                        <span>Volume: 100%</span>
+                        <button onclick="showToast('Audio berhasil didownload', 'success')" class="text-rail-600 font-bold hover:underline"><i class="fa-solid fa-download mr-1"></i> Download MP3</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let isPlaying = false;
+        function togglePlayState() {
+            isPlaying = !isPlaying;
+            const icon = document.getElementById('play-icon-main');
+            if (isPlaying) {
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+                showToast("Memutar audio announcement...", "success");
+            } else {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+                showToast("Audio dijeda", "success");
+            }
+        }
+
+        function playQuickAudioDemo(name) {
+            showToast(`Memutar audio: ${name}`, "success");
+            switchTab('player');
+        }
+
+        // --- 9. RIWAYAT AUDIO ---
+        function renderHistory(container) {
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6 fade-in">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <h3 class="font-bold text-slate-900 text-lg">Riwayat Seluruh Announcement</h3>
+                        <input type="text" placeholder="🔍 Cari announcement..." oninput="showToast('Mencari...', 'success')" class="w-full sm:w-64 bg-white border border-slate-300 rounded-xl px-4 py-2 text-xs outline-none focus:ring-2 focus:ring-rail-500">
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100">
+                        ${appState.announcements.map(item => `
+                            <div class="p-4 sm:px-6 flex items-center justify-between hover:bg-slate-50 transition gap-4">
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm">${item.title}</h4>
+                                    <p class="text-xs text-slate-500">Dibuat pada: ${item.created_at} • Jenis: ${item.announcement_type}</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-mono text-slate-400">${item.duration}</span>
+                                    <button onclick="deleteAnnouncement('${item.id}')" class="p-2 text-slate-400 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function deleteAnnouncement(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus announcement ini?")) {
+                appState.announcements = appState.announcements.filter(a => a.id !== id);
+                saveState();
+                renderActiveTab();
+                showToast("Announcement berhasil dihapus", "success");
+            }
+        }
+
+        function playAnnouncementItem(id) {
+            showToast("Memutar audio item...", "success");
+            switchTab('player');
+        }
+
+        // --- 10. FAVORIT ---
+        function renderFavorites(container) {
+            const favs = appState.announcements.filter(a => a.is_favorite);
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto space-y-6 fade-in">
+                    <h3 class="font-bold text-slate-900 text-lg">Announcement Favorit</h3>
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100">
+                        ${favs.length === 0 ? '<div class="p-8 text-center text-slate-400">Belum ada announcement favorit.</div>' : favs.map(item => `
+                            <div class="p-4 sm:px-6 flex items-center justify-between hover:bg-slate-50 transition gap-4">
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm">${item.title}</h4>
+                                    <p class="text-xs text-slate-500">Kereta: ${item.train_name} • Tujuan: ${item.destination}</p>
+                                </div>
+                                <button onclick="toggleFavorite('${item.id}')" class="text-amber-400 text-lg"><i class="fa-solid fa-star"></i></button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleFavorite(id) {
+            const target = appState.announcements.find(a => a.id === id);
+            if (target) {
+                target.is_favorite = !target.is_favorite;
+                saveState();
+                renderActiveTab();
+                showToast(target.is_favorite ? "Ditambahkan ke favorit" : "Dihapus dari favorit", "success");
+            }
+        }
+
+        // --- 11. PENGATURAN ---
+        function renderSettings(container) {
+            container.innerHTML = `
+                <div class="max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6 fade-in">
+                    <h3 class="font-bold text-slate-900 text-lg">Pengaturan Audio & Sistem</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Default Narator Suara</label>
+                            <select class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm">
+                                <option>Announcer Stasiun Gombong (AI)</option>
+                                <option>Suara Petugas TP (Bpk. Joko)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Jeda Antar Bahasa (Multi-language)</label>
+                            <select class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm">
+                                <option>1 Detik</option>
+                                <option selected>2 Detik</option>
+                                <option>3 Detik</option>
+                            </select>
+                        </div>
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">Reset Seluruh Data Aplikasi</h4>
+                                <p class="text-xs text-slate-500">Menghapus cache lokal dan mengembalikan data default.</p>
+                            </div>
+                            <button onclick="resetAppStorage()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-medium px-4 py-2.5 rounded-xl text-xs transition">Reset Data</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetAppStorage() {
+            if (confirm("Apakah Anda yakin ingin mereset seluruh data aplikasi?")) {
+                localStorage.removeItem('gombong_audio_state');
+                appState = DEFAULT_STATE;
+                renderActiveTab();
+                showToast("Aplikasi berhasil direset", "success");
+            }
+        }
+
+        // --- 12. ADMIN PANEL ---
+        function renderAdmin(container) {
+            container.innerHTML = `
+                <div class="max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6 fade-in">
+                    <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-lock"></i></div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-lg">Admin Panel Stasiun</h3>
+                            <p class="text-xs text-slate-500">Moderasi sistem, template global, dan manajemen data stasiun</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">Sinkronisasi Server Utama KAI</h4>
+                                <p class="text-xs text-slate-500">Status: Terhubung (Mock API)</p>
+                            </div>
+                            <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">Online</span>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">Kelola Stasiun Perhentian Global</h4>
+                                <p class="text-xs text-slate-500">Total stasiun aktif: 45 Stasiun lintas selatan</p>
+                            </div>
+                            <button onclick="showToast('Data stasiun diperbarui', 'success')" class="bg-slate-900 text-white text-xs px-3 py-2 rounded-lg font-medium">Kelola</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- TOAST NOTIFICATION UTILITY ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 text-xs sm:text-sm fade-in border-l-4 ${type === 'success' ? 'border-emerald-500' : 'border-amber-500'}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-exclamation text-amber-400'}"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
