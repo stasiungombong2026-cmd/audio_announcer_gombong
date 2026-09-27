@@ -856,23 +856,26 @@
         }
 
         function insertVariable(variable) {
-            const modal = document.getElementById('teks-modal');
-            let textarea = document.getElementById('script-textarea');
-            
-            if (modal && !modal.classList.contains('hidden')) {
-                textarea = document.getElementById('modal-isi');
-            }
+    // Cek apakah modal teks baku sedang aktif/terbuka
+    const modal = document.getElementById('teks-modal');
+    let textarea = document.getElementById('script-textarea');
+    
+    // Jika modal terbuka, arahkan target textarea ke dalam modal
+    if (modal && !modal.classList.contains('hidden')) {
+        textarea = document.getElementById('modal-isi');
+    }
 
-            if (!textarea) return;
-            
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const text = textarea.value;
-            
-            textarea.value = text.substring(0, start) + variable + text.substring(end);
-            textarea.selectionStart = textarea.selectionEnd = start + variable.length;
-            textarea.focus();
-        }
+    if (!textarea) return;
+    
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    
+    // Sisipkan variabel ke posisi kursor
+    textarea.value = text.substring(0, start) + variable + text.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + variable.length;
+    textarea.focus();
+}
 
         function loadEmergencyScript(type) {
             let t = "";
