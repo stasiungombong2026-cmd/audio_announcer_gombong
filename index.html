@@ -183,17 +183,15 @@
                 </div>
 
                 <div>
-                    <!-- Tombol Pilihan Cepat Variabel Teks Baku -->
-                    <div>
+                    <div class="mb-2">
                         <label class="block text-xs font-medium text-slate-400 mb-1">Klik Variabel untuk Menyisipkan:</label>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span onclick="insertVariable('{no_ka}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{no_ka}</span>
-                            <span onclick="insertVariable('{nama_ka}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{nama_ka}</span>
-                            <span onclick="insertVariable('{pukul}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{pukul}</span>
-                            <span onclick="insertVariable('{dari_arah}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{dari_arah}</span>
-                            <span onclick="insertVariable('{tujuan}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{tujuan}</span>
-                            <span onclick="insertVariable('{sf_rangkaian}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{sf_rangkaian}</span>
-                            <span onclick="insertVariable('{st_perhentian}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{st_perhentian}</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span onclick="insertVariable('{no_ka}')" class="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-[#1e2d5c] text-amber-400 px-2.5 py-1 rounded-md text-[11px] font-mono-code transition">{no_ka}</span>
+                            <span onclick="insertVariable('{nama_ka}')" class="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-[#1e2d5c] text-amber-400 px-2.5 py-1 rounded-md text-[11px] font-mono-code transition">{nama_ka}</span>
+                            <span onclick="insertVariable('{pukul}')" class="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-[#1e2d5c] text-amber-400 px-2.5 py-1 rounded-md text-[11px] font-mono-code transition">{pukul}</span>
+                            <span onclick="insertVariable('{dari_arah}')" class="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-[#1e2d5c] text-amber-400 px-2.5 py-1 rounded-md text-[11px] font-mono-code transition">{dari_arah}</span>
+                            <span onclick="insertVariable('{tujuan}')" class="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-[#1e2d5c] text-amber-400 px-2.5 py-1 rounded-md text-[11px] font-mono-code transition">{tujuan}</span>
+                            <span onclick="insertVariable('{sf_rangkaian}')" class="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-[#1e2d5c] text-amber-400 px-2.5 py-1 rounded-md text-[11px] font-mono-code transition">{sf_rangkaian}</span>
                         </div>
                     </div>
 
@@ -202,7 +200,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 pt-2">
-                    <button onclick="startBroadcast()" class="flex-grow bg-[#10b981] hover:bg-[#059669] active:bg-[#047857] text-slate-950 font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2.5 text-sm">
+                    <button onclick="startBroadcast()" class="flex-grow bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-slate-950 font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2.5 text-sm">
                         <i class="fa-solid fa-play text-slate-950"></i> Putar Pengumuman
                     </button>
                     <button onclick="stopBroadcast()" class="bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-rose-600/20 transition flex items-center justify-center text-sm" title="Berhentikan Audio">
@@ -269,7 +267,7 @@
                             </tr>
                         </thead>
                         <tbody id="train-table-body" class="divide-y divide-[#1e2d5c]">
-                            <!-- Dynamically injected -->
+                            <!-- Dynamically injected rows -->
                         </tbody>
                     </table>
                 </div>
@@ -442,16 +440,15 @@
                         </select>
                     </div>
                 </div>
-                <!-- Tombol Pilihan Cepat Variabel Modal -->
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Klik Variabel untuk Menyisipkan:</label>
                     <div class="flex flex-wrap gap-1.5 mb-3">
-                        <button type="button" onclick="insertVariable('{no_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{no_ka}</button>
-                        <button type="button" onclick="insertVariable('{nama_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{nama_ka}</button>
-                        <button type="button" onclick="insertVariable('{jalur}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{jalur}</button>
-                        <button type="button" onclick="insertVariable('{dari_arah}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{dari_arah}</button>
-                        <button type="button" onclick="insertVariable('{tujuan}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{tujuan}</button>
-                        <button type="button" onclick="insertVariable('{sf_rangkaian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{sf_rangkaian}</button>
+                        <button type="button" onclick="insertVariableModal('{no_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{no_ka}</button>
+                        <button type="button" onclick="insertVariableModal('{nama_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{nama_ka}</button>
+                        <button type="button" onclick="insertVariableModal('{jalur}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{jalur}</button>
+                        <button type="button" onclick="insertVariableModal('{dari_arah}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{dari_arah}</button>
+                        <button type="button" onclick="insertVariableModal('{tujuan}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{tujuan}</button>
+                        <button type="button" onclick="insertVariableModal('{sf_rangkaian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{sf_rangkaian}</button>
                     </div>
                 </div>
                 <div>
@@ -490,11 +487,10 @@
                     <input type="text" id="train-modal-route" placeholder="misal: Pasar Senen" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
                 </div>
                 
-                <!-- Jalur dan Arah Kedatangan -->
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1">Jalur / Melintas Langsung</label>
-                        <select id="train-modal-jalur" class="w-full h-[38px] bg-[#1b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                        <select id="train-modal-jalur" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
                             <option value="Jalur 1">Jalur 1</option>
                             <option value="Jalur 2">Jalur 2</option>
                             <option value="Jalur 3">Jalur 3</option>
@@ -513,7 +509,6 @@
                     </div>
                 </div>
 
-                <!-- Bagian Susunan Rangkaian (Chips Pilihan Cepat & Reset) -->
                 <div class="space-y-2 pt-1">
                     <label class="block text-xs font-medium text-amber-400">Susunan Rangkaian:</label>
                     <div class="flex flex-wrap gap-1.5">
@@ -601,9 +596,13 @@
                 activePanel.classList.remove('hidden');
             }
 
+            // Panggil render otomatis saat tab ditekan
             if(tabName === 'teksbaku') renderTeksBakuTable();
             if(tabName === 'daftarkereta') renderTrainTable();
-            if(tabName === 'generator') updateGeneratorTrainSelect();
+            if(tabName === 'generator') {
+                updateGeneratorTrainSelect();
+                updateGeneratorTeksBakuSelect();
+            }
         }
 
         function renderTeksBakuTable() {
@@ -625,7 +624,6 @@
                 `;
                 tbody.appendChild(tr);
             });
-            updateGeneratorTeksBakuSelect();
         }
 
         function renderTrainTable() {
@@ -649,7 +647,6 @@
                 `;
                 tbody.appendChild(tr);
             });
-            updateGeneratorTrainSelect();
         }
 
         function updateGeneratorTrainSelect() {
@@ -734,6 +731,7 @@
             saveToStorage();
             closeTeksModal();
             renderTeksBakuTable();
+            updateGeneratorTeksBakuSelect();
         }
 
         function deleteTeksBaku(index) {
@@ -741,6 +739,7 @@
                 teksBakuList.splice(index, 1);
                 saveToStorage();
                 renderTeksBakuTable();
+                updateGeneratorTeksBakuSelect();
                 showToast("Teks baku dihapus");
             }
         }
@@ -827,6 +826,7 @@
             saveToStorage();
             closeTrainModal();
             renderTrainTable();
+            updateGeneratorTrainSelect();
         }
 
         function deleteTrain(index) {
@@ -834,6 +834,7 @@
                 trainList.splice(index, 1);
                 saveToStorage();
                 renderTrainTable();
+                updateGeneratorTrainSelect();
                 showToast("Data kereta dihapus");
             }
         }
@@ -857,19 +858,22 @@
         }
 
         function insertVariable(variable) {
-            const modal = document.getElementById('teks-modal');
-            let textarea = document.getElementById('script-textarea');
-            
-            if (modal && !modal.classList.contains('hidden')) {
-                textarea = document.getElementById('modal-isi');
-            }
-
+            const textarea = document.getElementById('script-textarea');
             if (!textarea) return;
-            
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
             const text = textarea.value;
-            
+            textarea.value = text.substring(0, start) + variable + text.substring(end);
+            textarea.selectionStart = textarea.selectionEnd = start + variable.length;
+            textarea.focus();
+        }
+
+        function insertVariableModal(variable) {
+            const textarea = document.getElementById('modal-isi');
+            if (!textarea) return;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
             textarea.value = text.substring(0, start) + variable + text.substring(end);
             textarea.selectionStart = textarea.selectionEnd = start + variable.length;
             textarea.focus();
@@ -1068,6 +1072,8 @@
                     saveToStorage();
                     renderTeksBakuTable();
                     renderTrainTable();
+                    updateGeneratorTrainSelect();
+                    updateGeneratorTeksBakuSelect();
                     showToast("Data cadangan berhasil dimuat!");
                 } catch(err) {
                     showToast("Gagal membaca file JSON cadangan.");
@@ -1084,11 +1090,12 @@
             setTimeout(() => t.remove(), 3000);
         }
 
-        // Panggil fungsi render langsung saat halaman dimuat
+        // Jalankan fungsi inisialisasi saat pertama kali web dibuka
         window.onload = function() {
             renderTrainTable();
             renderTeksBakuTable();
             updateGeneratorTrainSelect();
+            updateGeneratorTeksBakuSelect();
         };
     </script>
 </body>
