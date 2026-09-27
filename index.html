@@ -187,14 +187,14 @@
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1">Klik Variabel untuk Menyisipkan:</label>
                         <div class="flex flex-wrap gap-2 mb-4">
-    <span onclick="insertVariable('{no_ka}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{no_ka}</span>
-    <span onclick="insertVariable('{nama_ka}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{nama_ka}</span>
-    <span onclick="insertVariable('{pukul}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{pukul}</span>
-    <span onclick="insertVariable('{dari_arah}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{dari_arah}</span>
-    <span onclick="insertVariable('{tujuan}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{tujuan}</span>
-    <span onclick="insertVariable('{sf_rangkaian}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{sf_rangkaian}</span>
-    <span onclick="insertVariable('{st_perhentian}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{st_perhentian}</span>
-</div>
+                            <span onclick="insertVariable('{no_ka}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{no_ka}</span>
+                            <span onclick="insertVariable('{nama_ka}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{nama_ka}</span>
+                            <span onclick="insertVariable('{pukul}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{pukul}</span>
+                            <span onclick="insertVariable('{dari_arah}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{dari_arah}</span>
+                            <span onclick="insertVariable('{tujuan}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{tujuan}</span>
+                            <span onclick="insertVariable('{sf_rangkaian}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{sf_rangkaian}</span>
+                            <span onclick="insertVariable('{st_perhentian}')" class="cursor-pointer bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">{st_perhentian}</span>
+                        </div>
                     </div>
 
                     <label class="block text-xs font-medium text-slate-400 mb-1.5">Skrip Teks Pengumuman</label>
@@ -554,14 +554,14 @@
                 judul: "Kedatangan Standar",
                 chimeIn: "nada_a",
                 chimeOut: "nada_b",
-                isi: "Perhatian kepada seluruh penumpang, {nama_ka} dengan nomor {no_ka} tujuan akhir {tujuan_akhir} dari arah timur sesaat lagi akan tiba di {jalur}, Stasiun Gombong."
+                isi: "Perhatian kepada seluruh penumpang, {nama_ka} dengan nomor {no_ka} tujuan akhir {tujuan} dari arah timur sesaat lagi akan tiba di {jalur}, Stasiun Gombong."
             },
             {
                 kategori: "keberangkatan",
                 judul: "Keberangkatan Standar",
                 chimeIn: "nada_a",
                 chimeOut: "nada_b",
-                isi: "Pengumuman untuk penumpang {nama_ka} tujuan {tujuan_akhir} dipersilakan segera naik ke rangkaian kereta melalui jalur 1."
+                isi: "Pengumuman untuk penumpang {nama_ka} tujuan {tujuan} dipersilakan segera naik ke rangkaian kereta melalui jalur 1."
             }
         ];
 
@@ -604,11 +604,11 @@
             if(tabName === 'teksbaku') renderTeksBakuTable();
             if(tabName === 'daftarkereta') renderTrainTable();
             if(tabName === 'generator') updateGeneratorTrainSelect();
-            showToast(`Menu ${tabName.toUpperCase()} diaktifkan`);
         }
 
         function renderTeksBakuTable() {
             const tbody = document.getElementById('teksbaku-table-body');
+            if(!tbody) return;
             tbody.innerHTML = '';
             teksBakuList.forEach((item, index) => {
                 const tr = document.createElement('tr');
@@ -630,6 +630,7 @@
 
         function renderTrainTable() {
             const tbody = document.getElementById('train-table-body');
+            if(!tbody) return;
             tbody.innerHTML = '';
             trainList.forEach((train, index) => {
                 const tr = document.createElement('tr');
@@ -856,26 +857,23 @@
         }
 
         function insertVariable(variable) {
-    // Cek apakah modal teks baku sedang aktif/terbuka
-    const modal = document.getElementById('teks-modal');
-    let textarea = document.getElementById('script-textarea');
-    
-    // Jika modal terbuka, arahkan target textarea ke dalam modal
-    if (modal && !modal.classList.contains('hidden')) {
-        textarea = document.getElementById('modal-isi');
-    }
+            const modal = document.getElementById('teks-modal');
+            let textarea = document.getElementById('script-textarea');
+            
+            if (modal && !modal.classList.contains('hidden')) {
+                textarea = document.getElementById('modal-isi');
+            }
 
-    if (!textarea) return;
-    
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    
-    // Sisipkan variabel ke posisi kursor
-    textarea.value = text.substring(0, start) + variable + text.substring(end);
-    textarea.selectionStart = textarea.selectionEnd = start + variable.length;
-    textarea.focus();
-}
+            if (!textarea) return;
+            
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            
+            textarea.value = text.substring(0, start) + variable + text.substring(end);
+            textarea.selectionStart = textarea.selectionEnd = start + variable.length;
+            textarea.focus();
+        }
 
         function loadEmergencyScript(type) {
             let t = "";
@@ -1086,9 +1084,11 @@
             setTimeout(() => t.remove(), 3000);
         }
 
+        // Panggil fungsi render langsung saat halaman dimuat
         window.onload = function() {
             renderTrainTable();
             renderTeksBakuTable();
+            updateGeneratorTrainSelect();
         };
     </script>
 </body>
