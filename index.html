@@ -495,7 +495,7 @@
                     </div>
                 </div>
 
-                <!-- Bagian Susunan Rangkaian Sesuai Gambar Referensi -->
+                <!-- Bagian Susunan Rangkaian (Chips Pilihan Cepat & Reset) -->
                 <div class="space-y-2 pt-1">
                     <label class="block text-xs font-medium text-amber-400">Susunan Rangkaian:</label>
                     <div class="flex flex-wrap gap-1.5">
@@ -766,13 +766,12 @@
             const input = document.getElementById('train-modal-sf');
             let currentVal = input.value.trim();
             
-            // Hitung berapa kali tipe ini sudah ada untuk penomoran otomatis (misal: Premium 1, Premium 2)
             let matches = currentVal.match(new RegExp(type, 'g'));
             let count = matches ? matches.length + 1 : 1;
             
             let addition = `${type} ${count}`;
             if (type === 'Kereta Makan' || type === 'Pembangkit') {
-                addition = type; // Biasanya kereta makan/pembangkit tunggal tanpa nomor urut banyak
+                addition = type;
             }
 
             if (currentVal) {
