@@ -687,6 +687,7 @@
                 if(item.chimeIn) document.getElementById('sel-chime-in').value = item.chimeIn;
                 if(item.chimeOut) document.getElementById('sel-chime-out').value = item.chimeOut;
             }
+            onParameterChange(); // <--- Tambahkan baris ini agar variabel otomatis ter-generate
         }
 
         function openTeksModal(index) {
