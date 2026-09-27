@@ -140,18 +140,17 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Sisipkan Variabel Cepat (Klik untuk Tambah)</label>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button type="button" onclick="insertVariableToScript('{train_no}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{no_ka}</button>
-                            <button type="button" onclick="insertVariableToScript('{train_name}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{nama_ka}</button>
-                            <button type="button" onclick="insertVariableToScript('{platform}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{jalur}</button>
-                            <button type="button" onclick="insertVariableToScript('{direction}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{dari_arah}</button>
-                            <button type="button" onclick="insertVariableToScript('{train_route}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{tujuan}</button>
-                            <button type="button" onclick="insertVariableToScript('{composition}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{sf_rangkaian}</button>
-                        </div>
-                    </div>
-
-                    <div>
+    <label class="block text-xs font-semibold text-slate-400 mb-1">Sisipkan Variabel Cepat (Klik untuk Tambah)</label>
+    <div class="flex flex-wrap gap-1.5">
+        <button type="button" onclick="insertVariableToScript('{train_no}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{no_ka}</button>
+        <button type="button" onclick="insertVariableToScript('{train_name}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{nama_ka}</button>
+        <button type="button" onclick="insertVariableToScript('{station}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{stasiun}</button>
+        <button type="button" onclick="insertVariableToScript('{platform}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{jalur}</button>
+        <button type="button" onclick="insertVariableToScript('{direction}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{dari_arah}</button>
+        <button type="button" onclick="insertVariableToScript('{train_route}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{tujuan}</button>
+        <button type="button" onclick="insertVariableToScript('{composition}')" class="px-2 py-1 bg-slate-700 hover:bg-amber-500 hover:text-slate-900 rounded text-xs font-mono font-bold transition text-amber-300">{sf_rangkaian}</button>
+    </div>
+</div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Skrip Teks Pengumuman</label>
                         <textarea id="genScriptText" rows="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-amber-500 leading-relaxed"></textarea>
                     </div>
