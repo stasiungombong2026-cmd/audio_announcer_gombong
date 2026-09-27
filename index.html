@@ -119,7 +119,7 @@
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1.5">Pilih Kereta (Nama / Nomor)</label>
                         <select id="sel-kereta" onchange="onParameterChange()" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
-                            <!-- Populated dynamically from trains list -->
+                            <!-- Populated dynamically -->
                         </select>
                     </div>
                 </div>
@@ -182,8 +182,7 @@
                         <button onclick="insertVariable('{no_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 font-mono-code text-[11px] px-2.5 py-1 rounded-md border border-[#1e2d5c] transition">{no_ka}</button>
                         <button onclick="insertVariable('{nama_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 font-mono-code text-[11px] px-2.5 py-1 rounded-md border border-[#1e2d5c] transition">{nama_ka}</button>
                         <button onclick="insertVariable('{jalur}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 font-mono-code text-[11px] px-2.5 py-1 rounded-md border border-[#1e2d5c] transition">{jalur}</button>
-                        <button onclick="insertVariable('{relasi}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 font-mono-code text-[11px] px-2.5 py-1 rounded-md border border-[#1e2d5c] transition">{relasi}</button>
-                        <button onclick="insertVariable('{jadwal}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 font-mono-code text-[11px] px-2.5 py-1 rounded-md border border-[#1e2d5c] transition">{jadwal}</button>
+                        <button onclick="insertVariable('{tujuan_akhir}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 font-mono-code text-[11px] px-2.5 py-1 rounded-md border border-[#1e2d5c] transition">{tujuan_akhir}</button>
                     </div>
                 </div>
 
@@ -235,7 +234,7 @@
                 </button>
             </div>
 
-            <!-- PANEL 3: DAFTAR KERETA & STASIUN (CRUD FULL) -->
+            <!-- PANEL 3: DAFTAR KERETA & STASIUN (UPDATED COLUMNS) -->
             <div id="panel-daftarkereta" class="tab-panel hidden bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 shadow-xl space-y-4">
                 <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
                     <div class="flex items-center space-x-2">
@@ -250,11 +249,13 @@
                     <table class="w-full text-left text-xs text-slate-300">
                         <thead class="bg-[#070b19] text-slate-400 uppercase font-medium border-b border-[#1e2d5c]">
                             <tr>
-                                <th class="p-3 w-24">No. KA</th>
-                                <th class="p-3 w-36">Nama Kereta</th>
-                                <th class="p-3">Relasi Perjalanan</th>
-                                <th class="p-3 w-32">Jadwal Tiba</th>
-                                <th class="p-3 text-center w-24">Aksi</th>
+                                <th class="p-3 w-16">No. KA</th>
+                                <th class="p-3 w-28">Nama Kereta</th>
+                                <th class="p-3">Tujuan Akhir</th>
+                                <th class="p-3">Jalur & Arah</th>
+                                <th class="p-3">SF Rangkaian</th>
+                                <th class="p-3">Stasiun Perhentian</th>
+                                <th class="p-3 text-center w-20">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="train-table-body" class="divide-y divide-[#1e2d5c]">
@@ -264,7 +265,7 @@
                 </div>
             </div>
 
-            <!-- PANEL 4: TEKS BAKU (CRUD EXACT MATCHED WITH REFERENCE IMAGE) -->
+            <!-- PANEL 4: TEKS BAKU -->
             <div id="panel-teksbaku" class="tab-panel hidden bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 shadow-xl space-y-4">
                 <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
                     <div class="flex items-center space-x-2">
@@ -275,7 +276,6 @@
                         <i class="fa-solid fa-plus"></i> Tambah Teks Baku
                     </button>
                 </div>
-                
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs text-slate-300">
                         <thead class="bg-[#070b19] text-slate-400 uppercase font-medium border-b border-[#1e2d5c]">
@@ -347,7 +347,6 @@
 
         <!-- Right Column: Status & Player -->
         <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 shadow-xl flex flex-col justify-between space-y-6">
-            
             <div>
                 <div class="flex items-center space-x-2 border-b border-[#1e2d5c] pb-3 mb-6">
                     <i class="fa-solid fa-tower-broadcast text-amber-500 text-sm"></i>
@@ -355,7 +354,6 @@
                 </div>
 
                 <div class="bg-[#070b19] border border-[#1e2d5c] rounded-xl p-6 flex flex-col items-center justify-center min-h-[320px] relative">
-                    
                     <!-- Audio Waveform Bars -->
                     <div id="audio-waves" class="flex items-end justify-center space-x-1.5 h-16 mb-6">
                         <div class="w-1.5 bg-slate-700 rounded-full h-3 transition-all duration-150"></div>
@@ -393,7 +391,6 @@
                     <span class="text-emerald-400 font-mono-code font-semibold">● ONLINE</span>
                 </div>
             </div>
-
         </div>
 
     </main>
@@ -447,7 +444,7 @@
         </div>
     </div>
 
-    <!-- Modal Form for Tambah / Edit Kereta -->
+    <!-- Modal Form for Tambah / Edit Kereta (Updated Fields) -->
     <div id="train-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
         <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
@@ -465,12 +462,20 @@
                     <input type="text" id="train-modal-name" placeholder="misal: Malabar" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Relasi Perjalanan</label>
-                    <input type="text" id="train-modal-route" placeholder="misal: Malang - Bandung" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Tujuan Akhir</label>
+                    <input type="text" id="train-modal-route" placeholder="misal: Bandung" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Jadwal Tiba</label>
-                    <input type="text" id="train-modal-time" placeholder="misal: 14:20 WIB" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Jalur & Arah</label>
+                    <input type="text" id="train-modal-track" placeholder="misal: Jalur 2 (Barat)" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">SF Rangkaian (Susunan Rangkaian)</label>
+                    <input type="text" id="train-modal-sf" placeholder="misal: 10 Kereta K1" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Stasiun Perhentian</label>
+                    <input type="text" id="train-modal-stops" placeholder="misal: Kroya, Kebumen, Kutoarjo" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
                 </div>
             </div>
             <div class="flex items-center justify-end space-x-3 pt-2">
@@ -487,66 +492,31 @@
 
     <!-- JavaScript Interactive Logic -->
     <script>
-        // Default Teks Baku EXACTLY matching reference image
+        // Default Teks Baku
         let defaultTeksBaku = [
             {
                 kategori: "kedatangan",
                 judul: "Kedatangan Standar",
                 chimeIn: "nada_a",
                 chimeOut: "nada_b",
-                isi: "Perhatian kepada seluruh penumpang, {train_type} {train_name} dengan nomor {no_ka} relasi {train_route} dari arah timur sesaat lagi akan tiba di Jalur 2, Stasiun Gombong."
+                isi: "Perhatian kepada seluruh penumpang, {nama_ka} dengan nomor {no_ka} tujuan akhir {tujuan_akhir} dari arah timur sesaat lagi akan tiba di {jalur}, Stasiun Gombong."
             },
             {
                 kategori: "keberangkatan",
                 judul: "Keberangkatan Standar",
                 chimeIn: "nada_a",
                 chimeOut: "nada_b",
-                isi: "Pengumuman untuk penumpang {train_type} {train_name} tujuan {train_route} dipersilakan segera naik ke rangkaian kereta melalui jalur 1."
-            },
-            {
-                kategori: "keterlambatan",
-                judul: "Keterlambatan Kereta",
-                chimeIn: "nada_c",
-                chimeOut: "nada_b",
-                isi: "Mohon perhatian, {train_type} {train_name} relasi {train_route} {direction} mengalami keterlambatan diperkirakan selama 15 menit."
-            },
-            {
-                kategori: "perubahan_jalur",
-                judul: "Perubahan Jalur",
-                chimeIn: "nada_b",
-                chimeOut: "nada_a",
-                isi: "Perhatian, pemberitahuan perubahan jalur peron untuk {train_type} {train_name} dialihkan ke Jalur 3 Stasiun Gombong."
-            },
-            {
-                kategori: "melintas",
-                judul: "Kereta Melintas Langsung",
-                chimeIn: "nada_b",
-                chimeOut: "nada_c",
-                isi: "Perhatian kepada seluruh pengunjung dan petugas stasiun, sesaat lagi akan melintas langsung kereta luar biasa tanpa berhenti."
-            },
-            {
-                kategori: "umum",
-                judul: "Barang Tertinggal",
-                chimeIn: "nada_a",
-                chimeOut: "nada_b",
-                isi: "Kepada seluruh penumpang Stasiun Gombong, harap selalu menjaga barang bawaan Anda dan jangan ditinggal tanpa pengawasan."
-            },
-            {
-                kategori: "umum",
-                judul: "Larangan Merokok",
-                chimeIn: "nada_a",
-                chimeOut: "nada_b",
-                isi: "Diimbau kepada seluruh pengunjung dan penumpang untuk tidak merokok di area peron stasiun demi kenyamanan bersama."
+                isi: "Pengumuman untuk penumpang {nama_ka} tujuan {tujuan_akhir} dipersilakan segera naik ke rangkaian kereta melalui jalur 1."
             }
         ];
 
-        // Default Trains List
+        // Default Trains List with New Columns
         let defaultTrains = [
-            { no: "67", name: "Malabar", route: "Malang - Bandung", time: "14:20 WIB" },
-            { no: "112", name: "Brantas", route: "Blitar - Pasar Senen", time: "16:45 WIB" },
-            { no: "150", name: "Logawa", route: "Purwokerto - Surabaya Gubeng", time: "08:15 WIB" },
-            { no: "83", name: "Kutojaya Selatan", route: "Kutoarjo - Kiaracondong", time: "10:10 WIB" },
-            { no: "105", name: "Gaya Baru Malam Selatan", route: "Surabaya Gubeng - Pasar Senen", time: "21:30 WIB" }
+            { no: "67", name: "Malabar", route: "Bandung", track: "Jalur 2 (Barat)", sf: "10 Kereta", stops: "Kroya, Kebumen, Kutoarjo" },
+            { no: "112", name: "Brantas", route: "Pasar Senen", track: "Jalur 1 (Timur)", sf: "12 Kereta", stops: "Sumpiuh, Kroya, Gombong" },
+            { no: "150", name: "Logawa", route: "Surabaya Gubeng", track: "Jalur 2 (Timur)", sf: "8 Kereta", stops: "Kebumen, Kutoarjo, Wates" },
+            { no: "83", name: "Kutojaya Selatan", route: "Kiaracondong", track: "Jalur 1 (Barat)", sf: "10 Kereta", stops: "Tambak, Sumpiuh, Kroya" },
+            { no: "105", name: "Gaya Baru Malam Selatan", route: "Pasar Senen", track: "Jalur 2 (Timur)", sf: "10 Kereta", stops: "Kroya, Karanganyar, Kebumen" }
         ];
 
         let teksBakuList = JSON.parse(localStorage.getItem('gombong_teksbaku')) || defaultTeksBaku;
@@ -557,7 +527,6 @@
             localStorage.setItem('gombong_trains', JSON.stringify(trainList));
         }
 
-        // Tab switching logic for all 6 panels
         function switchNavTab(tabName) {
             const tabs = ['generator', 'darurat', 'daftarkereta', 'teksbaku', 'chimenarrator', 'daftarnarrator'];
             tabs.forEach(t => {
@@ -580,19 +549,12 @@
                 activePanel.classList.remove('hidden');
             }
 
-            if(tabName === 'teksbaku') {
-                renderTeksBakuTable();
-            }
-            if(tabName === 'daftarkereta') {
-                renderTrainTable();
-            }
-            if(tabName === 'generator') {
-                updateGeneratorTrainSelect();
-            }
+            if(tabName === 'teksbaku') renderTeksBakuTable();
+            if(tabName === 'daftarkereta') renderTrainTable();
+            if(tabName === 'generator') updateGeneratorTrainSelect();
             showToast(`Menu ${tabName.toUpperCase()} diaktifkan`);
         }
 
-        // Render Teks Baku table
         function renderTeksBakuTable() {
             const tbody = document.getElementById('teksbaku-table-body');
             tbody.innerHTML = '';
@@ -600,14 +562,9 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-[#141e3d]/50 transition";
                 tr.innerHTML = `
-                    <td class="p-3">
-                        <span class="px-2.5 py-1 rounded-md bg-[#0b1329] border border-[#1e2d5c] text-amber-400 font-mono-code text-[11px]">${item.kategori}</span>
-                    </td>
+                    <td class="p-3"><span class="px-2.5 py-1 rounded-md bg-[#0b1329] border border-[#1e2d5c] text-amber-400 font-mono-code text-[11px]">${item.kategori}</span></td>
                     <td class="p-3 font-semibold text-white">${item.judul}</td>
-                    <td class="p-3 font-mono-code text-[11px] text-slate-400">
-                        <div>Buka: ${item.chimeIn}</div>
-                        <div>Tutup: ${item.chimeOut}</div>
-                    </td>
+                    <td class="p-3 font-mono-code text-[11px] text-slate-400"><div>Buka: ${item.chimeIn}</div><div>Tutup: ${item.chimeOut}</div></td>
                     <td class="p-3 text-slate-300 text-xs font-mono-code">${item.isi}</td>
                     <td class="p-3 text-center space-x-2">
                         <button onclick="openTeksModal(${index})" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 p-2 rounded-lg border border-[#1e2d5c] transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -619,7 +576,6 @@
             updateGeneratorTeksBakuSelect();
         }
 
-        // Render Train Table
         function renderTrainTable() {
             const tbody = document.getElementById('train-table-body');
             tbody.innerHTML = '';
@@ -630,7 +586,9 @@
                     <td class="p-3 font-mono-code font-bold text-amber-400">${train.no}</td>
                     <td class="p-3 font-semibold text-white">${train.name}</td>
                     <td class="p-3 text-slate-300">${train.route}</td>
-                    <td class="p-3 text-emerald-400 font-mono-code">${train.time}</td>
+                    <td class="p-3 text-amber-300/90 font-mono-code">${train.track}</td>
+                    <td class="p-3 text-slate-300">${train.sf}</td>
+                    <td class="p-3 text-slate-400 text-[11px]">${train.stops}</td>
                     <td class="p-3 text-center space-x-2">
                         <button onclick="openTrainModal(${index})" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 p-2 rounded-lg border border-[#1e2d5c] transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button onclick="deleteTrain(${index})" class="bg-[#141e3d] hover:bg-rose-900/50 text-rose-400 p-2 rounded-lg border border-[#1e2d5c] transition" title="Hapus"><i class="fa-solid fa-trash"></i></button>
@@ -648,7 +606,7 @@
             trainList.forEach((train) => {
                 const opt = document.createElement('option');
                 opt.value = `${train.no} - ${train.name}`;
-                opt.textContent = `${train.no} - ${train.name} (${train.route})`;
+                opt.textContent = `${train.no} - ${train.name} (Tujuan: ${train.route})`;
                 sel.appendChild(opt);
             });
             onParameterChange();
@@ -678,7 +636,6 @@
             }
         }
 
-        // Teks Baku Modal CRUD
         function openTeksModal(index) {
             document.getElementById('teks-modal').classList.remove('hidden');
             if(index !== null && index >= 0) {
@@ -714,7 +671,6 @@
             const isi = document.getElementById('modal-isi').value.trim() || "";
 
             const newItem = { kategori, judul, chimeIn, chimeOut, isi };
-
             if(index >= 0) {
                 teksBakuList[index] = newItem;
                 showToast("Teks baku berhasil diperbarui");
@@ -722,7 +678,6 @@
                 teksBakuList.push(newItem);
                 showToast("Teks baku baru ditambahkan");
             }
-
             saveToStorage();
             closeTeksModal();
             renderTeksBakuTable();
@@ -737,7 +692,6 @@
             }
         }
 
-        // Train Modal CRUD
         function openTrainModal(index) {
             document.getElementById('train-modal').classList.remove('hidden');
             if(index !== null && index >= 0) {
@@ -747,14 +701,18 @@
                 document.getElementById('train-modal-no').value = train.no;
                 document.getElementById('train-modal-name').value = train.name;
                 document.getElementById('train-modal-route').value = train.route;
-                document.getElementById('train-modal-time').value = train.time;
+                document.getElementById('train-modal-track').value = train.track;
+                document.getElementById('train-modal-sf').value = train.sf;
+                document.getElementById('train-modal-stops').value = train.stops;
             } else {
                 document.getElementById('train-modal-title').textContent = "Tambah Kereta Baru";
                 document.getElementById('train-edit-index').value = -1;
                 document.getElementById('train-modal-no').value = "";
                 document.getElementById('train-modal-name').value = "";
                 document.getElementById('train-modal-route').value = "";
-                document.getElementById('train-modal-time').value = "";
+                document.getElementById('train-modal-track').value = "";
+                document.getElementById('train-modal-sf').value = "";
+                document.getElementById('train-modal-stops').value = "";
             }
         }
 
@@ -766,11 +724,12 @@
             const index = parseInt(document.getElementById('train-edit-index').value);
             const no = document.getElementById('train-modal-no').value.trim() || "00";
             const name = document.getElementById('train-modal-name').value.trim() || "Kereta Ekspres";
-            const route = document.getElementById('train-modal-route').value.trim() || "Stasiun A - Stasiun B";
-            const time = document.getElementById('train-modal-time').value.trim() || "12:00 WIB";
+            const route = document.getElementById('train-modal-route').value.trim() || "Bandung";
+            const track = document.getElementById('train-modal-track').value.trim() || "Jalur 2 (Barat)";
+            const sf = document.getElementById('train-modal-sf').value.trim() || "10 Kereta";
+            const stops = document.getElementById('train-modal-stops').value.trim() || "Kebumen, Kroya";
 
-            const newTrain = { no, name, route, time };
-
+            const newTrain = { no, name, route, track, sf, stops };
             if(index >= 0) {
                 trainList[index] = newTrain;
                 showToast("Data kereta berhasil diperbarui");
@@ -778,7 +737,6 @@
                 trainList.push(newTrain);
                 showToast("Kereta baru berhasil ditambahkan");
             }
-
             saveToStorage();
             closeTrainModal();
             renderTrainTable();
@@ -793,7 +751,6 @@
             }
         }
 
-        // Auto generate script on parameter change
         function onParameterChange() {
             const jenis = document.getElementById('sel-jenis').value;
             const kereta = document.getElementById('sel-kereta').value;
@@ -803,7 +760,7 @@
             if (jenis === 'kedatangan') {
                 text = `Perhatian kepada seluruh penumpang, ${kereta} dari arah timur sesaat lagi akan tiba di ${jalur}, Stasiun Gombong. Diimbau kepada para penumpang untuk berdiri di belakang garis aman peron.`;
             } else if (jenis === 'pemberangkatan') {
-                text = `Pengumuman, ${kereta} tujuan akhir dijadwalkan akan segera diberangkatkan dari ${jalur}, Stasiun Gombong. Kepada seluruh penumpang dipersilakan segera naik ke rangkaian kereta.`;
+                text = `Pengumuman, ${kereta} dijadwalkan akan segera diberangkatkan dari ${jalur}, Stasiun Gombong. Kepada seluruh penumpang dipersilakan segera naik ke rangkaian kereta.`;
             } else if (jenis === 'melintas') {
                 text = `Perhatian, ${kereta} melintas langsung tanpa berhenti di ${jalur}, Stasiun Gombong. Diharapkan seluruh pengunjung dan calon penumpang menjauhi jalur rel.`;
             } else {
@@ -833,19 +790,14 @@
             showToast("Skrip darurat dimuat.");
         }
 
-        // Web Audio Chimes & Synthesis
         const synth = window.speechSynthesis;
         let audioCtx = null;
         let masterVol = 1.0;
         let waveInterval = null;
 
         function getAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             return audioCtx;
         }
 
@@ -876,10 +828,8 @@
             g.gain.setValueAtTime(0, start);
             g.gain.linearRampToValueAtTime(0.4, start + 0.05);
             g.gain.exponentialRampToValueAtTime(0.001, start + dur);
-            osc.connect(g);
-            g.connect(dest);
-            osc.start(start);
-            osc.stop(start + dur);
+            osc.connect(g); g.connect(dest);
+            osc.start(start); osc.stop(start + dur);
         }
 
         function playBell(ctx, dest, freq, start, dur) {
@@ -890,10 +840,8 @@
             g.gain.setValueAtTime(0, start);
             g.gain.linearRampToValueAtTime(0.6, start + 0.02);
             g.gain.exponentialRampToValueAtTime(0.001, start + dur);
-            osc.connect(g);
-            g.connect(dest);
-            osc.start(start);
-            osc.stop(start + dur);
+            osc.connect(g); g.connect(dest);
+            osc.start(start); osc.stop(start + dur);
         }
 
         function startBroadcast() {
@@ -923,18 +871,10 @@
                 utterance.volume = masterVol;
 
                 utterance.onend = () => {
-                    if (chimeOut !== 'tanpa_chime') {
-                        playChimeTone(chimeOut);
-                    }
-                    setTimeout(() => {
-                        stopBroadcastResetUI();
-                    }, 1500);
+                    if (chimeOut !== 'tanpa_chime') playChimeTone(chimeOut);
+                    setTimeout(() => stopBroadcastResetUI(), 1500);
                 };
-
-                utterance.onerror = () => {
-                    stopBroadcastResetUI();
-                };
-
+                utterance.onerror = () => stopBroadcastResetUI();
                 synth.speak(utterance);
             }, delay);
         }
@@ -952,17 +892,11 @@
             startWaveAnimation();
 
             playChimeTone('nada_a');
-
             setTimeout(() => {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 0.95;
                 utterance.volume = masterVol;
-
-                utterance.onend = () => {
-                    setTimeout(() => {
-                        stopBroadcastResetUI();
-                    }, 1000);
-                };
+                utterance.onend = () => setTimeout(() => stopBroadcastResetUI(), 1000);
                 synth.speak(utterance);
             }, 2000);
         }
@@ -974,10 +908,7 @@
         }
 
         function stopBroadcastResetUI() {
-            if (waveInterval) {
-                clearInterval(waveInterval);
-                waveInterval = null;
-            }
+            if (waveInterval) { clearInterval(waveInterval); waveInterval = null; }
             resetWaveBars();
             document.getElementById('player-status-label').textContent = "SIAP DIPUTAR";
             document.getElementById('player-status-label').className = "text-xs font-bold tracking-widest text-slate-400 uppercase";
@@ -1012,7 +943,7 @@
         function downloadBackup() {
             const data = {
                 station: "Stasiun Gombong (GBG)",
-                version: "2.6",
+                version: "2.7",
                 timestamp: new Date().toISOString(),
                 teksbaku: teksBakuList,
                 trains: trainList
@@ -1037,12 +968,8 @@
             reader.onload = function(e) {
                 try {
                     const json = JSON.parse(e.target.result);
-                    if (json.teksbaku) {
-                        teksBakuList = json.teksbaku;
-                    }
-                    if (json.trains) {
-                        trainList = json.trains;
-                    }
+                    if (json.teksbaku) teksBakuList = json.teksbaku;
+                    if (json.trains) trainList = json.trains;
                     saveToStorage();
                     renderTeksBakuTable();
                     renderTrainTable();
@@ -1062,7 +989,6 @@
             setTimeout(() => t.remove(), 3000);
         }
 
-        // Initialize on load
         window.onload = function() {
             renderTrainTable();
             renderTeksBakuTable();
