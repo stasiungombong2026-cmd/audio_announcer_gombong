@@ -452,68 +452,73 @@
 
     <!-- Modal Form for Tambah / Edit Kereta -->
     <div id="train-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
+        <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
                 <h3 id="train-modal-title" class="text-sm font-bold text-white uppercase tracking-wide">Tambah Kereta Baru</h3>
                 <button onclick="closeTrainModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
             </div>
             <input type="hidden" id="train-edit-index" value="-1">
             <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Nomor KA</label>
-                    <input type="text" id="train-modal-no" placeholder="misal: 67" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Nama Kereta</label>
-                    <input type="text" id="train-modal-name" placeholder="misal: Malabar" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Nomor Kereta</label>
+                        <input type="text" id="train-modal-no" placeholder="misal: 142A" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Nama Kereta</label>
+                        <input type="text" id="train-modal-name" placeholder="misal: Sawunggalih" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Tujuan Akhir</label>
-                    <input type="text" id="train-modal-route" placeholder="misal: Bandung" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                    <input type="text" id="train-modal-route" placeholder="misal: Pasar Senen" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
                 </div>
-                <!-- Pilihan Jalur dan Arah -->
+                
+                <!-- Jalur dan Arah Kedatangan -->
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">Pilih Jalur</label>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Jalur / Melintas Langsung</label>
                         <select id="train-modal-jalur" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
-                            <option value="1">Jalur 1</option>
-                            <option value="2" selected>Jalur 2</option>
-                            <option value="3">Jalur 3</option>
-                            <option value="4">Jalur 4</option>
-                            <option value="5">Jalur 5</option>
+                            <option value="Jalur 1">Jalur 1</option>
+                            <option value="Jalur 2" selected>Jalur 2</option>
+                            <option value="Jalur 3">Jalur 3</option>
+                            <option value="Jalur 4">Jalur 4</option>
+                            <option value="Jalur 5">Jalur 5</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">Pilih Arah</label>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Arah Kedatangan</label>
                         <select id="train-modal-arah" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
-                            <option value="Barat" selected>Barat</option>
-                            <option value="Timur">Timur</option>
+                            <option value="Dan Arah Timur" selected>Dan Arah Timur</option>
+                            <option value="Dan Arah Barat">Dan Arah Barat</option>
                         </select>
                     </div>
                 </div>
-                <!-- SF Rangkaian Diubah Menjadi Dropdown Pilihan Varian Susunan Rangkaian -->
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">SF Rangkaian (Susunan Rangkaian)</label>
-                    <select id="train-modal-sf" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
-                        <option value="Premium 1">Premium 1</option>
-                        <option value="Premium 2">Premium 2</option>
-                        <option value="Premium 3">Premium 3</option>
-                        <option value="Kereta Makan/Restorasi">Kereta Makan / Restorasi</option>
-                        <option value="Eksekutif 1">Eksekutif 1</option>
-                        <option value="Eksekutif 2">Eksekutif 2</option>
-                        <option value="Kereta Pembangkit">Kereta Pembangkit</option>
-                        <option value="Ekonomi 1">Ekonomi 1</option>
-                        <option value="Ekonomi 2">Ekonomi 2</option>
-                    </select>
+
+                <!-- Bagian Susunan Rangkaian Sesuai Gambar Referensi -->
+                <div class="space-y-2 pt-1">
+                    <label class="block text-xs font-medium text-amber-400">Susunan Rangkaian:</label>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button type="button" onclick="addSfComponent('Premium')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ Premium</button>
+                        <button type="button" onclick="addSfComponent('Bisnis')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ Bisnis</button>
+                        <button type="button" onclick="addSfComponent('Ekonomi')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ Ekonomi</button>
+                        <button type="button" onclick="addSfComponent('Eksekutif')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ Eksekutif</button>
+                        <button type="button" onclick="addSfComponent('Priority')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ Priority</button>
+                        <button type="button" onclick="addSfComponent('Kereta Makan')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ Kereta Makan</button>
+                        <button type="button" onclick="addSfComponent('Pembangkit')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ Pembangkit</button>
+                    </div>
+                    <input type="text" id="train-modal-sf" placeholder="Premium 1, Premium 2, Kereta Makan, Eksekutif 1" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 font-mono-code focus:outline-none focus:border-amber-500">
+                    <button type="button" onclick="resetSfComponent()" class="text-[11px] text-amber-400 hover:underline inline-block pt-1">Reset Rangkaian</button>
                 </div>
+
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Stasiun Perhentian</label>
-                    <input type="text" id="train-modal-stops" placeholder="misal: Kroya, Kebumen, Kutoarjo" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Stasiun Perhentian (Pisahkan dengan koma)</label>
+                    <input type="text" id="train-modal-stops" placeholder="Kutoarjo, Kutowinangun, Gombong, Kroya, Purwokerto" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
                 </div>
             </div>
             <div class="flex items-center justify-end space-x-3 pt-2">
                 <button onclick="closeTrainModal()" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Batal</button>
-                <button onclick="saveTrainData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan Kereta</button>
+                <button onclick="saveTrainData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button>
             </div>
         </div>
     </div>
@@ -543,11 +548,9 @@
         ];
 
         let defaultTrains = [
-            { no: "67", name: "Malabar", route: "Bandung", track: "Jalur 2 (Barat)", sf: "Eksekutif 1", stops: "Kroya, Kebumen, Kutoarjo" },
-            { no: "112", name: "Brantas", route: "Pasar Senen", track: "Jalur 1 (Timur)", sf: "Premium 1", stops: "Sumpiuh, Kroya, Gombong" },
-            { no: "150", name: "Logawa", route: "Surabaya Gubeng", track: "Jalur 2 (Timur)", sf: "Ekonomi 1", stops: "Kebumen, Kutoarjo, Wates" },
-            { no: "83", name: "Kutojaya Selatan", route: "Kiaracondong", track: "Jalur 1 (Barat)", sf: "Kereta Makan/Restorasi", stops: "Tambak, Sumpiuh, Kroya" },
-            { no: "105", name: "Gaya Baru Malam Selatan", route: "Pasar Senen", track: "Jalur 2 (Timur)", sf: "Kereta Pembangkit", stops: "Kroya, Karanganyar, Kebumen" }
+            { no: "142A", name: "Sawunggalih", route: "Pasar Senen", track: "Jalur 2 Dan Arah Timur", sf: "Premium 1, Premium 2, Kereta Makan, Eksekutif 1", stops: "Kutoarjo, Kutowinangun, Gombong, Kroya, Purwokerto" },
+            { no: "67", name: "Malabar", route: "Bandung", track: "Jalur 2 Dan Arah Barat", sf: "Eksekutif 1, Eksekutif 2, Kereta Makan, Pembangkit", stops: "Kroya, Kebumen, Kutoarjo" },
+            { no: "112", name: "Brantas", route: "Pasar Senen", track: "Jalur 1 Dan Arah Timur", sf: "Premium 1, Ekonomi 1, Kereta Makan", stops: "Sumpiuh, Kroya, Gombong" }
         ];
 
         let teksBakuList = JSON.parse(localStorage.getItem('gombong_teksbaku')) || defaultTeksBaku;
@@ -618,7 +621,7 @@
                     <td class="p-3 font-semibold text-white">${train.name}</td>
                     <td class="p-3 text-slate-300">${train.route}</td>
                     <td class="p-3 text-amber-300/90 font-mono-code">${train.track}</td>
-                    <td class="p-3 text-slate-300 font-mono-code">${train.sf}</td>
+                    <td class="p-3 text-slate-300 font-mono-code text-[11px]">${train.sf}</td>
                     <td class="p-3 text-slate-400 text-[11px]">${train.stops}</td>
                     <td class="p-3 text-center space-x-2">
                         <button onclick="openTrainModal(${index})" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 p-2 rounded-lg border border-[#1e2d5c] transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -733,12 +736,13 @@
                 document.getElementById('train-modal-name').value = train.name;
                 document.getElementById('train-modal-route').value = train.route;
                 
-                let matchJalur = train.track.match(/Jalur\s+(\d+)/i);
-                let matchArah = train.track.match(/\((Timur\vert{}Barat)\)/i);
-                if(matchJalur) document.getElementById('train-modal-jalur').value = matchJalur[1];
-                if(matchArah) document.getElementById('train-modal-arah').value = matchArah[1];
+                let parts = train.track.split(' ');
+                if(parts.length >= 2) {
+                    document.getElementById('train-modal-jalur').value = parts[0] + " " + parts[1];
+                    document.getElementById('train-modal-arah').value = train.track.replace(parts[0] + " " + parts[1], "").trim() || "Dan Arah Timur";
+                }
 
-                document.getElementById('train-modal-sf').value = train.sf || "Premium 1";
+                document.getElementById('train-modal-sf').value = train.sf || "";
                 document.getElementById('train-modal-stops').value = train.stops;
             } else {
                 document.getElementById('train-modal-title').textContent = "Tambah Kereta Baru";
@@ -746,15 +750,40 @@
                 document.getElementById('train-modal-no').value = "";
                 document.getElementById('train-modal-name').value = "";
                 document.getElementById('train-modal-route').value = "";
-                document.getElementById('train-modal-jalur').value = "2";
-                document.getElementById('train-modal-arah').value = "Barat";
-                document.getElementById('train-modal-sf').value = "Premium 1";
+                document.getElementById('train-modal-jalur').value = "Jalur 2";
+                document.getElementById('train-modal-arah').value = "Dan Arah Timur";
+                document.getElementById('train-modal-sf').value = "";
                 document.getElementById('train-modal-stops').value = "";
             }
         }
 
         function closeTrainModal() {
             document.getElementById('train-modal').classList.add('hidden');
+        }
+
+        // Fungsi interaktif tombol chip Susunan Rangkaian (SF)
+        function addSfComponent(type) {
+            const input = document.getElementById('train-modal-sf');
+            let currentVal = input.value.trim();
+            
+            // Hitung berapa kali tipe ini sudah ada untuk penomoran otomatis (misal: Premium 1, Premium 2)
+            let matches = currentVal.match(new RegExp(type, 'g'));
+            let count = matches ? matches.length + 1 : 1;
+            
+            let addition = `${type} ${count}`;
+            if (type === 'Kereta Makan' || type === 'Pembangkit') {
+                addition = type; // Biasanya kereta makan/pembangkit tunggal tanpa nomor urut banyak
+            }
+
+            if (currentVal) {
+                input.value = currentVal + ", " + addition;
+            } else {
+                input.value = addition;
+            }
+        }
+
+        function resetSfComponent() {
+            document.getElementById('train-modal-sf').value = "";
         }
 
         function saveTrainData() {
@@ -765,9 +794,9 @@
             
             const jalurVal = document.getElementById('train-modal-jalur').value;
             const arahVal = document.getElementById('train-modal-arah').value;
-            const track = `Jalur ${jalurVal} (${arahVal})`;
+            const track = `${jalurVal} ${arahVal}`;
 
-            const sf = document.getElementById('train-modal-sf').value;
+            const sf = document.getElementById('train-modal-sf').value.trim() || "Premium 1";
             const stops = document.getElementById('train-modal-stops').value.trim() || "Kebumen, Kroya";
 
             const newTrain = { no, name, route, track, sf, stops };
@@ -984,7 +1013,7 @@
         function downloadBackup() {
             const data = {
                 station: "Stasiun Gombong (GBG)",
-                version: "2.8",
+                version: "2.9",
                 timestamp: new Date().toISOString(),
                 teksbaku: teksBakuList,
                 trains: trainList
