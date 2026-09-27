@@ -183,7 +183,7 @@
                 </div>
 
                 <div>
-                    <!-- Bagian Label & Tombol Pilihan Variabel Teks Baku -->
+                    <!-- Bagian Label & Tombol Pilihan Variabel Teks Baku untuk Semua Kereta -->
 <div>
     <label class="block text-xs font-medium text-slate-400 mb-1">Klik Variabel untuk Menyisipkan:</label>
     <div class="flex flex-wrap gap-1.5 mb-3">
@@ -849,15 +849,22 @@
         }
 
         function insertVariable(variable) {
-            const textarea = document.getElementById('script-textarea');
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const text = textarea.value;
-            textarea.value = text.substring(0, start) + " " + variable + " " + text.substring(end);
-            textarea.focus();
-            textarea.selectionStart = start + variable.length + 2;
-            textarea.selectionEnd = start + variable.length + 2;
-        }
+    // Cek textarea mana yang sedang aktif atau fokus (modal teks baku atau halaman utama)
+    let textarea = document.getElementById('template-textarea');
+    if (!textarea || document.activeElement !== textarea) {
+        // Jika textarea modal tidak fokus, fallback ke script-textarea utama
+        textarea = document.getElementById('script-textarea');
+    }
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+
+    textarea.value = text.substring(0, start) + variable + text.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + variable.length;
+    textarea.focus();
+}
 
         function loadEmergencyScript(type) {
             let t = "";
