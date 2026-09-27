@@ -126,12 +126,18 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Jalur / Melintas</label>
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Jalur & Arah Penempatan</label>
                         <select id="sel-jalur" onchange="onParameterChange()" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
-                            <option value="Jalur 1">Jalur 1</option>
-                            <option value="Jalur 2" selected>Jalur 2</option>
-                            <option value="Jalur 3">Jalur 3</option>
-                            <option value="Jalur Langsung">Jalur Langsung Tanpa Berhenti</option>
+                            <option value="Jalur 1 (Barat)">Jalur 1 (Barat)</option>
+                            <option value="Jalur 1 (Timur)">Jalur 1 (Timur)</option>
+                            <option value="Jalur 2 (Barat)" selected>Jalur 2 (Barat)</option>
+                            <option value="Jalur 2 (Timur)">Jalur 2 (Timur)</option>
+                            <option value="Jalur 3 (Barat)">Jalur 3 (Barat)</option>
+                            <option value="Jalur 3 (Timur)">Jalur 3 (Timur)</option>
+                            <option value="Jalur 4 (Barat)">Jalur 4 (Barat)</option>
+                            <option value="Jalur 4 (Timur)">Jalur 4 (Timur)</option>
+                            <option value="Jalur 5 (Barat)">Jalur 5 (Barat)</option>
+                            <option value="Jalur 5 (Timur)">Jalur 5 (Timur)</option>
                         </select>
                     </div>
                     <div>
@@ -234,7 +240,7 @@
                 </button>
             </div>
 
-            <!-- PANEL 3: DAFTAR KERETA & STASIUN (UPDATED COLUMNS) -->
+            <!-- PANEL 3: DAFTAR KERETA & STASIUN -->
             <div id="panel-daftarkereta" class="tab-panel hidden bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 shadow-xl space-y-4">
                 <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
                     <div class="flex items-center space-x-2">
@@ -444,7 +450,7 @@
         </div>
     </div>
 
-    <!-- Modal Form for Tambah / Edit Kereta (Updated Fields) -->
+    <!-- Modal Form for Tambah / Edit Kereta (Updated Jalur 1-5 & Arah Timur/Barat) -->
     <div id="train-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
         <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
@@ -465,9 +471,25 @@
                     <label class="block text-xs font-medium text-slate-400 mb-1">Tujuan Akhir</label>
                     <input type="text" id="train-modal-route" placeholder="misal: Bandung" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
                 </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Jalur & Arah</label>
-                    <input type="text" id="train-modal-track" placeholder="misal: Jalur 2 (Barat)" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                <!-- Pilihan Jalur (1-5) dan Arah (Timur/Barat) -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Pilih Jalur</label>
+                        <select id="train-modal-jalur" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                            <option value="1">Jalur 1</option>
+                            <option value="2" selected>Jalur 2</option>
+                            <option value="3">Jalur 3</option>
+                            <option value="4">Jalur 4</option>
+                            <option value="5">Jalur 5</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Pilih Arah</label>
+                        <select id="train-modal-arah" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                            <option value="Barat" selected>Barat</option>
+                            <option value="Timur">Timur</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">SF Rangkaian (Susunan Rangkaian)</label>
@@ -492,7 +514,6 @@
 
     <!-- JavaScript Interactive Logic -->
     <script>
-        // Default Teks Baku
         let defaultTeksBaku = [
             {
                 kategori: "kedatangan",
@@ -510,7 +531,6 @@
             }
         ];
 
-        // Default Trains List with New Columns
         let defaultTrains = [
             { no: "67", name: "Malabar", route: "Bandung", track: "Jalur 2 (Barat)", sf: "10 Kereta", stops: "Kroya, Kebumen, Kutoarjo" },
             { no: "112", name: "Brantas", route: "Pasar Senen", track: "Jalur 1 (Timur)", sf: "12 Kereta", stops: "Sumpiuh, Kroya, Gombong" },
@@ -701,7 +721,13 @@
                 document.getElementById('train-modal-no').value = train.no;
                 document.getElementById('train-modal-name').value = train.name;
                 document.getElementById('train-modal-route').value = train.route;
-                document.getElementById('train-modal-track').value = train.track;
+                
+                // Parse existing track format e.g., "Jalur 2 (Barat)"
+                let matchJalur = train.track.match(/Jalur\s+(\d+)/i);
+                let matchArah = train.track.match(/\((Timur\vert{}Barat)\)/i);
+                if(matchJalur) document.getElementById('train-modal-jalur').value = matchJalur[1];
+                if(matchArah) document.getElementById('train-modal-arah').value = matchArah[1];
+
                 document.getElementById('train-modal-sf').value = train.sf;
                 document.getElementById('train-modal-stops').value = train.stops;
             } else {
@@ -710,7 +736,8 @@
                 document.getElementById('train-modal-no').value = "";
                 document.getElementById('train-modal-name').value = "";
                 document.getElementById('train-modal-route').value = "";
-                document.getElementById('train-modal-track').value = "";
+                document.getElementById('train-modal-jalur').value = "2";
+                document.getElementById('train-modal-arah').value = "Barat";
                 document.getElementById('train-modal-sf').value = "";
                 document.getElementById('train-modal-stops').value = "";
             }
@@ -725,7 +752,11 @@
             const no = document.getElementById('train-modal-no').value.trim() || "00";
             const name = document.getElementById('train-modal-name').value.trim() || "Kereta Ekspres";
             const route = document.getElementById('train-modal-route').value.trim() || "Bandung";
-            const track = document.getElementById('train-modal-track').value.trim() || "Jalur 2 (Barat)";
+            
+            const jalurVal = document.getElementById('train-modal-jalur').value;
+            const arahVal = document.getElementById('train-modal-arah').value;
+            const track = `Jalur ${jalurVal} (${arahVal})`;
+
             const sf = document.getElementById('train-modal-sf').value.trim() || "10 Kereta";
             const stops = document.getElementById('train-modal-stops').value.trim() || "Kebumen, Kroya";
 
@@ -758,7 +789,7 @@
             
             let text = "";
             if (jenis === 'kedatangan') {
-                text = `Perhatian kepada seluruh penumpang, ${kereta} dari arah timur sesaat lagi akan tiba di ${jalur}, Stasiun Gombong. Diimbau kepada para penumpang untuk berdiri di belakang garis aman peron.`;
+                text = `Perhatian kepada seluruh penumpang, ${kereta} sesaat lagi akan tiba di ${jalur}, Stasiun Gombong. Diimbau kepada para penumpang untuk berdiri di belakang garis aman peron.`;
             } else if (jenis === 'pemberangkatan') {
                 text = `Pengumuman, ${kereta} dijadwalkan akan segera diberangkatkan dari ${jalur}, Stasiun Gombong. Kepada seluruh penumpang dipersilakan segera naik ke rangkaian kereta.`;
             } else if (jenis === 'melintas') {
@@ -943,7 +974,7 @@
         function downloadBackup() {
             const data = {
                 station: "Stasiun Gombong (GBG)",
-                version: "2.7",
+                version: "2.8",
                 timestamp: new Date().toISOString(),
                 teksbaku: teksBakuList,
                 trains: trainList
