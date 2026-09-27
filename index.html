@@ -857,25 +857,29 @@
         }
 
         function insertVariable(variable) {
-    // Cek apakah modal teks baku sedang aktif/terbuka
-    const modal = document.getElementById('teks-modal');
-    let textarea = document.getElementById('script-textarea');
-    
-    // Jika modal terbuka, arahkan target textarea ke dalam modal
-    if (modal && !modal.classList.contains('hidden')) {
-        textarea = document.getElementById('modal-isi');
-    }
+    // Cek apakah modal sedang aktif/terbuka dan fokus ke textarea modal
+    const modalTextarea = document.getElementById('modal-isi'); // Sesuaikan dengan ID textarea di modal Anda
+    const mainTextarea = document.getElementById('isi-teks-utama'); // Sesuaikan jika ada textarea utama
 
-    if (!textarea) return;
-    
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    
-    // Sisipkan variabel ke posisi kursor
-    textarea.value = text.substring(0, start) + variable + text.substring(end);
-    textarea.selectionStart = textarea.selectionEnd = start + variable.length;
-    textarea.focus();
+    // Jika modal sedang terbuka atau aktif, masukkan ke textarea modal
+    if (modalTextarea && document.getElementById('modal-tambah-teks').classList.contains('flex')) { // Sesuaikan kelas penampil modal Anda
+        let start = modalTextarea.selectionStart;
+        let end = modalTextarea.selectionEnd;
+        let text = modalTextarea.value;
+        
+        modalTextarea.value = text.substring(0, start) + variable + text.substring(end);
+        modalTextarea.focus();
+        modalTextarea.setSelectionRange(start + variable.length, start + variable.length);
+    } else if (mainTextarea) {
+        // Logika untuk textarea utama jika diperlukan
+        let start = mainTextarea.selectionStart;
+        let end = mainTextarea.selectionEnd;
+        let text = mainTextarea.value;
+        
+        mainTextarea.value = text.substring(0, start) + variable + text.substring(end);
+        mainTextarea.focus();
+        mainTextarea.setSelectionRange(start + variable.length, start + variable.length);
+    }
 }
 
         function loadEmergencyScript(type) {
