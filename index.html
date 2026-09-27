@@ -183,21 +183,24 @@
                 </div>
 
                 <div>
-                    <!-- Tombol Pilihan Cepat Variabel Teks Baku -->
-<div class="space-y-1 pt-1">
-    <label class="block text-xs font-medium text-slate-400">Sisipkan Variabel Cepat:</label>
-    <div class="flex flex-wrap gap-1.5">
-        <button type="button" onclick="insertVariable('{nama_kereta}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ nama_kereta</button>
-        <button type="button" onclick="insertVariable('{nomor_kereta}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ nomor_kereta</button>
-        <button type="button" onclick="insertVariable('{tujuan_akhir}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ tujuan_akhir</button>
-        <button type="button" onclick="insertVariable('{jalur}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ jalur</button>
-        <button type="button" onclick="insertVariable('{sf_rangkaian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ sf_rangkaian</button>
-        <button type="button" onclick="insertVariable('{stasiun_perhentian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1.5 rounded-lg transition">+ stasiun_perhentian</button>
+                    <!-- Bagian Label & Tombol Pilihan Variabel Teks Baku -->
+<div>
+    <label class="block text-xs font-medium text-slate-400 mb-1">Klik Variabel untuk Menyisipkan:</label>
+    <div class="flex flex-wrap gap-1.5 mb-3">
+        <button type="button" onclick="insertVariable('{no_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{no_ka}</button>
+        <button type="button" onclick="insertVariable('{nama_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{nama_ka}</button>
+        <button type="button" onclick="insertVariable('{jalur}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{jalur}</button>
+        <button type="button" onclick="insertVariable('{dari_arah}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{dari_arah}</button>
+        <button type="button" onclick="insertVariable('{tujuan}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{tujuan}</button>
+        <button type="button" onclick="insertVariable('{sf_rangkaian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{sf_rangkaian}</button>
     </div>
 </div>
-                </div>
 
-                <div>
+<!-- Bagian Input Isi Teks Baku -->
+<div>
+    <label class="block text-xs font-medium text-slate-400 mb-1">Isi Teks Baku</label>
+    <textarea id="template-textarea" rows="4" class="w-full bg-[#1b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500 resize-none" placeholder="Contoh: Perhatian KA {nama_ka} pukul 21:15 WIB..."></textarea>
+</div>
                     <label class="block text-xs font-medium text-slate-400 mb-1.5">Skrip Teks Pengumuman</label>
                     <textarea id="script-textarea" rows="4" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3.5 text-slate-200 text-xs font-mono-code focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
                 </div>
