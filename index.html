@@ -446,6 +446,18 @@
                         </select>
                     </div>
                 </div>
+                <!-- Tombol Pilihan Cepat Variabel -->
+<div>
+    <label class="block text-xs font-medium text-slate-400 mb-1">Klik Variabel untuk Menyisipkan:</label>
+    <div class="flex flex-wrap gap-1.5 mb-3">
+        <button type="button" onclick="insertVariable('{no_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{no_ka}</button>
+        <button type="button" onclick="insertVariable('{nama_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{nama_ka}</button>
+        <button type="button" onclick="insertVariable('{jalur}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{jalur}</button>
+        <button type="button" onclick="insertVariable('{dari_arah}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{dari_arah}</button>
+        <button type="button" onclick="insertVariable('{tujuan}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{tujuan}</button>
+        <button type="button" onclick="insertVariable('{sf_rangkaian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{sf_rangkaian}</button>
+    </div>
+</div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Isi Teks Baku</label>
                     <textarea id="modal-isi" rows="3" placeholder="Tuliskan skrip pengumuman..." class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-slate-200 font-mono-code focus:outline-none focus:border-amber-500 resize-none"></textarea>
@@ -849,18 +861,23 @@
         }
 
         function insertVariable(variable) {
-    // Cek textarea mana yang sedang aktif atau fokus (modal teks baku atau halaman utama)
-    let textarea = document.getElementById('template-textarea');
-    if (!textarea || document.activeElement !== textarea) {
-        // Jika textarea modal tidak fokus, fallback ke script-textarea utama
-        textarea = document.getElementById('script-textarea');
+    // Cek apakah modal teks baku sedang terbuka
+    let textarea = document.getElementById('modal-isi');
+    const modal = document.getElementById('teks-modal');
+    
+    // Jika modal terbuka, gunakan textarea modal-isi. Jika tidak, gunakan halaman utama.
+    if (modal && !modal.classList.contains('hidden') && textarea) {
+        // Fokuskan ke modal-isi jika belum
+    } else {
+        textarea = document.getElementById('template-textarea') || document.getElementById('script-textarea');
     }
-    if (!textarea) return;
 
+    if (!textarea) return;
+    
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const text = textarea.value;
-
+    
     textarea.value = text.substring(0, start) + variable + text.substring(end);
     textarea.selectionStart = textarea.selectionEnd = start + variable.length;
     textarea.focus();
