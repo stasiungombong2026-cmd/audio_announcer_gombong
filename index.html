@@ -839,20 +839,29 @@
         }
 
         function onParameterChange() {
-            const jenis = document.getElementById('sel-jenis').value;
-            const kereta = document.getElementById('sel-kereta').value;
-            const jalur = document.getElementById('sel-jalur').value;
+            const selKeretaValue = document.getElementById('sel-kereta').value;
+            const selectedIndex = document.getElementById('sel-teksbaku').value;
+            const item = teksBakuList[selectedIndex];
             
-            let text = "";
-            if (jenis === 'kedatangan') {
-                text = `Perhatian kepada seluruh penumpang, ${kereta} sesaat lagi akan tiba di ${jalur}, Stasiun Gombong. Diimbau kepada para penumpang untuk berdiri di belakang garis aman peron.`;
-            } else if (jenis === 'pemberangkatan') {
-                text = `Pengumuman, ${kereta} dijadwalkan akan segera diberangkatkan dari ${jalur}, Stasiun Gombong. Kepada seluruh penumpang dipersilakan segera naik ke rangkaian kereta.`;
-            } else if (jenis === 'melintas') {
-                text = `Perhatian, ${kereta} melintas langsung tanpa berhenti di ${jalur}, Stasiun Gombong. Diharapkan seluruh pengunjung dan calon penumpang menjauhi jalur rel.`;
-            } else {
-                text = `Pengumuman penting terkait perjalanan ${kereta} di Stasiun Gombong mengalami penyesuaian jadwal. Mohon perhatian seluruh penumpang.`;
-            }
+            if (!item) return;
+
+            // Ambil data kereta aktif berdasarkan dropdown
+            let currentTrain = trainList.find(t => `${t.no} - ${t.name}` === selKeretaValue) || trainList[0] || {};
+            const selectedJalur = document.getElementById('sel-jalur').value;
+
+            // Ambil teks dasar dari teks baku
+            let text = item.isi || "";
+
+            // Proses penggantian variabel (termasuk st_perhentian)
+            text = text.replace(/{no_ka}/g, currentTrain.no || '');
+            text = text.replace(/{nama_ka}/g, currentTrain.name || '');
+            text = text.replace(/{jalur}/g, selectedJalur || '');
+            text = text.replace(/{dari_arah}/g, currentTrain.route ? currentTrain.route.split('-')[0].trim() : '');
+            text = text.replace(/{tujuan}/g, currentTrain.route || '');
+            text = text.replace(/{sf_rangkaian}/g, currentTrain.sf || '');
+            text = text.replace(/{st_perhentian}/g, currentTrain.stops || '');
+
+            // Masukkan hasil ke textarea skrip pengumuman
             document.getElementById('script-textarea').value = text;
         }
 
