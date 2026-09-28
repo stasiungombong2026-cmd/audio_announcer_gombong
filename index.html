@@ -142,7 +142,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1.5">Pilih Narrator / Suara Chime</label>
-                        <select id="sel-narrator" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        <select id="sel-narrator" onchange="activeNarratorIndex=Number(this.value)" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
                             <option value="tts_ibu">[TTS] Ibu Narator (TTS ID)</option>
                             <option value="tts_bapak">[TTS] Bapak Announcer (Standard ID)</option>
                             <option value="tts_local">[Lokal] Stasiun Gombong Voice AI</option>
@@ -181,25 +181,36 @@
                         <!-- Dynamically populated -->
                     </select>
                 </div>
+                <div class="flex flex-wrap gap-2 -mt-2">
+                    <button onclick="openTrainModal(-1)" class="text-[10px] bg-[#141e3d] border border-[#1e2d5c] text-amber-400 px-3 py-2 rounded-lg"><i class="fa-solid fa-plus"></i> Tambah Kereta</button>
+                    <button onclick="openTeksModal(-1)" class="text-[10px] bg-[#141e3d] border border-[#1e2d5c] text-amber-400 px-3 py-2 rounded-lg"><i class="fa-solid fa-plus"></i> Tambah Teks Baku</button>
+                    <button onclick="switchNavTab('daftarkereta')" class="text-[10px] bg-[#141e3d] border border-[#1e2d5c] text-slate-300 px-3 py-2 rounded-lg"><i class="fa-solid fa-pen"></i> Kelola Kereta</button>
+                    <button onclick="switchNavTab('teksbaku')" class="text-[10px] bg-[#141e3d] border border-[#1e2d5c] text-slate-300 px-3 py-2 rounded-lg"><i class="fa-solid fa-pen"></i> Kelola Teks</button>
+                </div>
 
                 <div>
                     <!-- Tombol Pilihan Cepat Variabel Modal -->
 <div>
     <label class="block text-xs font-medium text-slate-400 mb-1">Klik Variabel untuk Menyisipkan:</label>
     <div class="flex flex-wrap gap-1.5 mb-3">
-        <button type="button" onclick="insertVariable('{no_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{no_ka}</button>
-        <button type="button" onclick="insertVariable('{nama_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{nama_ka}</button>
-        <button type="button" onclick="insertVariable('{jalur}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{jalur}</button>
-        <button type="button" onclick="insertVariable('{dari_arah}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{dari_arah}</button>
-        <button type="button" onclick="insertVariable('{tujuan}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{tujuan}</button>
-        <button type="button" onclick="insertVariable('{sf_rangkaian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{sf_rangkaian}</button>
+        <button type="button" onclick="insertGeneratorVariable('{no_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{no_ka}</button>
+        <button type="button" onclick="insertGeneratorVariable('{nama_ka}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{nama_ka}</button>
+        <button type="button" onclick="insertGeneratorVariable('{jalur}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{jalur}</button>
+        <button type="button" onclick="insertGeneratorVariable('{dari_arah}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{dari_arah}</button>
+        <button type="button" onclick="insertGeneratorVariable('{tujuan}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{tujuan}</button>
+        <button type="button" onclick="insertGeneratorVariable('{sf_rangkaian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{sf_rangkaian}</button>
         <!-- Tambahkan baris di bawah ini -->
-        <button type="button" onclick="insertVariable('{st_perhentian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{st_perhentian}</button>
+        <button type="button" onclick="insertGeneratorVariable('{st_perhentian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{st_perhentian}</button>
     </div>
 </div>
 
                     <label class="block text-xs font-medium text-slate-400 mb-1.5">Skrip Teks Pengumuman</label>
                     <textarea id="script-textarea" rows="4" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3.5 text-slate-200 text-xs font-mono-code focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
+                    <div class="grid grid-cols-1 gap-2 mt-2">
+                        <div class="bg-[#0b1329] border border-[#1e2d5c] rounded-xl p-3"><div class="text-[10px] text-amber-400 mb-1">INDONESIA</div><div id="preview-id" class="text-[11px] text-slate-300"></div></div>
+                        <div class="bg-[#0b1329] border border-[#1e2d5c] rounded-xl p-3"><div class="text-[10px] text-amber-400 mb-1">ENGLISH</div><div id="preview-en" class="text-[11px] text-slate-300"></div></div>
+                        <div class="bg-[#0b1329] border border-[#1e2d5c] rounded-xl p-3"><div class="text-[10px] text-amber-400 mb-1">JAWA KRAMA ALUS</div><div id="preview-jv" class="text-[11px] text-slate-300"></div></div>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-3 pt-2">
@@ -214,35 +225,16 @@
 
             <!-- PANEL 2: INFORMASI & DARURAT -->
             <div id="panel-darurat" class="tab-panel hidden bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 shadow-xl space-y-5">
-                <div class="flex items-center space-x-2 border-b border-[#1e2d5c] pb-3">
-                    <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i>
-                    <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wide">Pusat Informasi & Pengumuman Darurat Stasiun</h2>
+                <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
+                    <div class="flex items-center space-x-2"><i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i><h2 class="text-sm font-bold text-slate-200 uppercase tracking-wide">Informasi & Pengumuman Darurat</h2></div>
+                    <button onclick="openEmergencyModal(-1)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg"><i class="fa-solid fa-plus"></i> Tambah</button>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div onclick="loadEmergencyScript('evakuasi')" class="bg-[#0b1329] border border-[#1e2d5c] hover:border-amber-500 p-4 rounded-xl cursor-pointer transition">
-                        <h3 class="text-xs font-bold text-amber-400 mb-1"><i class="fa-solid fa-fire-extinguisher mr-1.5"></i> Evakuasi Darurat</h3>
-                        <p class="text-[11px] text-slate-400">Pengumuman evakuasi seluruh penumpang keluar peron menuju titik kumpul aman.</p>
-                    </div>
-                    <div onclick="loadEmergencyScript('ketinggalan')" class="bg-[#0b1329] border border-[#1e2d5c] hover:border-amber-500 p-4 rounded-xl cursor-pointer transition">
-                        <h3 class="text-xs font-bold text-amber-400 mb-1"><i class="fa-solid fa-suitcase mr-1.5"></i> Barang Tertinggal</h3>
-                        <p class="text-[11px] text-slate-400">Pengumuman pemanggilan pemilik barang bawaan yang tertinggal di area stasiun.</p>
-                    </div>
-                    <div onclick="loadEmergencyScript('gempa')" class="bg-[#0b1329] border border-[#1e2d5c] hover:border-amber-500 p-4 rounded-xl cursor-pointer transition">
-                        <h3 class="text-xs font-bold text-amber-400 mb-1"><i class="fa-solid fa-house-crack mr-1.5"></i> Peringatan Gempa Bumi</h3>
-                        <p class="text-[11px] text-slate-400">Instruksi keselamatan menghadapi getaran gempa di area bangunan stasiun.</p>
-                    </div>
-                    <div onclick="loadEmergencyScript('dokter')" class="bg-[#0b1329] border border-[#1e2d5c] hover:border-amber-500 p-4 rounded-xl cursor-pointer transition">
-                        <h3 class="text-xs font-bold text-amber-400 mb-1"><i class="fa-solid fa-user-doctor mr-1.5"></i> Panggilan Tenaga Medis</h3>
-                        <p class="text-[11px] text-slate-400">Panggilan darurat bagi penumpang berprofesi medis untuk membantu pos kesehatan.</p>
-                    </div>
-                </div>
+                <div id="emergency-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1.5">Skrip Darurat Terpilih</label>
-                    <textarea id="emergency-textarea" rows="4" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3.5 text-slate-200 text-xs font-mono-code focus:outline-none focus:border-amber-500 transition resize-none">Perhatian darurat kepada seluruh pengunjung Stasiun Gombong, harap tetap tenang dan ikuti arahan petugas.</textarea>
+                    <textarea id="emergency-textarea" rows="4" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3.5 text-slate-200 text-xs font-mono-code resize-none"></textarea>
                 </div>
-                <button onclick="playEmergencyBroadcast()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-rose-600/20 transition flex items-center justify-center gap-2 text-sm">
-                    <i class="fa-solid fa-bullhorn"></i> Siarkan Darurat Sekarang
-                </button>
+                <button onclick="playEmergencyBroadcast()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 px-6 rounded-xl"><i class="fa-solid fa-bullhorn"></i> Siarkan Darurat Sekarang</button>
             </div>
 
             <!-- PANEL 3: DAFTAR KERETA & STASIUN -->
@@ -307,51 +299,23 @@
 
             <!-- PANEL 5: MANAJEMEN CHIME & NARRATOR -->
             <div id="panel-chimenarrator" class="tab-panel hidden bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 shadow-xl space-y-4">
-                <div class="flex items-center space-x-2 border-b border-[#1e2d5c] pb-3">
-                    <i class="fa-solid fa-sliders text-amber-500 text-sm"></i>
-                    <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wide">Pengaturan Audio Chime & Pengaturan Suara</h2>
+                <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
+                    <div class="flex items-center space-x-2"><i class="fa-solid fa-sliders text-amber-500 text-sm"></i><h2 class="text-sm font-bold text-slate-200 uppercase tracking-wide">Manajemen Chime</h2></div>
+                    <button onclick="openChimeModal(-1)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg"><i class="fa-solid fa-plus"></i> Tambah Chime</button>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-[#070b19] border border-[#1e2d5c] p-4 rounded-xl space-y-3">
-                        <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-bell text-amber-400"></i> Uji Chime A (Klasik KAI)</h3>
-                        <button onclick="playChimeTone('nada_a')" class="w-full bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 text-xs font-semibold py-2.5 rounded-lg border border-[#1e2d5c] transition">Putar Chime A</button>
-                    </div>
-                    <div class="bg-[#070b19] border border-[#1e2d5c] p-4 rounded-xl space-y-3">
-                        <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-bell text-amber-400"></i> Uji Chime B (Melodi Tinggi)</h3>
-                        <button onclick="playChimeTone('nada_b')" class="w-full bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 text-xs font-semibold py-2.5 rounded-lg border border-[#1e2d5c] transition">Putar Chime B</button>
-                    </div>
-                    <div class="bg-[#070b19] border border-[#1e2d5c] p-4 rounded-xl space-y-3">
-                        <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-bell text-amber-400"></i> Uji Chime C (Gong Stasiun)</h3>
-                        <button onclick="playChimeTone('nada_c')" class="w-full bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 text-xs font-semibold py-2.5 rounded-lg border border-[#1e2d5c] transition">Putar Chime C</button>
-                    </div>
-                </div>
+                <div id="chime-list" class="space-y-3"></div>
             </div>
 
             <!-- PANEL 6: DAFTAR NARRATOR -->
             <div id="panel-daftarnarrator" class="tab-panel hidden bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 shadow-xl space-y-4">
                 <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-microphone text-amber-500 text-sm"></i>
-                        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wide">Daftar Suara Narrator Tersedia</h2>
-                    </div>
-                    <span class="text-xs text-emerald-400 font-mono-code font-semibold">API Web Speech Aktif</span>
+                    <div class="flex items-center space-x-2"><i class="fa-solid fa-microphone text-amber-500 text-sm"></i><h2 class="text-sm font-bold text-slate-200 uppercase tracking-wide">Daftar Narator / Suara Baku Sistem</h2></div>
+                    <button onclick="openNarratorModal(-1)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold text-xs px-3.5 py-2 rounded-lg"><i class="fa-solid fa-plus"></i> Tambah Narator</button>
                 </div>
-                <div class="space-y-3">
-                    <div class="bg-[#070b19] border border-[#1e2d5c] p-4 rounded-xl flex items-center justify-between">
-                        <div>
-                            <h3 class="text-xs font-bold text-white">[TTS] Ibu Narator (Bahasa Indonesia)</h3>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Suara standar pengumuman resmi stasiun kereta api.</p>
-                        </div>
-                        <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-semibold">Aktif</span>
-                    </div>
-                    <div class="bg-[#070b19] border border-[#1e2d5c] p-4 rounded-xl flex items-center justify-between">
-                        <div>
-                            <h3 class="text-xs font-bold text-white">[TTS] Bapak Announcer (Standar ID)</h3>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Suara berat berwibawa untuk informasi kedatangan.</p>
-                        </div>
-                        <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-[#1e2d5c]">Standar</span>
-                    </div>
+                <div class="bg-amber-500/10 border border-amber-500/20 text-amber-200 text-[11px] rounded-xl p-3">
+                    Suara yang di-upload disimpan sebagai rekaman lokal dan diprioritaskan saat pemutaran. File rekaman tidak dapat diubah menjadi suara TTS dinamis hanya dengan HTML/browser; untuk teks dinamis, siapkan rekaman per bahasa atau gunakan TTS perangkat sebagai cadangan.
                 </div>
+                <div id="narrator-list" class="space-y-3"></div>
             </div>
 
         </div>
@@ -453,11 +417,20 @@
                         <button type="button" onclick="insertVariable('{dari_arah}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{dari_arah}</button>
                         <button type="button" onclick="insertVariable('{tujuan}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{tujuan}</button>
                         <button type="button" onclick="insertVariable('{sf_rangkaian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{sf_rangkaian}</button>
-                    </div>
+
+                        <button type="button" onclick="insertVariable('{st_perhentian}')" class="bg-[#141e3d] hover:bg-[#1e2d5c] border border-[#1e2d5c] text-slate-200 text-[11px] px-2.5 py-1 rounded-md transition">{st_perhentian}</button>                    </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Isi Teks Baku</label>
-                    <textarea id="modal-isi" rows="3" placeholder="Tuliskan skrip pengumuman..." class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-slate-200 font-mono-code focus:outline-none focus:border-amber-500 resize-none"></textarea>
+                    <div class="flex items-center justify-between mb-1"><label class="block text-xs font-medium text-slate-400">Bahasa Indonesia</label><button type="button" onclick="autoTranslateTemplate()" class="text-[10px] text-amber-400 hover:underline">Terjemahkan EN + Jawa Krama Alus</button></div>
+                    <textarea id="modal-isi" rows="3" placeholder="Gunakan variabel {no_ka} {nama_ka} {jalur} {dari_arah} {tujuan} {sta_perhentian} {sf_rangkaian}" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-slate-200 font-mono-code resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">English</label>
+                    <textarea id="modal-isi-en" rows="3" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-slate-200 font-mono-code resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Jawa Krama Alus</label>
+                    <textarea id="modal-isi-jv" rows="3" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-slate-200 font-mono-code resize-none"></textarea>
                 </div>
             </div>
             <div class="flex items-center justify-end space-x-3 pt-2">
@@ -542,6 +515,48 @@
         </div>
     </div>
 
+
+    <!-- Modal Narator -->
+    <div id="narrator-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+      <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="narrator-modal-title" class="text-sm font-bold text-white uppercase">Tambah Narator</h3><button onclick="closeNarratorModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <input type="hidden" id="narrator-edit-index" value="-1">
+        <input id="narrator-name" placeholder="Nama narator" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
+        <input id="narrator-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
+        <div class="space-y-2">
+          <label class="text-xs text-slate-400">Rekaman Bahasa Indonesia (MP3/WAV/M4A/OGG)</label><input id="narrator-audio-id" type="file" accept="audio/*" class="w-full text-xs text-slate-300">
+          <label class="text-xs text-slate-400">Rekaman English</label><input id="narrator-audio-en" type="file" accept="audio/*" class="w-full text-xs text-slate-300">
+          <label class="text-xs text-slate-400">Rekaman Jawa Krama Alus</label><input id="narrator-audio-jv" type="file" accept="audio/*" class="w-full text-xs text-slate-300">
+        </div>
+        <p class="text-[10px] text-slate-500">Rekaman disimpan di browser perangkat ini. File besar dapat memenuhi localStorage.</p>
+        <div class="flex justify-end gap-2"><button onclick="closeNarratorModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveNarrator()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+      </div>
+    </div>
+
+    <!-- Modal Emergency -->
+    <div id="emergency-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+      <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="emergency-modal-title" class="text-sm font-bold text-white uppercase">Tambah Pengumuman</h3><button onclick="closeEmergencyModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <input type="hidden" id="emergency-edit-index" value="-1">
+        <input id="emergency-title" placeholder="Judul" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
+        <input id="emergency-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
+        <textarea id="emergency-script" rows="5" placeholder="Teks pengumuman" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
+        <div class="flex justify-end gap-2"><button onclick="closeEmergencyModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveEmergency()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+      </div>
+    </div>
+
+    <!-- Modal Chime -->
+    <div id="chime-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+      <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="chime-modal-title" class="text-sm font-bold text-white uppercase">Tambah Chime</h3><button onclick="closeChimeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <input type="hidden" id="chime-edit-index" value="-1">
+        <input id="chime-id" placeholder="ID, contoh: nada_d" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
+        <input id="chime-name" placeholder="Nama chime" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
+        <input id="chime-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
+        <div class="flex justify-end gap-2"><button onclick="closeChimeModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveChime()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+      </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-[#0b1329] border-t border-[#1e2d5c] py-5 text-center text-xs text-slate-500">
         <p>Stasiun Kereta Api Gombong (GBG) &bull; Sistem Audio Announcement & Pelafalan Waktu Otomatis &copy; 2026</p>
@@ -549,687 +564,303 @@
 
     <!-- JavaScript Interactive Logic -->
     <script>
+        const synth = window.speechSynthesis;
+        let audioCtx = null, masterVol = 1, waveInterval = null;
+
+        function uid(prefix='id'){ return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+        function esc(v=''){ return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
         let defaultTeksBaku = [
-            {
-                kategori: "kedatangan",
-                judul: "Kedatangan Standar",
-                chimeIn: "nada_a",
-                chimeOut: "nada_b",
-                isi: "Perhatian kepada seluruh penumpang, {nama_ka} dengan nomor {no_ka} tujuan akhir {tujuan_akhir} dari arah timur sesaat lagi akan tiba di {jalur}, Stasiun Gombong."
-            },
-            {
-                kategori: "keberangkatan",
-                judul: "Keberangkatan Standar",
-                chimeIn: "nada_a",
-                chimeOut: "nada_b",
-                isi: "Pengumuman untuk penumpang {nama_ka} tujuan {tujuan_akhir} dipersilakan segera naik ke rangkaian kereta melalui jalur 1."
-            }
+            {id:uid('tpl'),kategori:'kedatangan',judul:'Kedatangan Standar',chimeIn:'nada_a',chimeOut:'nada_b',
+             isiID:'Perhatian kepada seluruh penumpang, {nama_ka} dengan nomor {no_ka} tujuan {tujuan}, {dari_arah}, sesaat lagi akan tiba di {jalur}. Rangkaian terdiri dari {sf_rangkaian}. Stasiun perhentian: {sta_perhentian}. Terima kasih.',
+             isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, from {dari_arah}, will shortly arrive on {jalur}. The train formation consists of {sf_rangkaian}. Stopping stations: {sta_perhentian}. Thank you.',
+             isiJV:'Kawigatosan dhumateng para penumpang, sepur {nama_ka}, nomer {no_ka}, kanthi ancas {tujuan}, saking {dari_arah}, badhe dumugi ing {jalur}. Rangkaianipun kasusun saking {sf_rangkaian}. Stasiun mandheg: {sta_perhentian}. Matur nuwun.'},
+            {id:uid('tpl'),kategori:'keberangkatan',judul:'Keberangkatan Standar',chimeIn:'nada_a',chimeOut:'nada_b',
+             isiID:'Pengumuman untuk penumpang {nama_ka} nomor {no_ka} tujuan {tujuan}. Dipersilakan segera naik melalui {jalur}. Kereta akan diberangkatkan dalam waktu dekat. Terima kasih.',
+             isiEN:'Attention passengers of train {nama_ka}, number {no_ka}, bound for {tujuan}. Please board the train at {jalur}. The train will depart shortly. Thank you.',
+             isiJV:'Pangumuman dhumateng para penumpang sepur {nama_ka}, nomer {no_ka}, kanthi ancas {tujuan}. Dipun aturi enggal mlebet lumantar {jalur}. Sepur badhe budhal sakedhap malih. Matur nuwun.'}
         ];
-
         let defaultTrains = [
-            { no: "142A", name: "Sawunggalih", route: "Pasar Senen", track: "Jalur 2 Dan Arah Timur", sf: "Premium 1, Premium 2, Kereta Makan, Eksekutif 1", stops: "Kutoarjo, Kutowinangun, Gombong, Kroya, Purwokerto" },
-            { no: "67", name: "Malabar", route: "Bandung", track: "Jalur 2 Dan Arah Barat", sf: "Eksekutif 1, Eksekutif 2, Kereta Makan, Pembangkit", stops: "Kroya, Kebumen, Kutoarjo" },
-            { no: "112", name: "Brantas", route: "Pasar Senen", track: "Jalur 1 Dan Arah Timur", sf: "Premium 1, Ekonomi 1, Kereta Makan", stops: "Sumpiuh, Kroya, Gombong" }
+            {no:'142A',name:'Sawunggalih',route:'Pasar Senen',platform:'Jalur 2',direction:'Dan Arah Timur',track:'Jalur 2 Dan Arah Timur',sf:'Premium 1, Premium 2, Kereta Makan, Eksekutif 1',composition:'Premium 1, Premium 2, Kereta Makan, Eksekutif 1',stops:'Kutoarjo, Kutowinangun, Gombong, Kroya, Purwokerto'},
+            {no:'67',name:'Malabar',route:'Bandung',platform:'Jalur 2',direction:'Dan Arah Barat',track:'Jalur 2 Dan Arah Barat',sf:'Eksekutif 1, Eksekutif 2, Kereta Makan, Pembangkit',composition:'Eksekutif 1, Eksekutif 2, Kereta Makan, Pembangkit',stops:'Kroya, Kebumen, Kutoarjo'},
+            {no:'112',name:'Brantas',route:'Pasar Senen',platform:'Jalur 1',direction:'Dan Arah Timur',track:'Jalur 1 Dan Arah Timur',sf:'Premium 1, Ekonomi 1, Kereta Makan',composition:'Premium 1, Ekonomi 1, Kereta Makan',stops:'Sumpiuh, Kroya, Gombong'}
         ];
-
         let teksBakuList = JSON.parse(localStorage.getItem('gombong_teksbaku')) || defaultTeksBaku;
         let trainList = JSON.parse(localStorage.getItem('gombong_trains')) || defaultTrains;
+        let narratorList = JSON.parse(localStorage.getItem('gombong_narrators')) || [];
+        let emergencyList = JSON.parse(localStorage.getItem('gombong_emergencies')) || [
+            {id:'evakuasi',title:'Evakuasi Darurat',description:'Evakuasi penumpang menuju titik kumpul aman.',text:'Perhatian darurat kepada seluruh penumpang dan pengunjung Stasiun Gombong, harap segera keluar menuju titik kumpul evakuasi terdekat.'},
+            {id:'ketinggalan',title:'Barang Tertinggal',description:'Pemanggilan pemilik barang tertinggal.',text:'Pengumuman kepada pemilik barang tertinggal di ruang tunggu Stasiun Gombong, silakan melapor ke petugas pusat informasi.'},
+            {id:'gempa',title:'Peringatan Gempa Bumi',description:'Instruksi keselamatan saat gempa.',text:'Peringatan gempa bumi! Kepada seluruh penumpang di dalam gedung Stasiun Gombong, harap berlindung di bawah kursi atau meja.'},
+            {id:'dokter',title:'Panggilan Tenaga Medis',description:'Panggilan bagi tenaga medis.',text:'Panggilan darurat bagi penumpang berprofesi medis di Stasiun Gombong, mohon segera menuju ke pos pelayanan kesehatan stasiun.'}
+        ];
+        let chimeList = JSON.parse(localStorage.getItem('gombong_chimes')) || [
+            {id:'nada_a',name:'Nada A (Klasik KAI)',description:'Chime pembuka standar'},
+            {id:'nada_b',name:'Nada B (Melodi Tinggi)',description:'Chime penutup standar'},
+            {id:'nada_c',name:'Nada C (Gong Stasiun)',description:'Chime alternatif'}
+        ];
+        let activeAudio = null;
 
-        // Contoh fungsi dasar CRUD untuk data kereta
-        function addTrain(newTrainObj) {
-            appData.trains.push(newTrainObj);
-            refreshTrainUI(); // Render ulang tampilan daftar kereta
-        }
-
-        function editTrain(index, updatedObj) {
-            appData.trains[index] = updatedObj;
-            refreshTrainUI();
-        }
-
-        function deleteTrain(index) {
-            appData.trains.splice(index, 1);
-            refreshTrainUI();
-        }
-        function saveToStorage() {
-            localStorage.setItem('gombong_teksbaku', JSON.stringify(teksBakuList));
-            localStorage.setItem('gombong_trains', JSON.stringify(trainList));
-        }
-
-        function switchNavTab(tabName) {
-            const tabs = ['generator', 'darurat', 'daftarkereta', 'teksbaku', 'chimenarrator', 'daftarnarrator'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`nav-${t}`);
-                if (btn) {
-                    btn.className = "nav-tab px-4 py-2 rounded-lg text-xs font-medium bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-300 border border-[#1e2d5c] transition flex items-center gap-2";
-                }
-                const panel = document.getElementById(`panel-${t}`);
-                if (panel) {
-                    panel.classList.add('hidden');
-                }
+        function normalizeData(){
+            trainList=trainList.map(t=>{
+                const track=t.track||'Jalur 2 Dan Arah Timur';
+                const m=track.match(/^(Jalur\s*\d+|Langsung\s*Jalur\s*\d+)\s*(.*)$/i);
+                return {...t,no:String(t.no??''),name:String(t.name??''),route:String(t.route??''),
+                    platform:t.platform||(m?m[1]:'Jalur 2'),direction:t.direction||(m&&m[2]?m[2]:'Dan Arah Timur'),
+                    track:track,sf:t.sf||t.composition||'',composition:t.composition||t.sf||'',stops:t.stops||t.sta_perhentian||''};
             });
+            teksBakuList=teksBakuList.map(t=>{
+                const id=String(t.isiID??t.isi??'');
+                return {...t,id:t.id||uid('tpl'),isiID:id,isiEN:t.isiEN??'',isiJV:t.isiJV??''};
+            });
+        }
+        normalizeData();
 
-            const activeBtn = document.getElementById(`nav-${tabName}`);
-            if (activeBtn) {
-                activeBtn.className = "nav-tab px-4 py-2 rounded-lg text-xs font-semibold bg-amber-500 text-slate-950 shadow transition flex items-center gap-2";
-            }
-            const activePanel = document.getElementById(`panel-${tabName}`);
-            if (activePanel) {
-                activePanel.classList.remove('hidden');
-            }
-
-            if(tabName === 'teksbaku') renderTeksBakuTable();
-            if(tabName === 'daftarkereta') renderTrainTable();
-            if(tabName === 'generator') updateGeneratorTrainSelect();
-            showToast(`Menu ${tabName.toUpperCase()} diaktifkan`);
+        function saveToStorage(){
+            localStorage.setItem('gombong_teksbaku',JSON.stringify(teksBakuList));
+            localStorage.setItem('gombong_trains',JSON.stringify(trainList));
+            localStorage.setItem('gombong_narrators',JSON.stringify(narratorList));
+            localStorage.setItem('gombong_emergencies',JSON.stringify(emergencyList));
+            localStorage.setItem('gombong_chimes',JSON.stringify(chimeList));
         }
 
-        function renderTeksBakuTable() {
-            const tbody = document.getElementById('teksbaku-table-body');
-            tbody.innerHTML = '';
-            teksBakuList.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-[#141e3d]/50 transition";
-                tr.innerHTML = `
-                    <td class="p-3"><span class="px-2.5 py-1 rounded-md bg-[#0b1329] border border-[#1e2d5c] text-amber-400 font-mono-code text-[11px]">${item.kategori}</span></td>
-                    <td class="p-3 font-semibold text-white">${item.judul}</td>
-                    <td class="p-3 font-mono-code text-[11px] text-slate-400"><div>Buka: ${item.chimeIn}</div><div>Tutup: ${item.chimeOut}</div></td>
-                    <td class="p-3 text-slate-300 text-xs font-mono-code">${item.isi}</td>
-                    <td class="p-3 text-center space-x-2">
-                        <button onclick="openTeksModal(${index})" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 p-2 rounded-lg border border-[#1e2d5c] transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteTeksBaku(${index})" class="bg-[#141e3d] hover:bg-rose-900/50 text-rose-400 p-2 rounded-lg border border-[#1e2d5c] transition" title="Hapus"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-            updateGeneratorTeksBakuSelect();
+        function switchNavTab(tabName){
+            const tabs=['generator','darurat','daftarkereta','teksbaku','chimenarrator','daftarnarrator'];
+            tabs.forEach(t=>{document.getElementById(`nav-${t}`)?.classList.remove('bg-amber-500','text-slate-950','font-semibold');document.getElementById(`nav-${t}`)?.classList.add('bg-[#141e3d]','text-slate-300','font-medium');document.getElementById(`panel-${t}`)?.classList.add('hidden');});
+            document.getElementById(`nav-${tabName}`)?.classList.add('bg-amber-500','text-slate-950','font-semibold');
+            document.getElementById(`nav-${tabName}`)?.classList.remove('bg-[#141e3d]','text-slate-300','font-medium');
+            document.getElementById(`panel-${tabName}`)?.classList.remove('hidden');
+            if(tabName==='teksbaku')renderTeksBakuTable();
+            if(tabName==='daftarkereta')renderTrainTable();
+            if(tabName==='generator'){updateGeneratorTrainSelect();updateGeneratorTeksBakuSelect();}
+            if(tabName==='darurat')renderEmergencyList();
+            if(tabName==='chimenarrator')renderChimeList();
+            if(tabName==='daftarnarrator')renderNarratorList();
         }
 
-        function renderTrainTable() {
-            const tbody = document.getElementById('train-table-body');
-            tbody.innerHTML = '';
-            trainList.forEach((train, index) => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-[#141e3d]/50 transition";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono-code font-bold text-amber-400">${train.no}</td>
-                    <td class="p-3 font-semibold text-white">${train.name}</td>
-                    <td class="p-3 text-slate-300">${train.route}</td>
-                    <td class="p-3 text-amber-300/90 font-mono-code">${train.track}</td>
-                    <td class="p-3 text-slate-300 font-mono-code text-[11px]">${train.sf}</td>
-                    <td class="p-3 text-slate-400 text-[11px]">${train.stops}</td>
-                    <td class="p-3 text-center space-x-2">
-                        <button onclick="openTrainModal(${index})" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-amber-400 p-2 rounded-lg border border-[#1e2d5c] transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteTrain(${index})" class="bg-[#141e3d] hover:bg-rose-900/50 text-rose-400 p-2 rounded-lg border border-[#1e2d5c] transition" title="Hapus"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        function renderTrainTable(){
+            const tbody=document.getElementById('train-table-body'); if(!tbody)return;
+            tbody.innerHTML=trainList.map((t,i)=>`<tr class="hover:bg-[#141e3d]/50">
+              <td class="p-3 font-mono-code font-bold text-amber-400">${esc(t.no)}</td><td class="p-3 font-semibold text-white">${esc(t.name)}</td>
+              <td class="p-3">${esc(t.route)}</td><td class="p-3 text-amber-300">${esc(t.track)}</td><td class="p-3 text-[11px]">${esc(t.sf)}</td><td class="p-3 text-[11px]">${esc(t.stops)}</td>
+              <td class="p-3 text-center whitespace-nowrap"><button onclick="openTrainModal(${i})" class="text-amber-400 p-2" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="deleteTrain(${i})" class="text-rose-400 p-2" title="Hapus"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
             updateGeneratorTrainSelect();
         }
-
-        function updateGeneratorTrainSelect() {
-            const sel = document.getElementById('sel-kereta');
-            if(!sel) return;
-            sel.innerHTML = '';
-            trainList.forEach((train) => {
-                const opt = document.createElement('option');
-                opt.value = `${train.no} - ${train.name}`;
-                opt.textContent = `${train.no} - ${train.name} (Tujuan: ${train.route})`;
-                sel.appendChild(opt);
-            });
+        function updateGeneratorTrainSelect(){
+            const sel=document.getElementById('sel-kereta'); if(!sel)return;
+            const old=sel.value; sel.innerHTML=trainList.map(t=>`<option value="${esc(t.no+' - '+t.name)}">${esc(t.no)} - ${esc(t.name)} (Tujuan: ${esc(t.route)})</option>`).join('');
+            if([...sel.options].some(o=>o.value===old))sel.value=old;
             onParameterChange();
         }
-
-        function updateGeneratorTeksBakuSelect() {
-            const sel = document.getElementById('sel-teksbaku');
-            if(!sel) return;
-            sel.innerHTML = '';
-            teksBakuList.forEach((item, index) => {
-                const opt = document.createElement('option');
-                opt.value = index;
-                opt.textContent = `[${item.kategori.toUpperCase()}] ${item.judul}`;
-                sel.appendChild(opt);
-            });
-            if(teksBakuList.length > 0) {
-                onTeksBakuSelect(0);
-            }
+        function renderTeksBakuTable(){
+            const tbody=document.getElementById('teksbaku-table-body'); if(!tbody)return;
+            tbody.innerHTML=teksBakuList.map((t,i)=>`<tr class="hover:bg-[#141e3d]/50">
+              <td class="p-3">${esc(t.kategori)}</td><td class="p-3 font-semibold text-white">${esc(t.judul)}</td>
+              <td class="p-3 text-[11px]">${esc(t.chimeIn)} / ${esc(t.chimeOut)}</td><td class="p-3 text-[11px]">${esc(t.isiID)}</td>
+              <td class="p-3 text-center whitespace-nowrap"><button onclick="openTeksModal(${i})" class="text-amber-400 p-2"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="deleteTeksBaku(${i})" class="text-rose-400 p-2"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+            updateGeneratorTeksBakuSelect();
         }
-
-        function onTeksBakuSelect(index) {
-            const item = teksBakuList[index];
-            if(item) {
-                document.getElementById('script-textarea').value = item.isi;
-                if(item.chimeIn) document.getElementById('sel-chime-in').value = item.chimeIn;
-                if(item.chimeOut) document.getElementById('sel-chime-out').value = item.chimeOut;
-            }
-            onParameterChange(); // <--- Tambahkan baris ini agar variabel otomatis ter-generate
+        function updateGeneratorTeksBakuSelect(){
+            const sel=document.getElementById('sel-teksbaku');if(!sel)return;
+            const old=sel.value;sel.innerHTML=teksBakuList.map((t,i)=>`<option value="${i}">[${esc(t.kategori.toUpperCase())}] ${esc(t.judul)}</option>`).join('');
+            if(old && [...sel.options].some(o=>o.value===old))sel.value=old; onTeksBakuSelect(sel.value||0);
         }
-
-        function openTeksModal(index) {
-            document.getElementById('teks-modal').classList.remove('hidden');
-            if(index !== null && index >= 0) {
-                const item = teksBakuList[index];
-                document.getElementById('modal-title').textContent = "Edit Teks Baku";
-                document.getElementById('edit-index').value = index;
-                document.getElementById('modal-kategori').value = item.kategori;
-                document.getElementById('modal-judul').value = item.judul;
-                document.getElementById('modal-chime-in').value = item.chimeIn;
-                document.getElementById('modal-chime-out').value = item.chimeOut;
-                document.getElementById('modal-isi').value = item.isi;
-            } else {
-                document.getElementById('modal-title').textContent = "Tambah Teks Baku Baru";
-                document.getElementById('edit-index').value = -1;
-                document.getElementById('modal-kategori').value = "";
-                document.getElementById('modal-judul').value = "";
-                document.getElementById('modal-chime-in').value = "nada_a";
-                document.getElementById('modal-chime-out').value = "nada_b";
-                document.getElementById('modal-isi').value = "";
-            }
+        function getSelectedTrain(){
+            const val=document.getElementById('sel-kereta')?.value||'';
+            const no=val.split(' - ')[0].trim();
+            return trainList.find(t=>String(t.no).toLowerCase()===no.toLowerCase())||trainList[0]||{};
         }
-
-        function closeTeksModal() {
-            document.getElementById('teks-modal').classList.add('hidden');
-        }
-
-        function saveTeksBaku() {
-            const index = parseInt(document.getElementById('edit-index').value);
-            const kategori = document.getElementById('modal-kategori').value.trim() || "umum";
-            const judul = document.getElementById('modal-judul').value.trim() || "Tanpa Judul";
-            const chimeIn = document.getElementById('modal-chime-in').value;
-            const chimeOut = document.getElementById('modal-chime-out').value;
-            const isi = document.getElementById('modal-isi').value.trim() || "";
-
-            const newItem = { kategori, judul, chimeIn, chimeOut, isi };
-            if(index >= 0) {
-                teksBakuList[index] = newItem;
-                showToast("Teks baku berhasil diperbarui");
-            } else {
-                teksBakuList.push(newItem);
-                showToast("Teks baku baru ditambahkan");
-            }
-            saveToStorage();
-            closeTeksModal();
-            renderTeksBakuTable();
-        }
-
-        function deleteTeksBaku(index) {
-            if(confirm("Apakah Anda yakin ingin menghapus teks baku ini?")) {
-                teksBakuList.splice(index, 1);
-                saveToStorage();
-                renderTeksBakuTable();
-                showToast("Teks baku dihapus");
-            }
-        }
-
-        function openTrainModal(index) {
-            document.getElementById('train-modal').classList.remove('hidden');
-            if(index !== null && index >= 0) {
-                const train = trainList[index];
-                document.getElementById('train-modal-title').textContent = "Edit Kereta";
-                document.getElementById('train-edit-index').value = index;
-                document.getElementById('train-modal-no').value = train.no;
-                document.getElementById('train-modal-name').value = train.name;
-                document.getElementById('train-modal-route').value = train.route;
-                
-                let parts = train.track.split(' ');
-                if(parts.length >= 2) {
-                    document.getElementById('train-modal-jalur').value = parts[0] + " " + parts[1];
-                    document.getElementById('train-modal-arah').value = train.track.replace(parts[0] + " " + parts[1], "").trim() || "Dan Arah Timur";
-                }
-
-                document.getElementById('train-modal-sf').value = train.sf || "";
-                document.getElementById('train-modal-stops').value = train.stops;
-            } else {
-                document.getElementById('train-modal-title').textContent = "Tambah Kereta Baru";
-                document.getElementById('train-edit-index').value = -1;
-                document.getElementById('train-modal-no').value = "";
-                document.getElementById('train-modal-name').value = "";
-                document.getElementById('train-modal-route').value = "";
-                document.getElementById('train-modal-jalur').value = "Jalur 2";
-                document.getElementById('train-modal-arah').value = "Dan Arah Timur";
-                document.getElementById('train-modal-sf').value = "";
-                document.getElementById('train-modal-stops').value = "";
-            }
-        }
-
-        function closeTrainModal() {
-            document.getElementById('train-modal').classList.add('hidden');
-        }
-
-        function addSfComponent(type) {
-            const input = document.getElementById('train-modal-sf');
-            let currentVal = input.value.trim();
-            
-            let matches = currentVal.match(new RegExp(type, 'g'));
-            let count = matches ? matches.length + 1 : 1;
-            
-            let addition = `${type} ${count}`;
-            if (type === 'Kereta Makan' || type === 'Pembangkit') {
-                addition = type;
-            }
-
-            if (currentVal) {
-                input.value = currentVal + ", " + addition;
-            } else {
-                input.value = addition;
-            }
-        }
-
-        function resetSfComponent() {
-            document.getElementById('train-modal-sf').value = "";
-        }
-
-        function saveTrainData() {
-            const index = parseInt(document.getElementById('train-edit-index').value);
-            const no = document.getElementById('train-modal-no').value.trim() || "00";
-            const name = document.getElementById('train-modal-name').value.trim() || "Kereta Ekspres";
-            const route = document.getElementById('train-modal-route').value.trim() || "Bandung";
-            
-            const jalurVal = document.getElementById('train-modal-jalur').value;
-            const arahVal = document.getElementById('train-modal-arah').value;
-            const track = `${jalurVal} ${arahVal}`;
-
-            const sf = document.getElementById('train-modal-sf').value.trim() || "Premium 1";
-            const stops = document.getElementById('train-modal-stops').value.trim() || "Kebumen, Kroya";
-
-            const newTrain = { no, name, route, track, sf, stops };
-            if(index >= 0) {
-                trainList[index] = newTrain;
-                showToast("Data kereta berhasil diperbarui");
-            } else {
-                trainList.push(newTrain);
-                showToast("Kereta baru berhasil ditambahkan");
-            }
-            saveToStorage();
-            closeTrainModal();
-            renderTrainTable();
-        }
-
-        function deleteTrain(index) {
-            if(confirm("Apakah Anda yakin ingin menghapus jadwal kereta ini?")) {
-                trainList.splice(index, 1);
-                saveToStorage();
-                renderTrainTable();
-                showToast("Data kereta dihapus");
-            }
-        }
-
-        function onParameterChange() {
-            const selKeretaValue = document.getElementById('sel-kereta').value;
-            const selectedIndex = document.getElementById('sel-teksbaku').value;
-            const item = teksBakuList[selectedIndex];
-            
-            if (!item) return;
-
-            // Ambil data kereta aktif berdasarkan dropdown
-            let currentTrain = trainList.find(t => `${t.no} - ${t.name}` === selKeretaValue) || trainList[0] || {};
-            const selectedJalur = document.getElementById('sel-jalur').value;
-
-            // Ambil teks dasar dari teks baku
-            let text = item.isi || "";
-
-            // Proses penggantian variabel (termasuk st_perhentian)
-            text = text.replace(/{no_ka}/g, currentTrain.no || '');
-            text = text.replace(/{nama_ka}/g, currentTrain.name || '');
-            text = text.replace(/{jalur}/g, selectedJalur || '');
-            text = text.replace(/{dari_arah}/g, currentTrain.route ? currentTrain.route.split('-')[0].trim() : '');
-            text = text.replace(/{tujuan}/g, currentTrain.route || '');
-            text = text.replace(/{sf_rangkaian}/g, currentTrain.sf || '');
-            text = text.replace(/{st_perhentian}/g, currentTrain.stops || '');
-
-            // Masukkan hasil ke textarea skrip pengumuman
-            document.getElementById('script-textarea').value = text;
-        }
-
-        function insertVariable(variable) {
-    // Cek apakah modal sedang aktif/terbuka dan fokus ke textarea modal
-    const modalTextarea = document.getElementById('modal-isi'); // Sesuaikan dengan ID textarea di modal Anda
-    const mainTextarea = document.getElementById('isi-teks-utama'); // Sesuaikan jika ada textarea utama
-
-    // Jika modal sedang terbuka atau aktif, masukkan ke textarea modal
-    if (modalTextarea && document.getElementById('modal-tambah-teks').classList.contains('flex')) { // Sesuaikan kelas penampil modal Anda
-        let start = modalTextarea.selectionStart;
-        let end = modalTextarea.selectionEnd;
-        let text = modalTextarea.value;
-        
-        modalTextarea.value = text.substring(0, start) + variable + text.substring(end);
-        modalTextarea.focus();
-        modalTextarea.setSelectionRange(start + variable.length, start + variable.length);
-    } else if (mainTextarea) {
-        // Logika untuk textarea utama jika diperlukan
-        let start = mainTextarea.selectionStart;
-        let end = mainTextarea.selectionEnd;
-        let text = mainTextarea.value;
-        
-        mainTextarea.value = text.substring(0, start) + variable + text.substring(end);
-        mainTextarea.focus();
-        mainTextarea.setSelectionRange(start + variable.length, start + variable.length);
-    }
-}
-
-        function loadEmergencyScript(type) {
-            let t = "";
-            if (type === 'evakuasi') t = "Perhatian darurat kepada seluruh penumpang dan pengunjung Stasiun Gombong, harap segera keluar menuju titik kumpul evakuasi terdekat.";
-            else if (type === 'ketinggalan') t = "Pengumuman kepada pemilik barang tertinggal di ruang tunggu Stasiun Gombong, silakan melapor ke petugas pusat informasi.";
-            else if (type === 'gempa') t = "Peringatan gempa bumi! Kepada seluruh penumpang di dalam gedung Stasiun Gombong, harap berlindung di bawah kursi atau meja.";
-            else if (type === 'dokter') t = "Panggilan darurat bagi penumpang berprofesi medis di Stasiun Gombong, mohon segera menuju ke pos pelayanan kesehatan stasiun.";
-            document.getElementById('emergency-textarea').value = t;
-            showToast("Skrip darurat dimuat.");
-        }
-
-        const synth = window.speechSynthesis;
-        let audioCtx = null;
-        let masterVol = 1.0;
-        let waveInterval = null;
-
-        function getAudioContext() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            return audioCtx;
-        }
-function formatSmartTTS(text, trainObj) {
-            let spelledNo = "";
-            if (trainObj && trainObj.no) {
-                spelledNo = spellCharacters(trainObj.no);
-            }
-
-            // Konversi waktu / jam terlebih dahulu agar aman
-            let result = formatSpokenTime(text);
-
-            // Mapping variabel penulisan otomatis
-            result = result
-                .replace(/{no_ka}/g, spelledNo)
-                .replace(/{nama_ka}/g, trainObj ? trainObj.name : "")
-                .replace(/{jalur}/g, document.getElementById('genPlatform').value || trainObj.platform)
-                .replace(/{dari_arah}/g, trainObj ? (trainObj.direction || "dari arah timur") : "")
-                .replace(/{tujuan}/g, trainObj ? trainObj.route : "")
-                .replace(/{sta_perhentian}/g, trainObj && trainObj.stops ? trainObj.stops : "Gombong")
-                .replace(/{sf_rangkaian}/g, trainObj && trainObj.composition ? trainObj.composition : "")
-                // Kompatibilitas variabel lama
-                .replace(/{train_type}/g, "Kereta Api")
-                .replace(/{train_name}/g, trainObj ? trainObj.name : "")
-                .replace(/{train_no}/g, spelledNo)
-                .replace(/{train_route}/g, trainObj ? trainObj.route : "")
-                .replace(/{platform}/g, document.getElementById('genPlatform').value)
-                .replace(/{direction}/g, trainObj ? (trainObj.direction || "dari arah timur") : "")
-                .replace(/{composition}/g, trainObj ? (trainObj.composition || "") : "");
-
-            // Pengejaan kode/nomor lepas bebas di luar jam
-            result = result.replace(/\b[0-9]+[a-zA-Z0-9]*\b/g, (match, offset, string) => {
-                let charBefore = string[offset - 1];
-                let charAfter = string[offset + match.length];
-                if (charBefore === ':' || charBefore === '.' || charAfter === ':' || charAfter === '.') {
-                    return match; 
-                }
-                if (match.includes(':') || match.includes('.')) return match;
-                return spellCharacters(match);
-            });
-
-            return result.replace(/\bKA\b/g, "Kereta Api");
-        }
-        const multilingualTemplates = {
-            id: "Perhatian kepada seluruh penumpang, {no_ka} {nama_ka} tujuan {tujuan}, {dari_arah}, akan segera masuk di {jalur}. Rangkaian terdiri dari {sf_rangkaian}. Terima kasih.",
-            en: "Attention please, train number {no_ka} {nama_ka}, bound for {tujuan}, {dari_arah}, will shortly arrive on {jalur}. Thank you.",
-            jv: "Kawigatosan dhumateng para paraga penumpang, Sepur {no_ka} {nama_ka} tujuwan {tujuan}, {dari_arah}, badhe segera mlebet ing {jalur}. Matur nuwun."
-        };
-
-        function playAnnouncement() {
-            const text = document.getElementById('genScriptText').value;
-            const val = document.getElementById('trainSearchInput').value;
-            const trainNo = val.split(' - ')[0].trim();
-            const train = appData.trains.find(t => t.no.toLowerCase() === trainNo.toLowerCase() || t.name.toLowerCase() === trainNo.toLowerCase()) || appData.trains[0];
-
-            const sequence = [
-                { langCode: 'id-ID', template: text }, // Bahasa Indonesia (dari input form)
-                { langCode: 'en-US', template: multilingualTemplates.en }, // Bahasa Inggris
-                { langCode: 'jv-ID', template: multilingualTemplates.jv }  // Bahasa Jawa Krama Alus
-            ];
-
-            const openingTone = document.getElementById('genChimeOpening').value;
-            const closingTone = document.getElementById('genChimeClosing').value;
-            
-            document.getElementById('playerStatusLabel').innerText = "Memutar Chime Pembuka...";
-            
-            playChimeTone(openingTone, () => {
-                let currentIndex = 0;
-
-                function playNextLanguage() {
-                    if (currentIndex >= sequence.length) {
-                        if (closingTone !== 'none') {
-                            document.getElementById('playerStatusLabel').innerText = "Memutar Chime Penutup...";
-                            playChimeTone(closingTone, () => {
-                                document.getElementById('playerStatusLabel').innerText = "Selesai";
-                            });
-                        } else {
-                            document.getElementById('playerStatusLabel').innerText = "Selesai";
-                        }
-                        return;
-                    }
-
-                    const current = sequence[currentIndex];
-                    document.getElementById('playerStatusLabel').innerText = `Memutar Pengumuman (${current.langCode.toUpperCase()})...`;
-
-                    const processedText = formatSmartTTS(current.template, train);
-
-                    if ('speechSynthesis' in window) {
-                        const utterance = new SpeechSynthesisUtterance(processedText);
-                        utterance.lang = current.langCode;
-                        utterance.rate = 0.95;
-
-                        // Pilih suara lokal browser (TTS sistem) yang sesuai dengan bahasa
-                        let voices = window.speechSynthesis.getVoices();
-                        let selectedVoice = voices.find(v => v.lang.startsWith(current.langCode.slice(0, 2)));
-                        if (selectedVoice) utterance.voice = selectedVoice;
-
-                        utterance.onend = () => {
-                            currentIndex++;
-                            setTimeout(playNextLanguage, 500); 
-                        };
-
-                        utterance.onerror = () => {
-                            currentIndex++;
-                            playNextLanguage();
-                        };
-
-                        window.speechSynthesis.speak(utterance);
-                    }
-                }
-
-                playNextLanguage();
-            });
-        }
-        function playChimeTone(type) {
-            const ctx = getAudioContext();
-            const now = ctx.currentTime;
-            const gainNode = ctx.createGain();
-            gainNode.gain.setValueAtTime(masterVol, now);
-            gainNode.connect(ctx.destination);
-
-            if (type === 'nada_a') {
-                playOsc(ctx, gainNode, 783.99, now, 0.7);
-                playOsc(ctx, gainNode, 659.25, now + 0.8, 1.0);
-            } else if (type === 'nada_b') {
-                playOsc(ctx, gainNode, 880, now, 0.5);
-                playOsc(ctx, gainNode, 1108.73, now + 0.4, 0.8);
-            } else if (type === 'nada_c') {
-                playBell(ctx, gainNode, 1300, now, 0.4);
-                playBell(ctx, gainNode, 980, now + 0.3, 0.6);
-            }
-            showToast("Memutar audio chime stasiun...");
-        }
-
-        function playOsc(ctx, dest, freq, start, dur) {
-            const osc = ctx.createOscillator();
-            const g = ctx.createGain();
-            osc.frequency.setValueAtTime(freq, start);
-            g.gain.setValueAtTime(0, start);
-            g.gain.linearRampToValueAtTime(0.4, start + 0.05);
-            g.gain.exponentialRampToValueAtTime(0.001, start + dur);
-            osc.connect(g); g.connect(dest);
-            osc.start(start); osc.stop(start + dur);
-        }
-
-        function playBell(ctx, dest, freq, start, dur) {
-            const osc = ctx.createOscillator();
-            const g = ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, start);
-            g.gain.setValueAtTime(0, start);
-            g.gain.linearRampToValueAtTime(0.6, start + 0.02);
-            g.gain.exponentialRampToValueAtTime(0.001, start + dur);
-            osc.connect(g); g.connect(dest);
-            osc.start(start); osc.stop(start + dur);
-        }
-
-        function startBroadcast() {
-            const text = document.getElementById('script-textarea').value;
-            if (!text.trim()) return;
-
-            synth.cancel();
-            if (waveInterval) clearInterval(waveInterval);
-
-            document.getElementById('player-status-label').textContent = "SEDANG MENYIARKAN...";
-            document.getElementById('player-status-label').className = "text-xs font-bold tracking-widest text-emerald-400 uppercase animate-pulse";
-            document.getElementById('player-subtext').textContent = "Audio sedang disiarkan ke pengeras suara peron";
-            startWaveAnimation();
-
-            const chimeIn = document.getElementById('sel-chime-in').value;
-            const chimeOut = document.getElementById('sel-chime-out').value;
-
-            let delay = 0;
-            if (chimeIn !== 'tanpa_chime') {
-                playChimeTone(chimeIn);
-                delay = 2000;
-            }
-
-            setTimeout(() => {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.92;
-                utterance.volume = masterVol;
-
-                utterance.onend = () => {
-                    if (chimeOut !== 'tanpa_chime') playChimeTone(chimeOut);
-                    setTimeout(() => stopBroadcastResetUI(), 1500);
-                };
-                utterance.onerror = () => stopBroadcastResetUI();
-                synth.speak(utterance);
-            }, delay);
-        }
-
-        function playEmergencyBroadcast() {
-            const text = document.getElementById('emergency-textarea').value;
-            if (!text.trim()) return;
-
-            synth.cancel();
-            if (waveInterval) clearInterval(waveInterval);
-
-            document.getElementById('player-status-label').textContent = "SIARAN DARURAT...";
-            document.getElementById('player-status-label').className = "text-xs font-bold tracking-widest text-rose-500 uppercase animate-pulse";
-            document.getElementById('player-subtext').textContent = "Peringatan darurat stasiun disiarkan";
-            startWaveAnimation();
-
-            playChimeTone('nada_a');
-            setTimeout(() => {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.95;
-                utterance.volume = masterVol;
-                utterance.onend = () => setTimeout(() => stopBroadcastResetUI(), 1000);
-                synth.speak(utterance);
-            }, 2000);
-        }
-
-        function stopBroadcast() {
-            synth.cancel();
-            stopBroadcastResetUI();
-            showToast("Pengumuman dihentikan secara manual.");
-        }
-
-        function stopBroadcastResetUI() {
-            if (waveInterval) { clearInterval(waveInterval); waveInterval = null; }
-            resetWaveBars();
-            document.getElementById('player-status-label').textContent = "SIAP DIPUTAR";
-            document.getElementById('player-status-label').className = "text-xs font-bold tracking-widest text-slate-400 uppercase";
-            document.getElementById('player-subtext').textContent = "Sistem PA Stasiun Gombong aktif";
-        }
-
-        function startWaveAnimation() {
-            const bars = document.querySelectorAll('#audio-waves div');
-            waveInterval = setInterval(() => {
-                bars.forEach(bar => {
-                    const h = Math.floor(Math.random() * 50) + 8;
-                    bar.style.height = h + 'px';
-                    bar.className = "w-1.5 bg-emerald-500 rounded-full transition-all duration-150";
-                });
-            }, 120);
-        }
-
-        function resetWaveBars() {
-            const bars = document.querySelectorAll('#audio-waves div');
-            const defaults = [12, 28, 16, 40, 48, 32, 20, 36, 16];
-            bars.forEach((bar, idx) => {
-                bar.style.height = defaults[idx] + 'px';
-                bar.className = "w-1.5 bg-slate-700 rounded-full transition-all duration-150";
-            });
-        }
-
-        function updateMasterVolume(val) {
-            masterVol = val / 100;
-            document.getElementById('vol-display').textContent = val + '%';
-        }
-
-        function downloadBackup() {
-            const data = {
-                station: "Stasiun Gombong (GBG)",
-                version: "2.9",
-                timestamp: new Date().toISOString(),
-                teksbaku: teksBakuList,
-                trains: trainList
+        function replaceVariables(text,train){
+            train=train||getSelectedTrain()||{};
+            const platform=String(train.platform||'').trim() || String(train.track||'').match(/Jalur\s*\d+/i)?.[0] || '';
+            const direction=String(train.direction||'').trim() || (String(train.track||'').replace(/^.*?Jalur\s*\d+\s*/i,'').trim());
+            const stops=String(train.stops||train.sta_perhentian||train.st_perhentian||'').trim();
+            const sf=String(train.sf||train.composition||'').trim();
+            const values={
+                no_ka:train.no||'', nama_ka:train.name||'', jalur:platform, dari_arah:direction,
+                tujuan:train.route||'', sta_perhentian:stops, st_perhentian:stops, sf_rangkaian:sf,
+                tujuan_akhir:train.route||'', train_type:'Kereta Api', train_name:train.name||'',
+                train_no:train.no||'', train_route:train.route||'', platform:platform, direction:direction, composition:sf
             };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'gombong-announcer-backup.json';
-            a.click();
-            showToast("File cadangan data berhasil diunduh.");
+            return String(text||'').replace(/\{([a-zA-Z0-9_]+)\}/g,(m,k)=>values[k]!==undefined?values[k]:m);
+        }
+        function syncGeneratorTrainData(){
+            const tr=getSelectedTrain();
+            const sel=document.getElementById('sel-jalur');
+            if(sel&&tr.platform){
+                const option=[...sel.options].find(o=>o.value===tr.platform);
+                if(option)sel.value=tr.platform;
+            }
+        }
+        function onTeksBakuSelect(index){
+            const t=teksBakuList[Number(index)];if(!t)return;
+            document.getElementById('sel-chime-in').value=t.chimeIn||'nada_a';
+            document.getElementById('sel-chime-out').value=t.chimeOut||'nada_b';
+            onParameterChange();
+        }
+        function onParameterChange(){
+            const t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)];if(!t)return;
+            syncGeneratorTrainData();
+            const tr=getSelectedTrain();
+            const id=replaceVariables(t.isiID,tr);
+            document.getElementById('script-textarea').value=id;
+            document.getElementById('preview-id').textContent=id;
+            document.getElementById('preview-en').textContent=replaceVariables(t.isiEN||translateIdToEn(t.isiID),tr);
+            document.getElementById('preview-jv').textContent=replaceVariables(t.isiJV||translateIdToJv(t.isiID),tr);
+        }
+        function insertGeneratorVariable(variable){
+            const ta=document.getElementById('script-textarea');
+            if(!ta)return;
+            const s=ta.selectionStart??ta.value.length,e=ta.selectionEnd??ta.value.length;
+            ta.value=ta.value.slice(0,s)+variable+ta.value.slice(e);
+            ta.focus();ta.setSelectionRange(s+variable.length,s+variable.length);
+            const tr=getSelectedTrain();
+            document.getElementById('preview-id').textContent=replaceVariables(ta.value,tr);
+            document.getElementById('preview-en').textContent=translateIdToEn(ta.value);
+            document.getElementById('preview-jv').textContent=translateIdToJv(ta.value);
+        }
+        function insertVariable(variable){
+            const ta=document.getElementById('modal-isi');
+            if(!ta)return;
+            const s=ta.selectionStart??ta.value.length,e=ta.selectionEnd??ta.value.length;
+            ta.value=ta.value.slice(0,s)+variable+ta.value.slice(e);
+            ta.focus();ta.setSelectionRange(s+variable.length,s+variable.length);
         }
 
-        function triggerLoadData() {
-            document.getElementById('file-input-backup').click();
+        function openTeksModal(index){
+            document.getElementById('teks-modal').classList.remove('hidden');document.getElementById('edit-index').value=index;
+            if(index>=0){const t=teksBakuList[index];document.getElementById('modal-title').textContent='Edit Teks Baku';document.getElementById('modal-kategori').value=t.kategori;document.getElementById('modal-judul').value=t.judul;document.getElementById('modal-chime-in').value=t.chimeIn;document.getElementById('modal-chime-out').value=t.chimeOut;document.getElementById('modal-isi').value=t.isiID;document.getElementById('modal-isi-en').value=t.isiEN;document.getElementById('modal-isi-jv').value=t.isiJV;}
+            else{document.getElementById('modal-title').textContent='Tambah Teks Baku Baru';document.getElementById('modal-kategori').value='umum';document.getElementById('modal-judul').value='Template Baru';document.getElementById('modal-chime-in').value='nada_a';document.getElementById('modal-chime-out').value='nada_b';document.getElementById('modal-isi').value='';document.getElementById('modal-isi-en').value='';document.getElementById('modal-isi-jv').value='';}
         }
+        function closeTeksModal(){document.getElementById('teks-modal').classList.add('hidden');}
+        function saveTeksBaku(){
+            const i=Number(document.getElementById('edit-index').value),obj={id:i>=0?teksBakuList[i].id:uid('tpl'),kategori:document.getElementById('modal-kategori').value.trim()||'umum',judul:document.getElementById('modal-judul').value.trim()||'Tanpa Judul',chimeIn:document.getElementById('modal-chime-in').value,chimeOut:document.getElementById('modal-chime-out').value,isiID:document.getElementById('modal-isi').value.trim(),isiEN:document.getElementById('modal-isi-en').value.trim(),isiJV:document.getElementById('modal-isi-jv').value.trim()};
+            if(!obj.isiEN||!obj.isiJV){autoTranslateTemplate(true,obj);}
+            if(i>=0)teksBakuList[i]=obj;else teksBakuList.push(obj);saveToStorage();closeTeksModal();renderTeksBakuTable();showToast('Teks baku tersimpan.');
+        }
+        function deleteTeksBaku(i){if(confirm('Hapus teks baku ini?')){teksBakuList.splice(i,1);saveToStorage();renderTeksBakuTable();}}
 
-        function handleFileImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const json = JSON.parse(e.target.result);
-                    if (json.teksbaku) teksBakuList = json.teksbaku;
-                    if (json.trains) trainList = json.trains;
-                    saveToStorage();
-                    renderTeksBakuTable();
-                    renderTrainTable();
-                    showToast("Data cadangan berhasil dimuat!");
-                } catch(err) {
-                    showToast("Gagal membaca file JSON cadangan.");
+        function openTrainModal(i){
+            document.getElementById('train-modal').classList.remove('hidden');document.getElementById('train-edit-index').value=i;
+            if(i>=0){const t=trainList[i];document.getElementById('train-modal-title').textContent='Edit Kereta';document.getElementById('train-modal-no').value=t.no;document.getElementById('train-modal-name').value=t.name;document.getElementById('train-modal-route').value=t.route;document.getElementById('train-modal-jalur').value=t.platform||'Jalur 2';document.getElementById('train-modal-arah').value=t.direction||'Dan Arah Timur';document.getElementById('train-modal-sf').value=t.sf||'';document.getElementById('train-modal-stops').value=t.stops||'';}
+            else{document.getElementById('train-modal-title').textContent='Tambah Kereta Baru';document.getElementById('train-modal-no').value='';document.getElementById('train-modal-name').value='';document.getElementById('train-modal-route').value='';document.getElementById('train-modal-jalur').value='Jalur 2';document.getElementById('train-modal-arah').value='Dan Arah Timur';document.getElementById('train-modal-sf').value='';document.getElementById('train-modal-stops').value='';}
+        }
+        function closeTrainModal(){document.getElementById('train-modal').classList.add('hidden');}
+        function addSfComponent(type){const input=document.getElementById('train-modal-sf'),v=input.value.trim(),count=(v.match(new RegExp(type.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'))||[]).length+1;const add=(type==='Kereta Makan'||type==='Pembangkit')?type:`${type} ${count}`;input.value=v?(v+', '+add):add;}
+        function resetSfComponent(){document.getElementById('train-modal-sf').value='';}
+        function saveTrainData(){
+            const i=Number(document.getElementById('train-edit-index').value),no=document.getElementById('train-modal-no').value.trim(),name=document.getElementById('train-modal-name').value.trim(),route=document.getElementById('train-modal-route').value.trim(),platform=document.getElementById('train-modal-jalur').value,direction=document.getElementById('train-modal-arah').value,sf=document.getElementById('train-modal-sf').value.trim(),stops=document.getElementById('train-modal-stops').value.trim();
+            if(!no||!name||!route){showToast('Nomor, nama, dan tujuan wajib diisi.');return;}
+            const obj={no,name,route,platform,direction,track:`${platform} ${direction}`,sf,composition:sf,stops};
+            if(i>=0)trainList[i]=obj;else trainList.push(obj);saveToStorage();closeTrainModal();renderTrainTable();showToast(i>=0?'Data kereta diperbarui.':'Kereta ditambahkan.');
+        }
+        function deleteTrain(i){if(confirm('Hapus data kereta ini?')){trainList.splice(i,1);saveToStorage();renderTrainTable();showToast('Data kereta dihapus.');}}
+
+        // Emergency CRUD
+        function renderEmergencyList(){
+            const box=document.getElementById('emergency-list');if(!box)return;
+            box.innerHTML=emergencyList.map((x,i)=>`<div class="bg-[#0b1329] border border-[#1e2d5c] p-4 rounded-xl">
+              <h3 class="text-xs font-bold text-amber-400">${esc(x.title)}</h3><p class="text-[11px] text-slate-400 mt-1">${esc(x.description)}</p>
+              <div class="flex gap-2 mt-3"><button onclick="loadEmergencyScript(${i})" class="bg-[#141e3d] px-3 py-2 rounded-lg text-[11px]">Pilih</button><button onclick="openEmergencyModal(${i})" class="text-amber-400 px-2"><i class="fa-solid fa-pen"></i></button><button onclick="deleteEmergency(${i})" class="text-rose-400 px-2"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');
+            if(emergencyList[0]&&!document.getElementById('emergency-textarea').value)loadEmergencyScript(0);
+        }
+        function loadEmergencyScript(i){const x=emergencyList[Number(i)];if(x){document.getElementById('emergency-textarea').value=x.text;showToast('Skrip darurat dipilih.');}}
+        function openEmergencyModal(i){document.getElementById('emergency-modal').classList.remove('hidden');document.getElementById('emergency-edit-index').value=i;if(i>=0){const x=emergencyList[i];document.getElementById('emergency-title').value=x.title;document.getElementById('emergency-desc').value=x.description;document.getElementById('emergency-script').value=x.text;}else{document.getElementById('emergency-title').value='';document.getElementById('emergency-desc').value='';document.getElementById('emergency-script').value='';}}
+        function closeEmergencyModal(){document.getElementById('emergency-modal').classList.add('hidden');}
+        function saveEmergency(){const i=Number(document.getElementById('emergency-edit-index').value),x={id:i>=0?emergencyList[i].id:uid('emg'),title:document.getElementById('emergency-title').value.trim(),description:document.getElementById('emergency-desc').value.trim(),text:document.getElementById('emergency-script').value.trim()};if(!x.title||!x.text){showToast('Judul dan teks wajib diisi.');return;}if(i>=0)emergencyList[i]=x;else emergencyList.push(x);saveToStorage();closeEmergencyModal();renderEmergencyList();}
+        function deleteEmergency(i){if(confirm('Hapus pengumuman darurat ini?')){emergencyList.splice(i,1);saveToStorage();renderEmergencyList();}}
+
+        // Chime CRUD
+        function renderChimeList(){const box=document.getElementById('chime-list');if(!box)return;box.innerHTML=chimeList.map((x,i)=>`<div class="bg-[#070b19] border border-[#1e2d5c] p-4 rounded-xl flex items-center justify-between"><div><h3 class="text-xs font-bold text-white">${esc(x.name)}</h3><p class="text-[11px] text-slate-400">${esc(x.description)}</p></div><div class="flex gap-2"><button onclick="playChimeTone('${esc(x.id)}')" class="text-amber-400 p-2"><i class="fa-solid fa-play"></i></button><button onclick="openChimeModal(${i})" class="text-amber-400 p-2"><i class="fa-solid fa-pen"></i></button><button onclick="deleteChime(${i})" class="text-rose-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');}
+        function openChimeModal(i){document.getElementById('chime-modal').classList.remove('hidden');document.getElementById('chime-edit-index').value=i;if(i>=0){const x=chimeList[i];document.getElementById('chime-id').value=x.id;document.getElementById('chime-name').value=x.name;document.getElementById('chime-desc').value=x.description;}else{document.getElementById('chime-id').value=uid('chime');document.getElementById('chime-name').value='';document.getElementById('chime-desc').value='';}}
+        function closeChimeModal(){document.getElementById('chime-modal').classList.add('hidden');}
+        function saveChime(){const i=Number(document.getElementById('chime-edit-index').value),x={id:document.getElementById('chime-id').value.trim(),name:document.getElementById('chime-name').value.trim(),description:document.getElementById('chime-desc').value.trim()};if(!x.id||!x.name){showToast('ID dan nama chime wajib diisi.');return;}if(i>=0)chimeList[i]=x;else chimeList.push(x);saveToStorage();closeChimeModal();renderChimeList();refreshChimeSelects();}
+        function deleteChime(i){if(confirm('Hapus chime ini?')){chimeList.splice(i,1);saveToStorage();renderChimeList();refreshChimeSelects();}}
+        function refreshChimeSelects(){['sel-chime-in','sel-chime-out','modal-chime-in','modal-chime-out'].forEach(id=>{const s=document.getElementById(id);if(s)s.innerHTML=chimeList.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')+`<option value="tanpa_chime">Tanpa Chime</option>`;});}
+
+        // Narrator CRUD + upload audio (rekaman, bukan voice AI)
+        function renderNarratorList(){
+            const box=document.getElementById('narrator-list');if(!box)return;
+            box.innerHTML=narratorList.length?narratorList.map((x,i)=>`<div class="bg-[#070b19] border border-[#1e2d5c] p-4 rounded-xl flex items-center justify-between gap-3"><div><h3 class="text-xs font-bold text-white">${esc(x.name)}</h3><p class="text-[11px] text-slate-400">${esc(x.description||'Suara baku sistem dari rekaman upload.')}</p><p class="text-[10px] text-emerald-400 mt-1">ID: ${x.audioId?'✓':'—'} &nbsp; EN: ${x.audioEn?'✓':'—'} &nbsp; JV: ${x.audioJv?'✓':'—'}</p></div><div class="flex gap-1"><button onclick="setNarrator(${i})" class="text-emerald-400 p-2" title="Gunakan"><i class="fa-solid fa-check"></i></button><button onclick="previewNarrator(${i})" class="text-amber-400 p-2" title="Preview"><i class="fa-solid fa-play"></i></button><button onclick="openNarratorModal(${i})" class="text-amber-400 p-2"><i class="fa-solid fa-pen"></i></button><button onclick="deleteNarrator(${i})" class="text-rose-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`).join(''):`<div class="text-xs text-slate-500 p-4 border border-dashed border-[#1e2d5c] rounded-xl">Belum ada narator. Tambahkan rekaman suara.</div>`;
+        }
+        function setNarrator(i){activeNarratorIndex=i;updateNarratorSelect();showToast('Narator dipilih.');}
+        function updateNarratorSelect(){const s=document.getElementById('sel-narrator');if(!s)return;s.innerHTML=narratorList.map((x,i)=>`<option value="${i}">${esc(x.name)}</option>`).join('')||'<option value="-1">Belum ada narator upload</option>';s.value=String(activeNarratorIndex);}
+        function openNarratorModal(i){document.getElementById('narrator-modal').classList.remove('hidden');document.getElementById('narrator-edit-index').value=i;if(i>=0){const x=narratorList[i];document.getElementById('narrator-name').value=x.name;document.getElementById('narrator-desc').value=x.description||'';}else{document.getElementById('narrator-name').value='';document.getElementById('narrator-desc').value='';}}
+        function closeNarratorModal(){document.getElementById('narrator-modal').classList.add('hidden');}
+        function fileToDataUrl(file){return new Promise((res,rej)=>{if(!file)return res('');if(file.size>8*1024*1024)return rej(new Error('Ukuran audio maksimal 8 MB per file.'));const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
+        async function saveNarrator(){const i=Number(document.getElementById('narrator-edit-index').value),old=i>=0?narratorList[i]:{},x={id:old.id||uid('voice'),name:document.getElementById('narrator-name').value.trim(),description:document.getElementById('narrator-desc').value.trim(),audioId:old.audioId||'',audioEn:old.audioEn||'',audioJv:old.audioJv||''};if(!x.name){showToast('Nama narator wajib diisi.');return;}try{x.audioId=await fileToDataUrl(document.getElementById('narrator-audio-id').files[0])||x.audioId;x.audioEn=await fileToDataUrl(document.getElementById('narrator-audio-en').files[0])||x.audioEn;x.audioJv=await fileToDataUrl(document.getElementById('narrator-audio-jv').files[0])||x.audioJv;}catch(e){showToast(e.message);return;}if(i>=0)narratorList[i]=x;else{narratorList.push(x);activeNarratorIndex=narratorList.length-1;}saveToStorage();closeNarratorModal();renderNarratorList();updateNarratorSelect();showToast('Narator tersimpan.');}
+        function deleteNarrator(i){if(confirm('Hapus narator ini?')){narratorList.splice(i,1);if(activeNarratorIndex>=narratorList.length)activeNarratorIndex=0;saveToStorage();renderNarratorList();updateNarratorSelect();}}
+        function previewNarrator(i){const x=narratorList[i];if(!x)return;const u=x.audioId||x.audioEn||x.audioJv;if(u){stopAudio();activeAudio=new Audio(u);activeAudio.volume=masterVol;activeAudio.play().catch(()=>{});}}
+        function stopAudio(){if(activeAudio){activeAudio.pause();activeAudio.currentTime=0;activeAudio=null;}synth.cancel();}
+
+        // Template translation: deterministic built-in conversion for station phrases and variables.
+        function translateIdToEn(s){let x=s;const map=[['Perhatian kepada seluruh penumpang','Attention please, all passengers'],['Pengumuman untuk penumpang','Attention passengers'],['tujuan','bound for'],['dari arah','from'],['sesaat lagi akan tiba di','will shortly arrive on'],['Rangkaian terdiri dari','The train formation consists of'],['Stasiun perhentian:','Stopping stations:'],['Dipersilakan segera naik melalui','Please board the train at'],['Kereta akan diberangkatkan dalam waktu dekat','The train will depart shortly'],['Terima kasih','Thank you']];map.forEach(([a,b])=>x=x.replaceAll(a,b));return x;}
+        function translateIdToJv(s){let x=s;const map=[['Perhatian kepada seluruh penumpang','Kawigatosan dhumateng para penumpang'],['Pengumuman untuk penumpang','Pangumuman dhumateng para penumpang'],['tujuan','kanthi ancas'],['dari arah','saking'],['sesaat lagi akan tiba di','badhe dumugi ing'],['Rangkaian terdiri dari','Rangkaianipun kasusun saking'],['Stasiun perhentian:','Stasiun mandheg:'],['Dipersilakan segera naik melalui','Dipun aturi enggal mlebet lumantar'],['Kereta akan diberangkatkan dalam waktu dekat','Sepur badhe budhal sakedhap malih'],['Terima kasih','Matur nuwun']];map.forEach(([a,b])=>x=x.replaceAll(a,b));return x;}
+        function autoTranslateTemplate(silent=false,obj=null){const idText=obj?obj.isiID:document.getElementById('modal-isi').value;const en=translateIdToEn(idText),jv=translateIdToJv(idText);if(obj){obj.isiEN=obj.isiEN||en;obj.isiJV=obj.isiJV||jv;return;}document.getElementById('modal-isi-en').value=en;document.getElementById('modal-isi-jv').value=jv;if(!silent)showToast('Terjemahan EN + Jawa Krama Alus dibuat.');}
+
+        function resolveNarrator(){const i=Number(document.getElementById('sel-narrator')?.value);return narratorList[i]||narratorList[activeNarratorIndex]||null;}
+        function spellCharacters(v){return String(v||'').replace(/[0-9A-Za-z]+/g,m=>m);}
+        function formatSpokenTime(t){return t;}
+
+        function playSequence(templateList,train,closingTone='tanpa_chime'){
+            stopAudio();
+            let idx=0;
+            const narrator=resolveNarrator();
+            const run=()=>{
+                if(idx>=templateList.length){
+                    if(closingTone!=='tanpa_chime') playChimeTone(closingTone,()=>document.getElementById('player-status-label').textContent='SELESAI');
+                    else document.getElementById('player-status-label').textContent='SELESAI';
+                    stopWaveAnimation();
+                    return;
                 }
-            };
-            reader.readAsText(file);
+                const item=templateList[idx],text=replaceVariables(item.text,train);
+                document.getElementById('player-status-label').textContent=`MEMUTAR ${item.label}`;
+                const uploaded=narrator && (idx===0?narrator.audioId:idx===1?narrator.audioEn:narrator.audioJv);
+                if(uploaded){
+                    activeAudio=new Audio(uploaded);activeAudio.volume=masterVol;
+                    activeAudio.onended=()=>{idx++;setTimeout(run,400);};activeAudio.onerror=()=>{idx++;run();};activeAudio.play().catch(()=>{idx++;run();});
+                }else if('speechSynthesis' in window){
+                    const u=new SpeechSynthesisUtterance(text);u.lang=item.lang;u.rate=.92;u.volume=masterVol;
+                    u.onend=()=>{idx++;setTimeout(run,400)};u.onerror=()=>{idx++;run()};synth.speak(u);
+                }else{idx++;run();}
+            };run();
         }
 
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.className = "fixed bottom-6 right-6 bg-[#141e3d] border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-50 text-xs font-medium flex items-center gap-3 animate-bounce";
-            t.innerHTML = `<i class="fa-solid fa-circle-check text-amber-400 text-base"></i> <span>${msg}</span>`;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 3000);
+        function startBroadcast(){
+            const train=getSelectedTrain(),t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)];
+            if(!t){showToast('Teks baku belum tersedia.');return;}
+            const generatorText=document.getElementById('script-textarea')?.value?.trim()||t.isiID||'';
+            const seq=[{label:'INDONESIA',lang:'id-ID',text:generatorText},{label:'ENGLISH',lang:'en-US',text:translateIdToEn(generatorText)},{label:'JAWA KRAMA ALUS',lang:'jv-ID',text:translateIdToJv(generatorText)}];
+            const cin=document.getElementById('sel-chime-in').value,cout=document.getElementById('sel-chime-out').value;
+            synth.cancel();document.getElementById('player-status-label').textContent='MEMUTAR CHIME...';startWaveAnimation();
+            const go=()=>{if(cin!=='tanpa_chime')playChimeTone(cin);setTimeout(()=>playSequence(seq,train,cout),cin==='tanpa_chime'?0:1400);};go();
+            // closing chime after the audio sequence is handled by a small wrapper
+            setTimeout(()=>{},0);
         }
 
-        window.onload = function() {
-            renderTrainTable();
-            renderTeksBakuTable();
+        function playEmergencyBroadcast(){const text=document.getElementById('emergency-textarea').value.trim();if(!text)return;stopAudio();document.getElementById('player-status-label').textContent='SIARAN DARURAT...';startWaveAnimation();if('speechSynthesis'in window){const u=new SpeechSynthesisUtterance(text);u.lang='id-ID';u.volume=masterVol;u.onend=stopBroadcastResetUI;synth.speak(u);}}
+        function playChimeTone(type,cb){const ctx=getAudioContext(),now=ctx.currentTime,gain=ctx.createGain();gain.gain.setValueAtTime(masterVol,now);gain.connect(ctx.destination);if(type==='nada_a'){playOsc(ctx,gain,783.99,now,.7);playOsc(ctx,gain,659.25,now+.8,1)}else if(type==='nada_b'){playOsc(ctx,gain,880,now,.5);playOsc(ctx,gain,1108.73,now+.4,.8)}else if(type==='nada_c'){playBell(ctx,gain,1300,now,.4);playBell(ctx,gain,980,now+.3,.6)}setTimeout(()=>cb&&cb(),1300);}
+        function getAudioContext(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
+        function playOsc(ctx,dest,f,start,d){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.0,start);g.gain.linearRampToValueAtTime(.4,start+.05);g.gain.exponentialRampToValueAtTime(.001,start+d);o.connect(g);g.connect(dest);o.start(start);o.stop(start+d);}
+        function playBell(ctx,dest,f,start,d){const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0,start);g.gain.linearRampToValueAtTime(.6,start+.02);g.gain.exponentialRampToValueAtTime(.001,start+d);o.connect(g);g.connect(dest);o.start(start);o.stop(start+d);}
+        function stopBroadcast(){stopAudio();stopBroadcastResetUI();showToast('Pengumuman dihentikan.');}
+        function stopBroadcastResetUI(){if(waveInterval)clearInterval(waveInterval);waveInterval=null;document.getElementById('player-status-label').textContent='SIAP DIPUTAR';document.getElementById('player-subtext').textContent='Sistem PA Stasiun Gombong aktif';resetWaveBars();}
+        function startWaveAnimation(){if(waveInterval)clearInterval(waveInterval);const bars=document.querySelectorAll('#audio-waves div');waveInterval=setInterval(()=>bars.forEach(b=>{b.style.height=(8+Math.random()*50)+'px';b.className='w-1.5 bg-emerald-500 rounded-full transition-all duration-150'}),120);}
+        function stopWaveAnimation(){if(waveInterval){clearInterval(waveInterval);waveInterval=null;}}
+        function resetWaveBars(){const d=[12,28,16,40,48,32,20,36,16];document.querySelectorAll('#audio-waves div').forEach((b,i)=>{b.style.height=d[i]+'px';b.className='w-1.5 bg-slate-700 rounded-full transition-all duration-150'});}
+        function updateMasterVolume(v){masterVol=Number(v)/100;document.getElementById('vol-display').textContent=v+'%';if(activeAudio)activeAudio.volume=masterVol;}
+
+        function downloadBackup(){const data={station:'Stasiun Gombong (GBG)',version:'3.0',timestamp:new Date().toISOString(),teksbaku:teksBakuList,trains:trainList,narrators:narratorList,emergencies:emergencyList,chimes:chimeList};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='gombong-announcer-backup.json';a.click();}
+        function triggerLoadData(){document.getElementById('file-input-backup').click();}
+        function handleFileImport(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(j.teksbaku)teksBakuList=j.teksbaku;if(j.trains)trainList=j.trains;if(j.narrators)narratorList=j.narrators;if(j.emergencies)emergencyList=j.emergencies;if(j.chimes)chimeList=j.chimes;normalizeData();saveToStorage();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();showToast('Data cadangan berhasil dimuat.');}catch(err){showToast('File cadangan tidak valid.');}};r.readAsText(f);}
+
+        function showToast(msg){const t=document.createElement('div');t.className='fixed bottom-6 right-6 bg-[#141e3d] border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-[100] text-xs font-medium';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
+
+        window.onload=()=>{
+            refreshChimeSelects();updateNarratorSelect();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();
         };
     </script>
 </body>
-</html>​
+</html>
