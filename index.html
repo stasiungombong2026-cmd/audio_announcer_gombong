@@ -575,6 +575,21 @@
         let teksBakuList = JSON.parse(localStorage.getItem('gombong_teksbaku')) || defaultTeksBaku;
         let trainList = JSON.parse(localStorage.getItem('gombong_trains')) || defaultTrains;
 
+        // Contoh fungsi dasar CRUD untuk data kereta
+        function addTrain(newTrainObj) {
+            appData.trains.push(newTrainObj);
+            refreshTrainUI(); // Render ulang tampilan daftar kereta
+        }
+
+        function editTrain(index, updatedObj) {
+            appData.trains[index] = updatedObj;
+            refreshTrainUI();
+        }
+
+        function deleteTrain(index) {
+            appData.trains.splice(index, 1);
+            refreshTrainUI();
+        }
         function saveToStorage() {
             localStorage.setItem('gombong_teksbaku', JSON.stringify(teksBakuList));
             localStorage.setItem('gombong_trains', JSON.stringify(trainList));
@@ -912,17 +927,62 @@
             if (audioCtx.state === 'suspended') audioCtx.resume();
             return audioCtx;
         }
-function playAnnouncement() {
+function formatSmartTTS(text, trainObj) {
+            let spelledNo = "";
+            if (trainObj && trainObj.no) {
+                spelledNo = spellCharacters(trainObj.no);
+            }
+
+            // Konversi waktu / jam terlebih dahulu agar aman
+            let result = formatSpokenTime(text);
+
+            // Mapping variabel penulisan otomatis
+            result = result
+                .replace(/{no_ka}/g, spelledNo)
+                .replace(/{nama_ka}/g, trainObj ? trainObj.name : "")
+                .replace(/{jalur}/g, document.getElementById('genPlatform').value || trainObj.platform)
+                .replace(/{dari_arah}/g, trainObj ? (trainObj.direction || "dari arah timur") : "")
+                .replace(/{tujuan}/g, trainObj ? trainObj.route : "")
+                .replace(/{sta_perhentian}/g, trainObj && trainObj.stops ? trainObj.stops : "Gombong")
+                .replace(/{sf_rangkaian}/g, trainObj && trainObj.composition ? trainObj.composition : "")
+                // Kompatibilitas variabel lama
+                .replace(/{train_type}/g, "Kereta Api")
+                .replace(/{train_name}/g, trainObj ? trainObj.name : "")
+                .replace(/{train_no}/g, spelledNo)
+                .replace(/{train_route}/g, trainObj ? trainObj.route : "")
+                .replace(/{platform}/g, document.getElementById('genPlatform').value)
+                .replace(/{direction}/g, trainObj ? (trainObj.direction || "dari arah timur") : "")
+                .replace(/{composition}/g, trainObj ? (trainObj.composition || "") : "");
+
+            // Pengejaan kode/nomor lepas bebas di luar jam
+            result = result.replace(/\b[0-9]+[a-zA-Z0-9]*\b/g, (match, offset, string) => {
+                let charBefore = string[offset - 1];
+                let charAfter = string[offset + match.length];
+                if (charBefore === ':' || charBefore === '.' || charAfter === ':' || charAfter === '.') {
+                    return match; 
+                }
+                if (match.includes(':') || match.includes('.')) return match;
+                return spellCharacters(match);
+            });
+
+            return result.replace(/\bKA\b/g, "Kereta Api");
+        }
+        const multilingualTemplates = {
+            id: "Perhatian kepada seluruh penumpang, {no_ka} {nama_ka} tujuan {tujuan}, {dari_arah}, akan segera masuk di {jalur}. Rangkaian terdiri dari {sf_rangkaian}. Terima kasih.",
+            en: "Attention please, train number {no_ka} {nama_ka}, bound for {tujuan}, {dari_arah}, will shortly arrive on {jalur}. Thank you.",
+            jv: "Kawigatosan dhumateng para paraga penumpang, Sepur {no_ka} {nama_ka} tujuwan {tujuan}, {dari_arah}, badhe segera mlebet ing {jalur}. Matur nuwun."
+        };
+
+        function playAnnouncement() {
             const text = document.getElementById('genScriptText').value;
             const val = document.getElementById('trainSearchInput').value;
             const trainNo = val.split(' - ')[0].trim();
-            const train = appData.trains.find(t => t.no.toLowerCase() === trainNo.toLowerCase() || t.name.toLowerCase() === trainNo.toLowerCase());
-            
-            // Daftar urutan bahasa dan template teksnya masing-masing
+            const train = appData.trains.find(t => t.no.toLowerCase() === trainNo.toLowerCase() || t.name.toLowerCase() === trainNo.toLowerCase()) || appData.trains[0];
+
             const sequence = [
-                { langCode: 'id-ID', template: text }, // Bahasa Indonesia (menggunakan teks dari form)
-                { langCode: 'en-US', template: appData.multilingualTemplates ? appData.multilingualTemplates.en : "Attention, {train_type} {train_name}, train number {train_no}, bound for {train_route}, {direction}, will shortly arrive on platform {platform}. Thank you." }, // Bahasa Inggris
-                { langCode: 'jv-ID', template: appData.multilingualTemplates ? appData.multilingualTemplates.jv : "Kawigatosan, dhumateng para penumpang, Sepur {train_name} nomer {train_no}, tujuwan {train_route}, {direction}, badhe segera mlebet ing jalur {platform}. Matur nuwun." } // Bahasa Jawa
+                { langCode: 'id-ID', template: text }, // Bahasa Indonesia (dari input form)
+                { langCode: 'en-US', template: multilingualTemplates.en }, // Bahasa Inggris
+                { langCode: 'jv-ID', template: multilingualTemplates.jv }  // Bahasa Jawa Krama Alus
             ];
 
             const openingTone = document.getElementById('genChimeOpening').value;
@@ -935,7 +995,6 @@ function playAnnouncement() {
 
                 function playNextLanguage() {
                     if (currentIndex >= sequence.length) {
-                        // Jika semua bahasa selesai, putar chime penutup (jika ada)
                         if (closingTone !== 'none') {
                             document.getElementById('playerStatusLabel').innerText = "Memutar Chime Penutup...";
                             playChimeTone(closingTone, () => {
@@ -950,7 +1009,6 @@ function playAnnouncement() {
                     const current = sequence[currentIndex];
                     document.getElementById('playerStatusLabel').innerText = `Memutar Pengumuman (${current.langCode.toUpperCase()})...`;
 
-                    // Format teks menggunakan formatSmartTTS agar nomor & waktu terbaca benar
                     const processedText = formatSmartTTS(current.template, train);
 
                     if ('speechSynthesis' in window) {
@@ -958,9 +1016,14 @@ function playAnnouncement() {
                         utterance.lang = current.langCode;
                         utterance.rate = 0.95;
 
+                        // Pilih suara lokal browser (TTS sistem) yang sesuai dengan bahasa
+                        let voices = window.speechSynthesis.getVoices();
+                        let selectedVoice = voices.find(v => v.lang.startsWith(current.langCode.slice(0, 2)));
+                        if (selectedVoice) utterance.voice = selectedVoice;
+
                         utterance.onend = () => {
                             currentIndex++;
-                            setTimeout(playNextLanguage, 500); // Jeda 0.5 detik antar bahasa
+                            setTimeout(playNextLanguage, 500); 
                         };
 
                         utterance.onerror = () => {
@@ -972,7 +1035,6 @@ function playAnnouncement() {
                     }
                 }
 
-                // Mulai putar bahasa pertama
                 playNextLanguage();
             });
         }
@@ -1170,4 +1232,4 @@ function playAnnouncement() {
         };
     </script>
 </body>
-</html>
+</html>​
