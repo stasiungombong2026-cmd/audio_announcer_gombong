@@ -842,8 +842,25 @@
         function replaceJawaNumbers(s){return String(s||'').replace(/\b\d+\b/g,m=>numberToJawaKrama(Number(m)));}
         function replaceEnglishTrackPlatform(s){let x=String(s||'');x=x.replace(/\bjalur\s*(\d+)\b/gi,(m,n)=>`track number ${numberToEnglish(Number(n))}`);x=x.replace(/\bperon\s*(\d+)\b/gi,(m,n)=>`peron number ${numberToEnglish(Number(n))}`);return x;}
         function stationNamesFromTrain(train){const names=[];if(train){if(train.route)names.push(String(train.route));if(train.stops)names.push(...String(train.stops).split(',').map(x=>x.trim()));if(train.station)names.push(String(train.station));}return [...new Set(names.filter(Boolean).sort((a,b)=>b.length-a.length))];}
+        function translateDirectionForSpeech(s,lang){
+            let x=String(s||'');
+            // Arah perjalanan diterjemahkan sebagai kalimat, bukan dipaksakan pengucapannya.
+            const east=/((?:dari\s+)?arah\s+)(timur|wetan)\b/gi;
+            const west=/((?:dari\s+)?arah\s+)(barat|kilen)\b/gi;
+            if(lang==='en-US'||lang==='en-GB'){
+                x=x.replace(east,'from the east').replace(west,'from the west');
+                x=x.replace(/\bdan\s+arah\s+timur\b/gi,'from the east').replace(/\bdan\s+arah\s+barat\b/gi,'from the west');
+            }else if(lang==='jv-ID'){
+                x=x.replace(east,'saking arah wetan').replace(west,'saking arah kilen');
+                x=x.replace(/\bdan\s+arah\s+timur\b/gi,'saking arah wetan').replace(/\bdan\s+arah\s+barat\b/gi,'saking arah kilen');
+            }else{
+                x=x.replace(/\bdan\s+arah\s+timur\b/gi,'dari arah timur').replace(/\bdan\s+arah\s+barat\b/gi,'dari arah barat');
+            }
+            return x;
+        }
         function prepareSpeechText(text,train,lang='id-ID'){
             let s=String(text||'');
+            s=translateDirectionForSpeech(s,lang);
             if(lang==='en-US'||lang==='en-GB')s=replaceEnglishTrackPlatform(s);
             if(lang==='jv-ID')s=replaceJawaPronunciation(s);
             s=formatSpokenTime(s,lang);
@@ -854,9 +871,9 @@
             }
             s=s.replace(/(?<![A-Za-z0-9])\d{2,}[A-Za-z](?![A-Za-z0-9])/g,m=>spellTrainNumber(m,lang==='en-US'||lang==='en-GB'?'en':lang==='jv-ID'?'jv':'id'));
             if(lang==='jv-ID')s=replaceJawaPronunciation(s);
-            // Tanda koma tidak dilafalkan sebagai jeda untuk semua bahasa.
-            // Contoh: "Kroya, Maos, Sikampuh" menjadi "Kroya Maos Sikampuh".
-            s=s.replace(/[,，、]+/g,' ').replace(/\s{2,}/g,' ').trim();
+            // Tanda baca koma dan titik tidak dilafalkan oleh TTS.
+            // Waktu 23.13 sudah dikonversi menjadi kata sebelum titik dihapus.
+            s=s.replace(/[,，、]+/g,' ').replace(/[.。]+/g,' ').replace(/\s{2,}/g,' ').trim();
             return s;
         }
         function getSpeechVoice(lang,narrator){
