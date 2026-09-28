@@ -854,6 +854,9 @@
             }
             s=s.replace(/(?<![A-Za-z0-9])\d{2,}[A-Za-z](?![A-Za-z0-9])/g,m=>spellTrainNumber(m,lang==='en-US'||lang==='en-GB'?'en':lang==='jv-ID'?'jv':'id'));
             if(lang==='jv-ID')s=replaceJawaPronunciation(s);
+            // Tanda koma tidak dilafalkan sebagai jeda untuk semua bahasa.
+            // Contoh: "Kroya, Maos, Sikampuh" menjadi "Kroya Maos Sikampuh".
+            s=s.replace(/[,，、]+/g,' ').replace(/\s{2,}/g,' ').trim();
             return s;
         }
         function getSpeechVoice(lang,narrator){
