@@ -232,7 +232,11 @@
                 <div id="emergency-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1.5">Skrip Darurat Terpilih</label>
-                    <textarea id="emergency-textarea" rows="4" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3.5 text-slate-200 text-xs font-mono-code resize-none"></textarea>
+                    <div class="grid grid-cols-1 gap-3">
+  <div><div class="text-[10px] text-amber-400 mb-1">INDONESIA</div><textarea id="emergency-textarea" rows="3" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3.5 text-slate-200 text-xs font-mono-code resize-none"></textarea></div>
+  <div><div class="text-[10px] text-amber-400 mb-1">ENGLISH</div><textarea id="emergency-textarea-en" rows="3" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3.5 text-slate-200 text-xs font-mono-code resize-none"></textarea></div>
+  <div><div class="text-[10px] text-amber-400 mb-1">JAWA KRAMA ALUS</div><textarea id="emergency-textarea-jv" rows="3" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3.5 text-slate-200 text-xs font-mono-code resize-none"></textarea></div>
+</div>
                 </div>
                 <button onclick="playEmergencyBroadcast()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 px-6 rounded-xl"><i class="fa-solid fa-bullhorn"></i> Siarkan Darurat Sekarang</button>
             </div>
@@ -540,7 +544,10 @@
         <input type="hidden" id="emergency-edit-index" value="-1">
         <input id="emergency-title" placeholder="Judul" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <input id="emergency-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
-        <textarea id="emergency-script" rows="5" placeholder="Teks pengumuman" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
+        <textarea id="emergency-script" rows="3" placeholder="Teks Indonesia" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
+        <textarea id="emergency-script-en" rows="3" placeholder="Teks English" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
+        <textarea id="emergency-script-jv" rows="3" placeholder="Teks Jawa Krama Alus" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
+        <button type="button" onclick="autoTranslateEmergency()" class="text-[11px] text-amber-400 hover:underline text-left">Terjemahkan English + Jawa otomatis</button>
         <div class="flex justify-end gap-2"><button onclick="closeEmergencyModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveEmergency()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
       </div>
     </div>
@@ -589,10 +596,10 @@
         let trainList = JSON.parse(localStorage.getItem('gombong_trains')) || defaultTrains;
         let narratorList = JSON.parse(localStorage.getItem('gombong_narrators')) || [];
         let emergencyList = JSON.parse(localStorage.getItem('gombong_emergencies')) || [
-            {id:'evakuasi',title:'Evakuasi Darurat',description:'Evakuasi penumpang menuju titik kumpul aman.',text:'Perhatian darurat kepada seluruh penumpang dan pengunjung Stasiun Gombong, harap segera keluar menuju titik kumpul evakuasi terdekat.'},
-            {id:'ketinggalan',title:'Barang Tertinggal',description:'Pemanggilan pemilik barang tertinggal.',text:'Pengumuman kepada pemilik barang tertinggal di ruang tunggu Stasiun Gombong, silakan melapor ke petugas pusat informasi.'},
-            {id:'gempa',title:'Peringatan Gempa Bumi',description:'Instruksi keselamatan saat gempa.',text:'Peringatan gempa bumi! Kepada seluruh penumpang di dalam gedung Stasiun Gombong, harap berlindung di bawah kursi atau meja.'},
-            {id:'dokter',title:'Panggilan Tenaga Medis',description:'Panggilan bagi tenaga medis.',text:'Panggilan darurat bagi penumpang berprofesi medis di Stasiun Gombong, mohon segera menuju ke pos pelayanan kesehatan stasiun.'}
+            {id:'evakuasi',title:'Evakuasi Darurat',description:'Evakuasi penumpang menuju titik kumpul aman.',text:'Perhatian darurat kepada seluruh penumpang dan pengunjung Stasiun Gombong, harap segera keluar menuju titik kumpul evakuasi terdekat.',textEn:'Emergency attention to all passengers and visitors at Gombong Station, please proceed immediately to the nearest evacuation assembly point.',textJv:'Kawigatosan darurat dhumateng sedaya penumpang saha tamu ing Stasiun Gombong, dipun aturi enggal tumuju papan pangumpulan evakuasi ingkang paling caket.'},
+            {id:'ketinggalan',title:'Barang Tertinggal',description:'Pemanggilan pemilik barang tertinggal.',text:'Pengumuman kepada pemilik barang tertinggal di ruang tunggu Stasiun Gombong, silakan melapor ke petugas pusat informasi.',textEn:'Attention to the owner of an item left behind in the waiting room at Gombong Station, please report to the information desk officer.',textJv:'Pangumuman dhumateng ingkang kagungan barang ketinggalan wonten ing ruang tunggu Stasiun Gombong, dipun aturi lapor dhumateng petugas pusat informasi.'},
+            {id:'gempa',title:'Peringatan Gempa Bumi',description:'Instruksi keselamatan saat gempa.',text:'Peringatan gempa bumi! Kepada seluruh penumpang di dalam gedung Stasiun Gombong, harap berlindung di bawah kursi atau meja.',textEn:'Earthquake warning! All passengers inside Gombong Station, please take shelter under a chair or table.',textJv:'Pènget gempa bumi! Dhumateng sedaya penumpang wonten ing gedhong Stasiun Gombong, dipun aturi ngungsi wonten ing sangandhaping kursi utawi meja.'},
+            {id:'dokter',title:'Panggilan Tenaga Medis',description:'Panggilan bagi tenaga medis.',text:'Panggilan darurat bagi penumpang berprofesi medis di Stasiun Gombong, mohon segera menuju ke pos pelayanan kesehatan stasiun.',textEn:'Emergency call for passengers with medical training at Gombong Station, please proceed immediately to the station health service post.',textJv:'Pangundangan darurat dhumateng penumpang ingkang kagungan profesi medis wonten ing Stasiun Gombong, nyuwun enggal tumuju pos pelayanan kesehatan stasiun.'}
         ];
         let chimeList = JSON.parse(localStorage.getItem('gombong_chimes')) || [
             {id:'nada_a',name:'Nada A (Klasik KAI)',description:'Chime pembuka standar'},
@@ -613,6 +620,7 @@
                 const id=String(t.isiID??t.isi??'');
                 return {...t,id:t.id||uid('tpl'),isiID:id,isiEN:t.isiEN??'',isiJV:t.isiJV??''};
             });
+            emergencyList=emergencyList.map(x=>({...x,text:String(x.text??''),textEn:String(x.textEn??''),textJv:String(x.textJv??'')}));
         }
         normalizeData();
 
@@ -760,17 +768,14 @@
 
         // Emergency CRUD
         function renderEmergencyList(){
-            const box=document.getElementById('emergency-list');if(!box)return;
-            box.innerHTML=emergencyList.map((x,i)=>`<div class="bg-[#0b1329] border border-[#1e2d5c] p-4 rounded-xl">
-              <h3 class="text-xs font-bold text-amber-400">${esc(x.title)}</h3><p class="text-[11px] text-slate-400 mt-1">${esc(x.description)}</p>
-              <div class="flex gap-2 mt-3"><button onclick="loadEmergencyScript(${i})" class="bg-[#141e3d] px-3 py-2 rounded-lg text-[11px]">Pilih</button><button onclick="openEmergencyModal(${i})" class="text-amber-400 px-2"><i class="fa-solid fa-pen"></i></button><button onclick="deleteEmergency(${i})" class="text-rose-400 px-2"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');
+            const box=document.getElementById('emergency-list'); if(!box)return;
+            box.innerHTML=emergencyList.map((x,i)=>`<div class="bg-[#0b1329] border border-[#1e2d5c] p-4 rounded-xl"><div class="flex items-start justify-between gap-3"><div><div class="text-xs font-bold text-white">${esc(x.title)}</div><div class="text-[11px] text-slate-500 mt-1">${esc(x.description||'')}</div></div><div class="flex gap-1"><button onclick="openEmergencyModal(${i})" class="text-amber-400 px-2"><i class="fa-solid fa-pen"></i></button><button onclick="deleteEmergency(${i})" class="text-rose-400 px-2"><i class="fa-solid fa-trash"></i></button></div></div><button onclick="loadEmergencyScript(${i})" class="mt-3 w-full text-left text-[11px] text-emerald-400 hover:underline">Gunakan pengumuman ini</button></div>`).join('');
             if(emergencyList[0]&&!document.getElementById('emergency-textarea').value)loadEmergencyScript(0);
         }
-        function loadEmergencyScript(i){const x=emergencyList[Number(i)];if(x){document.getElementById('emergency-textarea').value=x.text;showToast('Skrip darurat dipilih.');}}
-        function openEmergencyModal(i){document.getElementById('emergency-modal').classList.remove('hidden');document.getElementById('emergency-edit-index').value=i;if(i>=0){const x=emergencyList[i];document.getElementById('emergency-title').value=x.title;document.getElementById('emergency-desc').value=x.description;document.getElementById('emergency-script').value=x.text;}else{document.getElementById('emergency-title').value='';document.getElementById('emergency-desc').value='';document.getElementById('emergency-script').value='';}}
-        function closeEmergencyModal(){document.getElementById('emergency-modal').classList.add('hidden');}
-        function saveEmergency(){const i=Number(document.getElementById('emergency-edit-index').value),x={id:i>=0?emergencyList[i].id:uid('emg'),title:document.getElementById('emergency-title').value.trim(),description:document.getElementById('emergency-desc').value.trim(),text:document.getElementById('emergency-script').value.trim()};if(!x.title||!x.text){showToast('Judul dan teks wajib diisi.');return;}if(i>=0)emergencyList[i]=x;else emergencyList.push(x);saveToStorage();closeEmergencyModal();renderEmergencyList();}
-        function deleteEmergency(i){if(confirm('Hapus pengumuman darurat ini?')){emergencyList.splice(i,1);saveToStorage();renderEmergencyList();}}
+        function loadEmergencyScript(i){const x=emergencyList[Number(i)];if(x){document.getElementById('emergency-textarea').value=x.text||'';document.getElementById('emergency-textarea-en').value=x.textEn||translateIdToEn(x.text||'');document.getElementById('emergency-textarea-jv').value=x.textJv||translateIdToJv(x.text||'');showToast('Skrip darurat 3 bahasa dipilih.');}}
+        function openEmergencyModal(i){document.getElementById('emergency-modal').classList.remove('hidden');document.getElementById('emergency-edit-index').value=i;if(i>=0){const x=emergencyList[i];document.getElementById('emergency-title').value=x.title;document.getElementById('emergency-desc').value=x.description;document.getElementById('emergency-script').value=x.text||'';document.getElementById('emergency-script-en').value=x.textEn||translateIdToEn(x.text||'');document.getElementById('emergency-script-jv').value=x.textJv||translateIdToJv(x.text||'');}else{['emergency-title','emergency-desc','emergency-script','emergency-script-en','emergency-script-jv'].forEach(id=>document.getElementById(id).value='');}}
+        function autoTranslateEmergency(){const id=document.getElementById('emergency-script').value;document.getElementById('emergency-script-en').value=translateIdToEn(id);document.getElementById('emergency-script-jv').value=translateIdToJv(id);showToast('English + Jawa dibuat.');}
+        function saveEmergency(){const i=Number(document.getElementById('emergency-edit-index').value),x={id:i>=0?emergencyList[i].id:uid('emg'),title:document.getElementById('emergency-title').value.trim(),description:document.getElementById('emergency-desc').value.trim(),text:document.getElementById('emergency-script').value.trim(),textEn:document.getElementById('emergency-script-en').value.trim(),textJv:document.getElementById('emergency-script-jv').value.trim()};if(!x.title||!x.text){showToast('Judul dan teks Indonesia wajib diisi.');return;}if(!x.textEn)x.textEn=translateIdToEn(x.text);if(!x.textJv)x.textJv=translateIdToJv(x.text);if(i>=0)emergencyList[i]=x;else emergencyList.push(x);saveToStorage();closeEmergencyModal();renderEmergencyList();}
 
         // Chime CRUD
         function renderChimeList(){const box=document.getElementById('chime-list');if(!box)return;box.innerHTML=chimeList.map((x,i)=>`<div class="bg-[#070b19] border border-[#1e2d5c] p-4 rounded-xl flex items-center justify-between"><div><h3 class="text-xs font-bold text-white">${esc(x.name)}</h3><p class="text-[11px] text-slate-400">${esc(x.description)}</p></div><div class="flex gap-2"><button onclick="playChimeTone('${esc(x.id)}')" class="text-amber-400 p-2"><i class="fa-solid fa-play"></i></button><button onclick="openChimeModal(${i})" class="text-amber-400 p-2"><i class="fa-solid fa-pen"></i></button><button onclick="deleteChime(${i})" class="text-rose-400 p-2"><i class="fa-solid fa-trash"></i></button></div></div>`).join('');}
@@ -806,109 +811,63 @@
         // Nomor KA: 1007A -> satu nol nol tujuh a
         // Waktu: 23:18 WIB -> pukul dua puluh tiga lewat delapan belas menit waktu Indonesia bagian barat
         // =========================
-        const digitWords={
-            '0':'nol','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'
-        };
-        function numberToIndonesian(n){
-            n=Number(n);
-            if(!Number.isFinite(n)) return String(n);
-            const small=['nol','satu','dua','tiga','empat','lima','enam','tujuh','delapan','sembilan','sepuluh','sebelas'];
-            if(n<12)return small[n];
-            if(n<20)return small[n-10]+' belas';
-            if(n<100){const p=Math.floor(n/10),s=n%10;return digitWords[String(p)]+' puluh'+(s?' '+digitWords[String(s)]:'');}
-            return String(n).split('').map(d=>digitWords[d]).join(' ');
-        }
-        function spellTrainNumber(v){
-            return String(v||'').trim().split('').map(ch=>{
-                if(/[0-9]/.test(ch))return digitWords[ch];
-                if(/[A-Za-z]/.test(ch))return ch.toLowerCase();
-                return ch;
-            }).filter(Boolean).join(' ');
-        }
-        function formatSpokenTime(t){
+        const digitWords={0:'nol',1:'satu',2:'dua',3:'tiga',4:'empat',5:'lima',6:'enam',7:'tujuh',8:'delapan',9:'sembilan'};
+        const englishDigits=['zero','one','two','three','four','five','six','seven','eight','nine'];
+        const jawaDigits=['nol','setunggal','kalih','tiga','sekawan','gangsal','enem','pitu','wolu','sanga'];
+        function numberToIndonesian(n){n=Number(n);if(!Number.isFinite(n))return String(n);if(n<10)return digitWords[n];if(n===10)return 'sepuluh';if(n===11)return 'sebelas';if(n<20)return digitWords[n-10]+' belas';if(n<100)return digitWords[Math.floor(n/10)]+' puluh'+(n%10?' '+digitWords[n%10]:'');return String(n).split('').map(d=>digitWords[d]).join(' ');}
+        function spellTrainNumber(v,lang='id'){return String(v||'').trim().split('').map(ch=>{if(/[0-9]/.test(ch)){const n=Number(ch);return lang==='en'?englishDigits[n]:lang==='jv'?jawaDigits[n]:digitWords[n];}if(/[A-Za-z]/.test(ch))return lang==='en'?ch.toLowerCase():lang==='jv'?ch.toLowerCase():ch.toLowerCase();return ch;}).join(' ');}
+        function numberToEnglish(n){const a=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];n=Number(n);if(!Number.isFinite(n))return String(n);if(n<20)return a[n];if(n<100)return tens[Math.floor(n/10)]+(n%10?' '+a[n%10]:'');return String(n).split('').map(d=>a[Number(d)]).join(' ');}
+        function englishTime(h,m,zone){let hh=Number(h),mm=Number(m);let ap=hh>=12?'PM':'AM';let hour12=hh%12||12;let hourWord=numberToEnglish(hour12);let minWord=mm<10?'oh '+numberToEnglish(mm):numberToEnglish(mm);return `${hourWord} ${minWord} ${ap}`;}
+        function jawaHourWord(h){let n=Number(h);if(n===0||n===24)return 'kalih welas ndalu';if(n===12)return 'kalih welas siyang';if(n===13)return 'setunggal siyang';if(n===14)return 'kalih siyang';if(n===15)return 'tiga sonten';if(n===16)return 'sekawan sonten';if(n===17)return 'gangsal sonten';if(n===18)return 'enem sonten';if(n===19)return 'pitu ndalu';if(n===20)return 'wolu ndalu';if(n===21)return 'sanga ndalu';if(n===22)return 'sedasa ndalu';if(n===23)return 'sewelas ndalu';return numberToJawaKrama(n);}
+        function jawaMinuteWord(n){n=Number(n);if(n===0)return 'nol';if(n<10)return jawaDigits[n];if(n===10)return 'sedasa';if(n===11)return 'sewelas';if(n<20)return jawaDigits[n-10]+' welas';return numberToJawaKrama(n);}
+        function formatSpokenTime(t,lang='id-ID'){
             let s=String(t||'');
             const re=/(\b)(\d{1,2})[:.](\d{2})(?:\s*(WIB|WITA|WIT|wib|wita|wit))?(\b)/gi;
             return s.replace(re,(m,_b,h,mi,zone)=>{
-                const hh=Number(h), mm=Number(mi);
-                const hour=numberToIndonesian(hh);
-                const minute=numberToIndonesian(mm);
-                let suffix='';
-                const z=String(zone||'WIB').toUpperCase();
-                if(z==='WIB') suffix=' waktu Indonesia bagian barat';
-                else if(z==='WITA') suffix=' waktu Indonesia tengah';
-                else if(z==='WIT') suffix=' waktu Indonesia timur';
-                return `pukul ${hour} lewat ${minute} menit${suffix}`;
+                const z=String(zone||'WIB').toUpperCase(),hh=Number(h),mm=Number(mi);
+                if(lang==='en-US'||lang==='en-GB')return englishTime(hh,mm,z);
+                if(lang==='jv-ID'){
+                    let base=hh>=1&&hh<=11?jawaHourWord(hh):jawaHourWord(hh);
+                    let period=hh>=18||hh===0?'ndalu':hh>=15?'sonten':hh>=12?'siyang':'enjing';
+                    if(hh===23)base='sewelas'; else if(hh===22)base='sedasa'; else if(hh===21)base='sanga'; else if(hh===20)base='wolu'; else if(hh===19)base='pitu'; else if(hh===18)base='enem';
+                    const zonePhrase=z==='WIB'?'wedal iring kilen':z==='WITA'?'wedal iring tengah':'wedal iring wetan';
+                    return `Tabuh ${base} langkung ${jawaMinuteWord(mm)} menit ${period}, ${zonePhrase}`;
+                }
+                const suffix=z==='WIB'?' waktu Indonesia bagian barat':z==='WITA'?' waktu Indonesia tengah':' waktu Indonesia timur';
+                return `pukul ${numberToIndonesian(hh)} lewat ${numberToIndonesian(mm)} menit${suffix}`;
             });
         }
-        function numberToJawaKrama(n){
-            n=Number(n); if(!Number.isFinite(n)) return String(n);
-            const ones=['nol','setunggal','kalih','tigo','sekawan','gangsal','enem','pitu','wolu','sanga'];
-            if(n<10) return ones[n];
-            if(n===10) return 'sedasa';
-            if(n===11) return 'sewelas';
-            if(n<20) return ones[n-10]+' welas';
-            if(n===20) return 'kalih dasa';
-            if(n<30) return 'kalih dasa '+ones[n-20];
-            if(n===30) return 'tigang dasa';
-            if(n<40) return 'tigang dasa '+ones[n-30];
-            if(n===40) return 'sekawan dasa';
-            if(n<50) return 'sekawan dasa '+ones[n-40];
-            if(n===50) return 'gangsal dasa';
-            if(n<60) return 'gangsal dasa '+ones[n-50];
-            if(n===60) return 'enem dasa';
-            if(n<70) return 'enem dasa '+ones[n-60];
-            if(n===70) return 'pitu dasa';
-            if(n<80) return 'pitu dasa '+ones[n-70];
-            if(n===80) return 'wolu dasa';
-            if(n<90) return 'wolu dasa '+ones[n-80];
-            if(n===90) return 'sanga dasa';
-            if(n<100) return 'sanga dasa '+ones[n-90];
-            return String(n).split('').map(d=>ones[Number(d)]).join(' ');
-        }
-        function replaceJawaNumbers(s){
-            return String(s||'').replace(/\b\d+\b/g,m=>numberToJawaKrama(Number(m)));
-        }
-        function replaceEnglishTrackPlatform(s){
-            let x=String(s||'');
-            const enNum=n=>numberToEnglish(Number(n));
-            x=x.replace(/\bjalur\s*(\d+)\b/gi,(m,n)=>`track number ${enNum(n)}`);
-            x=x.replace(/\bperon\s*(\d+)\b/gi,(m,n)=>`peron number ${enNum(n)}`);
-            return x;
-        }
-        function numberToEnglish(n){
-            const a=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
-            const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
-            n=Number(n); if(!Number.isFinite(n)) return String(n);
-            if(n<20)return a[n]; if(n<100)return tens[Math.floor(n/10)]+(n%10?' '+a[n%10]:'');
-            return String(n).split('').map(d=>a[Number(d)]).join(' ');
-        }
-        function stationNamesFromTrain(train){
-            const names=[];
-            if(train){ if(train.route) names.push(String(train.route)); if(train.stops) names.push(...String(train.stops).split(',').map(x=>x.trim())); if(train.station) names.push(String(train.station)); }
-            return [...new Set(names.filter(Boolean).sort((a,b)=>b.length-a.length))];
-        }
+        function numberToJawaKrama(n){n=Number(n);if(!Number.isFinite(n))return String(n);if(n<10)return jawaDigits[n];if(n===10)return 'sedasa';if(n===11)return 'sewelas';if(n<20)return jawaDigits[n-10]+' welas';if(n===20)return 'kalih dasa';if(n<30)return 'kalih dasa '+jawaDigits[n-20];if(n===30)return 'tigang dasa';if(n<40)return 'tigang dasa '+jawaDigits[n-30];if(n===40)return 'sekawan dasa';if(n<50)return 'sekawan dasa '+jawaDigits[n-40];if(n===50)return 'gangsal dasa';if(n<60)return 'gangsal dasa '+jawaDigits[n-50];if(n===60)return 'enem dasa';if(n<70)return 'enem dasa '+jawaDigits[n-60];if(n===70)return 'pitu dasa';if(n<80)return 'pitu dasa '+jawaDigits[n-70];if(n===80)return 'wolu dasa';if(n<90)return 'wolu dasa '+jawaDigits[n-80];if(n===90)return 'sanga dasa';if(n<100)return 'sanga dasa '+jawaDigits[n-90];return String(n).split('').map(d=>jawaDigits[Number(d)]).join(' ');}
+        function replaceJawaPronunciation(s){let x=String(s||'');const map=[[/\bpara\b/gi,'poro'],[/\bpunika\b/gi,'meniko'],[/\bnomer\b/gi,'nomer'],[/\bkanthi\b/gi,'kanti'],[/\bdhumateng\b/gi,'dumateng'],[/\bdipun\b/gi,'dipun']];map.forEach(([r,v])=>x=x.replace(r,v));return x;}
+        function replaceJawaNumbers(s){return String(s||'').replace(/\b\d+\b/g,m=>numberToJawaKrama(Number(m)));}
+        function replaceEnglishTrackPlatform(s){let x=String(s||'');x=x.replace(/\bjalur\s*(\d+)\b/gi,(m,n)=>`track number ${numberToEnglish(Number(n))}`);x=x.replace(/\bperon\s*(\d+)\b/gi,(m,n)=>`peron number ${numberToEnglish(Number(n))}`);return x;}
+        function stationNamesFromTrain(train){const names=[];if(train){if(train.route)names.push(String(train.route));if(train.stops)names.push(...String(train.stops).split(',').map(x=>x.trim()));if(train.station)names.push(String(train.station));}return [...new Set(names.filter(Boolean).sort((a,b)=>b.length-a.length))];}
         function prepareSpeechText(text,train,lang='id-ID'){
             let s=String(text||'');
-            s=formatSpokenTime(s);
-            if(lang==='en-US'||lang==='en-GB') s=replaceEnglishTrackPlatform(s);
-            if(lang==='jv-ID') s=replaceJawaNumbers(s);
-            if(train&&train.no!==undefined&&train.no!==null&&String(train.no).trim()){
-                const raw=String(train.no).trim();
-                const spoken=spellTrainNumber(raw);
-                const escaped=raw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-                s=s.replace(new RegExp(`(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`,'gi'),spoken);
+            if(lang==='en-US'||lang==='en-GB')s=replaceEnglishTrackPlatform(s);
+            if(lang==='jv-ID')s=replaceJawaPronunciation(s);
+            s=formatSpokenTime(s,lang);
+            if(train&&train.no!==undefined&&String(train.no).trim()){
+                const raw=String(train.no).trim(), escaped=raw.replace(/[.*+?^${}()|[\]\\]/g,'\$&');
+                const l=lang==='en-US'||lang==='en-GB'?'en':lang==='jv-ID'?'jv':'id';
+                s=s.replace(new RegExp(`(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`,'gi'),spellTrainNumber(raw,l));
             }
-            s=s.replace(/(?<![A-Za-z0-9])\d{2,}[A-Za-z](?![A-Za-z0-9])/g,m=>spellTrainNumber(m));
+            s=s.replace(/(?<![A-Za-z0-9])\d{2,}[A-Za-z](?![A-Za-z0-9])/g,m=>spellTrainNumber(m,lang==='en-US'||lang==='en-GB'?'en':lang==='jv-ID'?'jv':'id'));
+            if(lang==='jv-ID')s=replaceJawaPronunciation(s);
             return s;
         }
-        function speakWithStationNames(text,lang,train,onDone){
-            const names=stationNamesFromTrain(train);
-            if(!('speechSynthesis' in window)||!names.length){ const u=new SpeechSynthesisUtterance(prepareSpeechText(text,train,lang)); u.lang=lang; u.rate=.92; u.volume=masterVol; u.onend=onDone; u.onerror=onDone; synth.speak(u); return; }
-            const pattern=new RegExp('('+names.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','gi');
-            const parts=String(prepareSpeechText(text,train,lang)).split(pattern).filter(Boolean); let i=0;
-            const next=()=>{ if(i>=parts.length){onDone&&onDone();return;} const part=parts[i++]; const isStation=names.some(n=>n.toLowerCase()===part.toLowerCase()); const u=new SpeechSynthesisUtterance(part); u.lang=isStation?'id-ID':lang; u.rate=.92; u.volume=masterVol; u.onend=next; u.onerror=next; synth.speak(u); }; next();
+        function getSpeechVoice(lang,narrator){
+            const voices=synth.getVoices? synth.getVoices():[]; const code=lang.split('-')[0].toLowerCase();
+            if(narrator&&narrator.voiceNames){const wanted=narrator.voiceNames[code];if(wanted){const exact=voices.find(v=>v.name===wanted);if(exact)return exact;}}
+            return voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(code))||null;
         }
-        function spellCharacters(v){return spellTrainNumber(v);}
+        function speakWithStationNames(text,lang,train,onDone){
+            const names=stationNamesFromTrain(train), narrator=resolveNarrator(), prepared=prepareSpeechText(text,train,lang);
+            if(!('speechSynthesis' in window)||!names.length){const u=new SpeechSynthesisUtterance(prepared);u.lang=lang;u.voice=getSpeechVoice(lang,narrator);u.rate=.92;u.volume=masterVol;u.onend=onDone;u.onerror=onDone;synth.speak(u);return;}
+            const pattern=new RegExp('('+names.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\$&')).join('|')+')','gi'); const parts=prepared.split(pattern).filter(Boolean);let i=0;
+            const next=()=>{if(i>=parts.length){onDone&&onDone();return;}const part=parts[i++],isStation=names.some(n=>n.toLowerCase()===part.toLowerCase()),u=new SpeechSynthesisUtterance(part);u.lang=isStation?'id-ID':lang;u.voice=isStation?getSpeechVoice('id-ID',narrator):getSpeechVoice(lang,narrator);u.rate=.92;u.volume=masterVol;u.onend=next;u.onerror=next;synth.speak(u);};next();
+        }
+        function spellCharacters(v){return spellTrainNumber(v,'id');}
 
         function playSequence(templateList,train,closingTone='tanpa_chime'){
             stopAudio();
@@ -923,11 +882,7 @@
                 }
                 const item=templateList[idx],text=replaceVariables(item.text,train);
                 document.getElementById('player-status-label').textContent=`MEMUTAR ${item.label}`;
-                const uploaded=narrator && (idx===0?narrator.audioId:idx===1?narrator.audioEn:narrator.audioJv);
-                if(uploaded){
-                    activeAudio=new Audio(uploaded);activeAudio.volume=masterVol;
-                    activeAudio.onended=()=>{idx++;setTimeout(run,400);};activeAudio.onerror=()=>{idx++;run();};activeAudio.play().catch(()=>{idx++;run();});
-                }else if('speechSynthesis' in window){
+                if('speechSynthesis' in window){
                     speakWithStationNames(text,item.lang,train,()=>{idx++;setTimeout(run,400)});
                 }else{idx++;run();}
             };run();
@@ -937,7 +892,7 @@
             const train=getSelectedTrain(),t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)];
             if(!t){showToast('Teks baku belum tersedia.');return;}
             const generatorText=document.getElementById('script-textarea')?.value?.trim()||t.isiID||'';
-            const seq=[{label:'INDONESIA',lang:'id-ID',text:generatorText},{label:'ENGLISH',lang:'en-US',text:translateIdToEn(generatorText)},{label:'JAWA KRAMA ALUS',lang:'jv-ID',text:translateIdToJv(generatorText)}];
+            const seq=[{label:'INDONESIA',lang:'id-ID',text:generatorText},{label:'ENGLISH',lang:'en-US',text:replaceVariables(t.isiEN||translateIdToEn(t.isiID),train)},{label:'JAWA KRAMA ALUS',lang:'jv-ID',text:replaceVariables(t.isiJV||translateIdToJv(t.isiID),train)}];
             const cin=document.getElementById('sel-chime-in').value,cout=document.getElementById('sel-chime-out').value;
             synth.cancel();document.getElementById('player-status-label').textContent='MEMUTAR CHIME...';startWaveAnimation();
             const go=()=>{if(cin!=='tanpa_chime')playChimeTone(cin);setTimeout(()=>playSequence(seq,train,cout),cin==='tanpa_chime'?0:1400);};go();
@@ -945,7 +900,7 @@
             setTimeout(()=>{},0);
         }
 
-        function playEmergencyBroadcast(){const text=document.getElementById('emergency-textarea').value.trim();if(!text)return;stopAudio();document.getElementById('player-status-label').textContent='SIARAN DARURAT...';startWaveAnimation();if('speechSynthesis'in window){const u=new SpeechSynthesisUtterance(formatSpokenTime(text));u.lang='id-ID';u.volume=masterVol;u.onend=stopBroadcastResetUI;synth.speak(u);}}
+        function playEmergencyBroadcast(){const id=document.getElementById('emergency-textarea').value.trim(),en=document.getElementById('emergency-textarea-en').value.trim(),jv=document.getElementById('emergency-textarea-jv').value.trim();if(!id)return;stopAudio();document.getElementById('player-status-label').textContent='SIARAN DARURAT...';startWaveAnimation();playSequence([{label:'INDONESIA',lang:'id-ID',text:id},{label:'ENGLISH',lang:'en-US',text:en||translateIdToEn(id)},{label:'JAWA KRAMA ALUS',lang:'jv-ID',text:jv||translateIdToJv(id)}],getSelectedTrain(),'tanpa_chime');}
         function playChimeTone(type,cb){const ctx=getAudioContext(),now=ctx.currentTime,gain=ctx.createGain();gain.gain.setValueAtTime(masterVol,now);gain.connect(ctx.destination);if(type==='nada_a'){playOsc(ctx,gain,783.99,now,.7);playOsc(ctx,gain,659.25,now+.8,1)}else if(type==='nada_b'){playOsc(ctx,gain,880,now,.5);playOsc(ctx,gain,1108.73,now+.4,.8)}else if(type==='nada_c'){playBell(ctx,gain,1300,now,.4);playBell(ctx,gain,980,now+.3,.6)}setTimeout(()=>cb&&cb(),1300);}
         function getAudioContext(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
         function playOsc(ctx,dest,f,start,d){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.0,start);g.gain.linearRampToValueAtTime(.4,start+.05);g.gain.exponentialRampToValueAtTime(.001,start+d);o.connect(g);g.connect(dest);o.start(start);o.stop(start+d);}
