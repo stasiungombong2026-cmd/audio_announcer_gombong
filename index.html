@@ -912,7 +912,70 @@
             if (audioCtx.state === 'suspended') audioCtx.resume();
             return audioCtx;
         }
+function playAnnouncement() {
+            const text = document.getElementById('genScriptText').value;
+            const val = document.getElementById('trainSearchInput').value;
+            const trainNo = val.split(' - ')[0].trim();
+            const train = appData.trains.find(t => t.no.toLowerCase() === trainNo.toLowerCase() || t.name.toLowerCase() === trainNo.toLowerCase());
+            
+            // Daftar urutan bahasa dan template teksnya masing-masing
+            const sequence = [
+                { langCode: 'id-ID', template: text }, // Bahasa Indonesia (menggunakan teks dari form)
+                { langCode: 'en-US', template: appData.multilingualTemplates ? appData.multilingualTemplates.en : "Attention, {train_type} {train_name}, train number {train_no}, bound for {train_route}, {direction}, will shortly arrive on platform {platform}. Thank you." }, // Bahasa Inggris
+                { langCode: 'jv-ID', template: appData.multilingualTemplates ? appData.multilingualTemplates.jv : "Kawigatosan, dhumateng para penumpang, Sepur {train_name} nomer {train_no}, tujuwan {train_route}, {direction}, badhe segera mlebet ing jalur {platform}. Matur nuwun." } // Bahasa Jawa
+            ];
 
+            const openingTone = document.getElementById('genChimeOpening').value;
+            const closingTone = document.getElementById('genChimeClosing').value;
+            
+            document.getElementById('playerStatusLabel').innerText = "Memutar Chime Pembuka...";
+            
+            playChimeTone(openingTone, () => {
+                let currentIndex = 0;
+
+                function playNextLanguage() {
+                    if (currentIndex >= sequence.length) {
+                        // Jika semua bahasa selesai, putar chime penutup (jika ada)
+                        if (closingTone !== 'none') {
+                            document.getElementById('playerStatusLabel').innerText = "Memutar Chime Penutup...";
+                            playChimeTone(closingTone, () => {
+                                document.getElementById('playerStatusLabel').innerText = "Selesai";
+                            });
+                        } else {
+                            document.getElementById('playerStatusLabel').innerText = "Selesai";
+                        }
+                        return;
+                    }
+
+                    const current = sequence[currentIndex];
+                    document.getElementById('playerStatusLabel').innerText = `Memutar Pengumuman (${current.langCode.toUpperCase()})...`;
+
+                    // Format teks menggunakan formatSmartTTS agar nomor & waktu terbaca benar
+                    const processedText = formatSmartTTS(current.template, train);
+
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(processedText);
+                        utterance.lang = current.langCode;
+                        utterance.rate = 0.95;
+
+                        utterance.onend = () => {
+                            currentIndex++;
+                            setTimeout(playNextLanguage, 500); // Jeda 0.5 detik antar bahasa
+                        };
+
+                        utterance.onerror = () => {
+                            currentIndex++;
+                            playNextLanguage();
+                        };
+
+                        window.speechSynthesis.speak(utterance);
+                    }
+                }
+
+                // Mulai putar bahasa pertama
+                playNextLanguage();
+            });
+        }
         function playChimeTone(type) {
             const ctx = getAudioContext();
             const now = ctx.currentTime;
