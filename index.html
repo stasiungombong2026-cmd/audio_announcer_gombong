@@ -801,8 +801,61 @@
         function autoTranslateTemplate(silent=false,obj=null){const idText=obj?obj.isiID:document.getElementById('modal-isi').value;const en=translateIdToEn(idText),jv=translateIdToJv(idText);if(obj){obj.isiEN=obj.isiEN||en;obj.isiJV=obj.isiJV||jv;return;}document.getElementById('modal-isi-en').value=en;document.getElementById('modal-isi-jv').value=jv;if(!silent)showToast('Terjemahan EN + Jawa Krama Alus dibuat.');}
 
         function resolveNarrator(){const i=Number(document.getElementById('sel-narrator')?.value);return narratorList[i]||narratorList[activeNarratorIndex]||null;}
-        function spellCharacters(v){return String(v||'').replace(/[0-9A-Za-z]+/g,m=>m);}
-        function formatSpokenTime(t){return t;}
+        // =========================
+        // PELAFALAN KHUSUS ANNOUNCEMENT
+        // Nomor KA: 1007A -> satu nol nol tujuh a
+        // Waktu: 23:18 WIB -> pukul dua puluh tiga lewat delapan belas menit waktu Indonesia bagian barat
+        // =========================
+        const digitWords={
+            '0':'nol','1':'satu','2':'dua','3':'tiga','4':'empat','5':'lima','6':'enam','7':'tujuh','8':'delapan','9':'sembilan'
+        };
+        function numberToIndonesian(n){
+            n=Number(n);
+            if(!Number.isFinite(n)) return String(n);
+            const small=['nol','satu','dua','tiga','empat','lima','enam','tujuh','delapan','sembilan','sepuluh','sebelas'];
+            if(n<12)return small[n];
+            if(n<20)return small[n-10]+' belas';
+            if(n<100){const p=Math.floor(n/10),s=n%10;return digitWords[String(p)]+' puluh'+(s?' '+digitWords[String(s)]:'');}
+            return String(n).split('').map(d=>digitWords[d]).join(' ');
+        }
+        function spellTrainNumber(v){
+            return String(v||'').trim().split('').map(ch=>{
+                if(/[0-9]/.test(ch))return digitWords[ch];
+                if(/[A-Za-z]/.test(ch))return ch.toLowerCase();
+                return ch;
+            }).filter(Boolean).join(' ');
+        }
+        function formatSpokenTime(t){
+            let s=String(t||'');
+            const re=/(\b)(\d{1,2})[:.](\d{2})(?:\s*(WIB|WITA|WIT|wib|wita|wit))?(\b)/gi;
+            return s.replace(re,(m,_b,h,mi,zone)=>{
+                const hh=Number(h), mm=Number(mi);
+                const hour=numberToIndonesian(hh);
+                const minute=numberToIndonesian(mm);
+                let suffix='';
+                const z=String(zone||'WIB').toUpperCase();
+                if(z==='WIB') suffix=' waktu Indonesia bagian barat';
+                else if(z==='WITA') suffix=' waktu Indonesia tengah';
+                else if(z==='WIT') suffix=' waktu Indonesia timur';
+                return `pukul ${hour} lewat ${minute} menit${suffix}`;
+            });
+        }
+        function prepareSpeechText(text,train){
+            let s=String(text||'');
+            // Waktu selalu diproses lebih dulu agar angka jam/menit tidak ikut dieja satu per satu.
+            s=formatSpokenTime(s);
+            if(train&&train.no!==undefined&&train.no!==null&&String(train.no).trim()){
+                const raw=String(train.no).trim();
+                const spoken=spellTrainNumber(raw);
+                // Ganti nomor KA yang tampil sebagai teks maupun hasil variabel.
+                const escaped=raw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+                s=s.replace(new RegExp(`(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`,'gi'),spoken);
+            }
+            // Jika nomor KA sudah masuk melalui variabel tetapi formatnya alfanumerik, tetap eja.
+            s=s.replace(/(?<![A-Za-z0-9])\d{2,}[A-Za-z](?![A-Za-z0-9])/g,m=>spellTrainNumber(m));
+            return s;
+        }
+        function spellCharacters(v){return spellTrainNumber(v);}
 
         function playSequence(templateList,train,closingTone='tanpa_chime'){
             stopAudio();
@@ -822,7 +875,8 @@
                     activeAudio=new Audio(uploaded);activeAudio.volume=masterVol;
                     activeAudio.onended=()=>{idx++;setTimeout(run,400);};activeAudio.onerror=()=>{idx++;run();};activeAudio.play().catch(()=>{idx++;run();});
                 }else if('speechSynthesis' in window){
-                    const u=new SpeechSynthesisUtterance(text);u.lang=item.lang;u.rate=.92;u.volume=masterVol;
+                    const speechText=prepareSpeechText(text,train);
+                    const u=new SpeechSynthesisUtterance(speechText);u.lang=item.lang;u.rate=.92;u.volume=masterVol;
                     u.onend=()=>{idx++;setTimeout(run,400)};u.onerror=()=>{idx++;run()};synth.speak(u);
                 }else{idx++;run();}
             };run();
@@ -840,7 +894,7 @@
             setTimeout(()=>{},0);
         }
 
-        function playEmergencyBroadcast(){const text=document.getElementById('emergency-textarea').value.trim();if(!text)return;stopAudio();document.getElementById('player-status-label').textContent='SIARAN DARURAT...';startWaveAnimation();if('speechSynthesis'in window){const u=new SpeechSynthesisUtterance(text);u.lang='id-ID';u.volume=masterVol;u.onend=stopBroadcastResetUI;synth.speak(u);}}
+        function playEmergencyBroadcast(){const text=document.getElementById('emergency-textarea').value.trim();if(!text)return;stopAudio();document.getElementById('player-status-label').textContent='SIARAN DARURAT...';startWaveAnimation();if('speechSynthesis'in window){const u=new SpeechSynthesisUtterance(formatSpokenTime(text));u.lang='id-ID';u.volume=masterVol;u.onend=stopBroadcastResetUI;synth.speak(u);}}
         function playChimeTone(type,cb){const ctx=getAudioContext(),now=ctx.currentTime,gain=ctx.createGain();gain.gain.setValueAtTime(masterVol,now);gain.connect(ctx.destination);if(type==='nada_a'){playOsc(ctx,gain,783.99,now,.7);playOsc(ctx,gain,659.25,now+.8,1)}else if(type==='nada_b'){playOsc(ctx,gain,880,now,.5);playOsc(ctx,gain,1108.73,now+.4,.8)}else if(type==='nada_c'){playBell(ctx,gain,1300,now,.4);playBell(ctx,gain,980,now+.3,.6)}setTimeout(()=>cb&&cb(),1300);}
         function getAudioContext(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
         function playOsc(ctx,dest,f,start,d){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.0,start);g.gain.linearRampToValueAtTime(.4,start+.05);g.gain.exponentialRampToValueAtTime(.001,start+d);o.connect(g);g.connect(dest);o.start(start);o.stop(start+d);}
