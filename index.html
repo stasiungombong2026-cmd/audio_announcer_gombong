@@ -840,20 +840,73 @@
                 return `pukul ${hour} lewat ${minute} menit${suffix}`;
             });
         }
-        function prepareSpeechText(text,train){
+        function numberToJawaKrama(n){
+            n=Number(n); if(!Number.isFinite(n)) return String(n);
+            const ones=['nol','setunggal','kalih','tigo','sekawan','gangsal','enem','pitu','wolu','sanga'];
+            if(n<10) return ones[n];
+            if(n===10) return 'sedasa';
+            if(n===11) return 'sewelas';
+            if(n<20) return ones[n-10]+' welas';
+            if(n===20) return 'kalih dasa';
+            if(n<30) return 'kalih dasa '+ones[n-20];
+            if(n===30) return 'tigang dasa';
+            if(n<40) return 'tigang dasa '+ones[n-30];
+            if(n===40) return 'sekawan dasa';
+            if(n<50) return 'sekawan dasa '+ones[n-40];
+            if(n===50) return 'gangsal dasa';
+            if(n<60) return 'gangsal dasa '+ones[n-50];
+            if(n===60) return 'enem dasa';
+            if(n<70) return 'enem dasa '+ones[n-60];
+            if(n===70) return 'pitu dasa';
+            if(n<80) return 'pitu dasa '+ones[n-70];
+            if(n===80) return 'wolu dasa';
+            if(n<90) return 'wolu dasa '+ones[n-80];
+            if(n===90) return 'sanga dasa';
+            if(n<100) return 'sanga dasa '+ones[n-90];
+            return String(n).split('').map(d=>ones[Number(d)]).join(' ');
+        }
+        function replaceJawaNumbers(s){
+            return String(s||'').replace(/\b\d+\b/g,m=>numberToJawaKrama(Number(m)));
+        }
+        function replaceEnglishTrackPlatform(s){
+            let x=String(s||'');
+            const enNum=n=>numberToEnglish(Number(n));
+            x=x.replace(/\bjalur\s*(\d+)\b/gi,(m,n)=>`track number ${enNum(n)}`);
+            x=x.replace(/\bperon\s*(\d+)\b/gi,(m,n)=>`peron number ${enNum(n)}`);
+            return x;
+        }
+        function numberToEnglish(n){
+            const a=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+            const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+            n=Number(n); if(!Number.isFinite(n)) return String(n);
+            if(n<20)return a[n]; if(n<100)return tens[Math.floor(n/10)]+(n%10?' '+a[n%10]:'');
+            return String(n).split('').map(d=>a[Number(d)]).join(' ');
+        }
+        function stationNamesFromTrain(train){
+            const names=[];
+            if(train){ if(train.route) names.push(String(train.route)); if(train.stops) names.push(...String(train.stops).split(',').map(x=>x.trim())); if(train.station) names.push(String(train.station)); }
+            return [...new Set(names.filter(Boolean).sort((a,b)=>b.length-a.length))];
+        }
+        function prepareSpeechText(text,train,lang='id-ID'){
             let s=String(text||'');
-            // Waktu selalu diproses lebih dulu agar angka jam/menit tidak ikut dieja satu per satu.
             s=formatSpokenTime(s);
+            if(lang==='en-US'||lang==='en-GB') s=replaceEnglishTrackPlatform(s);
+            if(lang==='jv-ID') s=replaceJawaNumbers(s);
             if(train&&train.no!==undefined&&train.no!==null&&String(train.no).trim()){
                 const raw=String(train.no).trim();
                 const spoken=spellTrainNumber(raw);
-                // Ganti nomor KA yang tampil sebagai teks maupun hasil variabel.
                 const escaped=raw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
                 s=s.replace(new RegExp(`(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`,'gi'),spoken);
             }
-            // Jika nomor KA sudah masuk melalui variabel tetapi formatnya alfanumerik, tetap eja.
             s=s.replace(/(?<![A-Za-z0-9])\d{2,}[A-Za-z](?![A-Za-z0-9])/g,m=>spellTrainNumber(m));
             return s;
+        }
+        function speakWithStationNames(text,lang,train,onDone){
+            const names=stationNamesFromTrain(train);
+            if(!('speechSynthesis' in window)||!names.length){ const u=new SpeechSynthesisUtterance(prepareSpeechText(text,train,lang)); u.lang=lang; u.rate=.92; u.volume=masterVol; u.onend=onDone; u.onerror=onDone; synth.speak(u); return; }
+            const pattern=new RegExp('('+names.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','gi');
+            const parts=String(prepareSpeechText(text,train,lang)).split(pattern).filter(Boolean); let i=0;
+            const next=()=>{ if(i>=parts.length){onDone&&onDone();return;} const part=parts[i++]; const isStation=names.some(n=>n.toLowerCase()===part.toLowerCase()); const u=new SpeechSynthesisUtterance(part); u.lang=isStation?'id-ID':lang; u.rate=.92; u.volume=masterVol; u.onend=next; u.onerror=next; synth.speak(u); }; next();
         }
         function spellCharacters(v){return spellTrainNumber(v);}
 
@@ -875,9 +928,7 @@
                     activeAudio=new Audio(uploaded);activeAudio.volume=masterVol;
                     activeAudio.onended=()=>{idx++;setTimeout(run,400);};activeAudio.onerror=()=>{idx++;run();};activeAudio.play().catch(()=>{idx++;run();});
                 }else if('speechSynthesis' in window){
-                    const speechText=prepareSpeechText(text,train);
-                    const u=new SpeechSynthesisUtterance(speechText);u.lang=item.lang;u.rate=.92;u.volume=masterVol;
-                    u.onend=()=>{idx++;setTimeout(run,400)};u.onerror=()=>{idx++;run()};synth.speak(u);
+                    speakWithStationNames(text,item.lang,train,()=>{idx++;setTimeout(run,400)});
                 }else{idx++;run();}
             };run();
         }
