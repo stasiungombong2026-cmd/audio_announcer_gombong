@@ -845,9 +845,9 @@
                 s=s.replace(new RegExp(`(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`,'gi'),spellTrainNumber(raw,l));
             }
             s=s.replace(/(?<![A-Za-z0-9])\d{2,}[A-Za-z](?![A-Za-z0-9])/g,m=>spellTrainNumber(m,lang==='en-US'||lang==='en-GB'?'en':'id'));
-            // Tanda baca koma dan titik tidak dilafalkan oleh TTS.
-            // Waktu 23.13 sudah dikonversi menjadi kata sebelum titik dihapus.
-            s=s.replace(/[,，、]+/g,' ').replace(/[.。]+/g,' ').replace(/\s{2,}/g,' ').trim();
+            // Koma tidak dilafalkan. Titik dipertahankan sebagai penanda jeda 3 detik.
+            // Waktu 23.13 sudah dikonversi menjadi kata sebelum titik diproses.
+            s=s.replace(/[,，、]+/g,' ').replace(/\s{2,}/g,' ').trim();
             return s;
         }
         function getSpeechVoice(lang,narrator){
@@ -855,11 +855,46 @@
             if(narrator&&narrator.voiceNames){const wanted=narrator.voiceNames[code];if(wanted){const exact=voices.find(v=>v.name===wanted);if(exact)return exact;}}
             return voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(code))||null;
         }
+        // Nama stasiun tetap ejaan Indonesia, tetapi pada pengumuman English dibaca dengan voice English-UK bila tersedia.
+        function getEnglishStationVoice(narrator){
+            const voices=synth.getVoices?synth.getVoices():[];
+            if(narrator&&narrator.voiceNames){
+                const wanted=narrator.voiceNames.en;
+                if(wanted){const exact=voices.find(v=>v.name===wanted);if(exact&&/^en-GB/i.test(exact.lang||''))return exact;}
+            }
+            return voices.find(v=>/^en-GB/i.test(v.lang||''))||voices.find(v=>/^en/i.test(v.lang||''))||null;
+        }
         function speakWithStationNames(text,lang,train,onDone){
             const names=stationNamesFromTrain(train), narrator=resolveNarrator(), prepared=prepareSpeechText(text,train,lang);
-            if(!('speechSynthesis' in window)||!names.length){const u=new SpeechSynthesisUtterance(prepared);u.lang=lang;u.voice=getSpeechVoice(lang,narrator);u.rate=.92;u.volume=masterVol;u.onend=onDone;u.onerror=onDone;synth.speak(u);return;}
-            const pattern=new RegExp('('+names.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\$&')).join('|')+')','gi'); const parts=prepared.split(pattern).filter(Boolean);let i=0;
-            const next=()=>{if(i>=parts.length){onDone&&onDone();return;}const part=parts[i++],isStation=names.some(n=>n.toLowerCase()===part.toLowerCase()),u=new SpeechSynthesisUtterance(part);u.lang=isStation?'id-ID':lang;u.voice=isStation?getSpeechVoice('id-ID',narrator):getSpeechVoice(lang,narrator);u.rate=.92;u.volume=masterVol;u.onend=next;u.onerror=next;synth.speak(u);};next();
+            const sentences=prepared.split(/[.。]+/).map(x=>x.trim()).filter(Boolean);
+            if(!('speechSynthesis' in window)){onDone&&onDone();return;}
+            let sentenceIndex=0;
+            const speakSentence=()=>{
+                if(sentenceIndex>=sentences.length){onDone&&onDone();return;}
+                const sentence=sentences[sentenceIndex++];
+                const finishSentence=()=>{
+                    if(sentenceIndex<sentences.length)setTimeout(speakSentence,3000);
+                    else onDone&&onDone();
+                };
+                if(!names.length){
+                    const u=new SpeechSynthesisUtterance(sentence);
+                    u.lang=lang;u.voice=getSpeechVoice(lang,narrator);u.rate=.92;u.volume=masterVol;
+                    u.onend=finishSentence;u.onerror=finishSentence;synth.speak(u);return;
+                }
+                const pattern=new RegExp('('+names.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','gi');
+                const parts=sentence.split(pattern).filter(Boolean);let i=0;
+                const nextPart=()=>{
+                    if(i>=parts.length){finishSentence();return;}
+                    const part=parts[i++],isStation=names.some(n=>n.toLowerCase()===part.toLowerCase());
+                    const u=new SpeechSynthesisUtterance(part);
+                    const englishStation=isStation&&(lang==='en-US'||lang==='en-GB');
+                    u.lang=englishStation?'en-GB':(isStation?'id-ID':lang);
+                    u.voice=englishStation?getEnglishStationVoice(narrator):(isStation?getSpeechVoice('id-ID',narrator):getSpeechVoice(lang,narrator));
+                    u.rate=englishStation?.90:.92;u.volume=masterVol;u.onend=nextPart;u.onerror=nextPart;synth.speak(u);
+                };
+                nextPart();
+            };
+            speakSentence();
         }
         function spellCharacters(v){return spellTrainNumber(v,'id');}
 
