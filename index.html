@@ -876,9 +876,10 @@
                 const nextPart=()=>{
                     if(i>=parts.length){speakToken();return;}
                     const part=parts[i++],isStation=names.some(n=>n.toLowerCase()===part.toLowerCase());
-                    const u=new SpeechSynthesisUtterance(part);
-                    // Nama stasiun tetap ditulis dalam bahasa Indonesia, tetapi dibaca oleh voice English
-                    // agar terdengar sedikit "keinggris-inggrisan", bukan diterjemahkan.
+                    // Nama stasiun tetap nama Indonesia. Untuk voice English, gunakan ejaan fonetik
+                    // agar mesin TTS English mendekati bunyi Indonesia, tanpa menerjemahkan nama.
+                    const stationSpeech = (isStation && lang.startsWith('en')) ? indonesianNameForEnglishTTS(part) : part;
+                    const u=new SpeechSynthesisUtterance(stationSpeech);
                     u.lang=isStation&&lang.startsWith('en')?'en-US':lang;
                     u.voice=getSpeechVoice(u.lang,narrator);
                     u.rate=.80;
@@ -889,6 +890,22 @@
                 nextPart();
             };
             speakToken();
+        }
+        function indonesianNameForEnglishTTS(name){
+            let x=String(name||'').trim().toLowerCase();
+            // Ejaan bantu hanya untuk voice English; nama yang tampil tetap asli.
+            // Tujuannya mempertahankan karakter bunyi Indonesia saat dilafalkan voice English.
+            const words=x.split(/(\s+|-)/);
+            return words.map(w=>{
+                if(/^\s+$/.test(w)||w==='-') return w;
+                let y=w;
+                y=y.replace(/ng/g,'ng').replace(/ny/g,'ny');
+                y=y.replace(/c/g,'ch').replace(/j/g,'j');
+                y=y.replace(/sy/g,'sh').replace(/kh/g,'kh');
+                y=y.replace(/a/g,'ah').replace(/i/g,'ee').replace(/u/g,'oo').replace(/o/g,'oh');
+                y=y.replace(/e/g,'eh');
+                return y;
+            }).join('');
         }
         function spellCharacters(v){return spellTrainNumber(v,'id');}
 
