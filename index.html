@@ -117,8 +117,16 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Pilih Kereta (Nama / Nomor)</label>
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">Cari & Pilih Kereta (Nama / Nomor KA)</label>
+                        <div class="relative mb-2">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                            <input id="search-kereta" type="search" autocomplete="off"
+                                   placeholder="Ketik nomor atau nama kereta, mis. 1009A / Sawunggalih"
+                                   oninput="filterGeneratorTrainSelect()"
+                                   class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl pl-9 pr-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                        </div>
                         <select id="sel-kereta" onchange="onParameterChange()" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                            <!-- Pencarian nomor/nama KA tersedia pada field di atas -->
                             <!-- Populated dynamically -->
                         </select>
                     </div>
@@ -651,8 +659,26 @@
         }
         function updateGeneratorTrainSelect(){
             const sel=document.getElementById('sel-kereta'); if(!sel)return;
-            const old=sel.value; sel.innerHTML=trainList.map(t=>`<option value="${esc(t.no+' - '+t.name)}">${esc(t.no)} - ${esc(t.name)} (Tujuan: ${esc(t.route)})</option>`).join('');
-            if([...sel.options].some(o=>o.value===old))sel.value=old;
+            const old=sel.value;
+            renderFilteredGeneratorTrainOptions(old);
+        }
+        function filterGeneratorTrainSelect(){
+            const sel=document.getElementById('sel-kereta');
+            if(!sel)return;
+            renderFilteredGeneratorTrainOptions(sel.value);
+        }
+        function renderFilteredGeneratorTrainOptions(preferredValue=''){
+            const sel=document.getElementById('sel-kereta');
+            const q=(document.getElementById('search-kereta')?.value||'').trim().toLowerCase();
+            const matches=trainList.filter(t=>{
+                const hay=[t.no,t.name,t.route,t.track,t.direction].map(v=>String(v||'')).join(' ').toLowerCase();
+                return !q || hay.includes(q);
+            });
+            const current=preferredValue||sel.value||'';
+            sel.innerHTML=matches.map(t=>`<option value="${esc(t.no+' - '+t.name)}">${esc(t.no)} - ${esc(t.name)} (Tujuan: ${esc(t.route)})</option>`).join('')
+                || '<option value="">Tidak ada kereta yang cocok</option>';
+            if([...sel.options].some(o=>o.value===current)) sel.value=current;
+            else if(sel.options.length) sel.selectedIndex=0;
             onParameterChange();
         }
         function renderTeksBakuTable(){
@@ -876,12 +902,14 @@
                 const nextPart=()=>{
                     if(i>=parts.length){speakToken();return;}
                     const part=parts[i++],isStation=names.some(n=>n.toLowerCase()===part.toLowerCase());
-                    // Nama stasiun tetap nama Indonesia. Untuk voice English, gunakan ejaan fonetik
-                    // agar mesin TTS English mendekati bunyi Indonesia, tanpa menerjemahkan nama.
-                    const stationSpeech = (isStation && lang.startsWith('en')) ? indonesianNameForEnglishTTS(part) : part;
+                    // Mode English: kalimat tetap dibacakan TTS English, tetapi nama stasiun
+                    // sengaja dialihkan ke TTS Indonesia agar aksennya tetap Indonesia dan jelas.
+                    // Nama stasiun tidak diterjemahkan dan teks yang tampil tetap nama aslinya.
+                    const stationSpeech = part;
+                    const speechLang = (isStation && lang.startsWith('en')) ? 'id-ID' : lang;
                     const u=new SpeechSynthesisUtterance(stationSpeech);
-                    u.lang=isStation&&lang.startsWith('en')?'en-US':lang;
-                    u.voice=getSpeechVoice(u.lang,narrator);
+                    u.lang=speechLang;
+                    u.voice=getSpeechVoice(speechLang,narrator);
                     u.rate=.80;
                     u.volume=masterVol;
                     u.onend=nextPart;u.onerror=nextPart;
@@ -892,20 +920,10 @@
             speakToken();
         }
         function indonesianNameForEnglishTTS(name){
-            let x=String(name||'').trim().toLowerCase();
-            // Ejaan bantu hanya untuk voice English; nama yang tampil tetap asli.
-            // Tujuannya mempertahankan karakter bunyi Indonesia saat dilafalkan voice English.
-            const words=x.split(/(\s+|-)/);
-            return words.map(w=>{
-                if(/^\s+$/.test(w)||w==='-') return w;
-                let y=w;
-                y=y.replace(/ng/g,'ng').replace(/ny/g,'ny');
-                y=y.replace(/c/g,'ch').replace(/j/g,'j');
-                y=y.replace(/sy/g,'sh').replace(/kh/g,'kh');
-                y=y.replace(/a/g,'ah').replace(/i/g,'ee').replace(/u/g,'oo').replace(/o/g,'oh');
-                y=y.replace(/e/g,'eh');
-                return y;
-            }).join('');
+            // Dipertahankan untuk kompatibilitas data lama.
+            // Nama stasiun pada mode English sekarang dibacakan langsung oleh voice Indonesia
+            // agar aksen Indonesia tetap natural dan jelas.
+            return String(name||'');
         }
         function spellCharacters(v){return spellTrainNumber(v,'id');}
 
