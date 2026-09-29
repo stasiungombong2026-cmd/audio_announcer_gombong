@@ -842,12 +842,16 @@
             if(train&&train.no!==undefined&&String(train.no).trim()){
                 const raw=String(train.no).trim(), escaped=raw.replace(/[.*+?^${}()|[\]\\]/g,'\$&');
                 const l=lang==='en-US'||lang==='en-GB'?'en':'id';
+                // KA dibaca sebagai K A, lalu nomor/huruf dibaca satu per satu.
+                // Contoh: KA 6 -> k a enam; KA 1009A -> k a satu nol nol sembilan a.
+                const kaPattern = /\bK\s*A\s*/gi;
+                s=s.replace(kaPattern,'k a ');
                 s=s.replace(new RegExp(`(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`,'gi'),spellTrainNumber(raw,l));
             }
             s=s.replace(/(?<![A-Za-z0-9])\d{2,}[A-Za-z](?![A-Za-z0-9])/g,m=>spellTrainNumber(m,lang==='en-US'||lang==='en-GB'?'en':'id'));
-            // Koma tidak dilafalkan. Titik dipertahankan sebagai penanda jeda 3 detik.
-            // Waktu 23.13 sudah dikonversi menjadi kata sebelum titik diproses.
-            s=s.replace(/[,，、]+/g,' ').replace(/\s{2,}/g,' ').trim();
+            // Koma dan titik dipertahankan sebagai penanda jeda; keduanya tidak dilafalkan.
+            // Waktu 23.13 sudah dikonversi menjadi kata sebelum tanda baca diproses.
+            s=s.replace(/[,，、]/g,' , ').replace(/[.。]/g,' . ').replace(/\s{2,}/g,' ').trim();
             return s;
         }
         function getSpeechVoice(lang,narrator){
@@ -855,46 +859,36 @@
             if(narrator&&narrator.voiceNames){const wanted=narrator.voiceNames[code];if(wanted){const exact=voices.find(v=>v.name===wanted);if(exact)return exact;}}
             return voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(code))||null;
         }
-        // Nama stasiun tetap ejaan Indonesia, tetapi pada pengumuman English dibaca dengan voice English-UK bila tersedia.
-        function getEnglishStationVoice(narrator){
-            const voices=synth.getVoices?synth.getVoices():[];
-            if(narrator&&narrator.voiceNames){
-                const wanted=narrator.voiceNames.en;
-                if(wanted){const exact=voices.find(v=>v.name===wanted);if(exact&&/^en-GB/i.test(exact.lang||''))return exact;}
-            }
-            return voices.find(v=>/^en-GB/i.test(v.lang||''))||voices.find(v=>/^en/i.test(v.lang||''))||null;
-        }
         function speakWithStationNames(text,lang,train,onDone){
             const names=stationNamesFromTrain(train), narrator=resolveNarrator(), prepared=prepareSpeechText(text,train,lang);
-            const sentences=prepared.split(/[.。]+/).map(x=>x.trim()).filter(Boolean);
             if(!('speechSynthesis' in window)){onDone&&onDone();return;}
-            let sentenceIndex=0;
-            const speakSentence=()=>{
-                if(sentenceIndex>=sentences.length){onDone&&onDone();return;}
-                const sentence=sentences[sentenceIndex++];
-                const finishSentence=()=>{
-                    if(sentenceIndex<sentences.length)setTimeout(speakSentence,3000);
-                    else onDone&&onDone();
-                };
-                if(!names.length){
-                    const u=new SpeechSynthesisUtterance(sentence);
-                    u.lang=lang;u.voice=getSpeechVoice(lang,narrator);u.rate=.92;u.volume=masterVol;
-                    u.onend=finishSentence;u.onerror=finishSentence;synth.speak(u);return;
-                }
-                const pattern=new RegExp('('+names.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','gi');
-                const parts=sentence.split(pattern).filter(Boolean);let i=0;
+            // Koma = jeda 1 ketukan (±0,5 detik), titik = jeda 2 ketukan (±1 detik).
+            const tokens=prepared.split(/([,.])/).map(x=>x.trim()).filter(Boolean);
+            let tokenIndex=0;
+            const speakToken=()=>{
+                if(tokenIndex>=tokens.length){onDone&&onDone();return;}
+                const token=tokens[tokenIndex++];
+                if(token===','){setTimeout(speakToken,500);return;}
+                if(token==='.'){setTimeout(speakToken,1000);return;}
+                const pattern=names.length?new RegExp('('+names.map(n=>n.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')).join('|')+')','gi'):null;
+                const parts=pattern?token.split(pattern).filter(Boolean):[token];
+                let i=0;
                 const nextPart=()=>{
-                    if(i>=parts.length){finishSentence();return;}
+                    if(i>=parts.length){speakToken();return;}
                     const part=parts[i++],isStation=names.some(n=>n.toLowerCase()===part.toLowerCase());
                     const u=new SpeechSynthesisUtterance(part);
-                    const englishStation=isStation&&(lang==='en-US'||lang==='en-GB');
-                    u.lang=englishStation?'en-GB':(isStation?'id-ID':lang);
-                    u.voice=englishStation?getEnglishStationVoice(narrator):(isStation?getSpeechVoice('id-ID',narrator):getSpeechVoice(lang,narrator));
-                    u.rate=englishStation?.90:.92;u.volume=masterVol;u.onend=nextPart;u.onerror=nextPart;synth.speak(u);
+                    // Nama stasiun tetap ditulis dalam bahasa Indonesia, tetapi dibaca oleh voice English
+                    // agar terdengar sedikit "keinggris-inggrisan", bukan diterjemahkan.
+                    u.lang=isStation&&lang.startsWith('en')?'en-US':lang;
+                    u.voice=getSpeechVoice(u.lang,narrator);
+                    u.rate=.80;
+                    u.volume=masterVol;
+                    u.onend=nextPart;u.onerror=nextPart;
+                    synth.speak(u);
                 };
                 nextPart();
             };
-            speakSentence();
+            speakToken();
         }
         function spellCharacters(v){return spellTrainNumber(v,'id');}
 
