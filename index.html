@@ -387,13 +387,15 @@
         <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
                 <h3 id="modal-title" class="text-sm font-bold text-white uppercase tracking-wide">Tambah Teks Baku Baru</h3>
-                <button onclick="closeTeksModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+                <button type="button" onclick="closeTeksModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
             </div>
             <input type="hidden" id="edit-index" value="-1">
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Kategori Jenis</label>
-                    <input type="text" id="modal-kategori" placeholder="misal: kedatangan, keberangkatan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+                    <select id="modal-kategori" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
+<option value="kedatangan">Kedatangan</option><option value="keberangkatan">Keberangkatan</option><option value="ketersediaan">Ketersediaan Kereta</option><option value="kelambatan">Kelambatan Kereta</option><option value="pembatalan">Pembatalan Perjalanan Kereta</option>
+</select>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Judul Template</label>
@@ -443,8 +445,8 @@
                 
             </div>
             <div class="flex items-center justify-end space-x-3 pt-2">
-                <button onclick="closeTeksModal()" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Batal</button>
-                <button onclick="saveTeksBaku()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan Template</button>
+                <button type="button" onclick="closeTeksModal()" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Batal</button>
+                <button type="button" onclick="saveTeksBaku()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan Template</button>
             </div>
         </div>
     </div>
@@ -454,7 +456,7 @@
         <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3">
                 <h3 id="train-modal-title" class="text-sm font-bold text-white uppercase tracking-wide">Tambah Kereta Baru</h3>
-                <button onclick="closeTrainModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+                <button type="button" onclick="closeTrainModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
             </div>
             <input type="hidden" id="train-edit-index" value="-1">
             <div class="space-y-3">
@@ -518,8 +520,8 @@
                 </div>
             </div>
             <div class="flex items-center justify-end space-x-3 pt-2">
-                <button onclick="closeTrainModal()" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Batal</button>
-                <button onclick="saveTrainData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button>
+                <button type="button" onclick="closeTrainModal()" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold">Batal</button>
+                <button type="button" onclick="saveTrainData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button>
             </div>
         </div>
     </div>
@@ -528,7 +530,7 @@
     <!-- Modal Narator -->
     <div id="narrator-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
       <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="narrator-modal-title" class="text-sm font-bold text-white uppercase">Tambah Narator</h3><button onclick="closeNarratorModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="narrator-modal-title" class="text-sm font-bold text-white uppercase">Tambah Narator</h3><button type="button" onclick="closeNarratorModal()"><i class="fa-solid fa-xmark"></i></button></div>
         <input type="hidden" id="narrator-edit-index" value="-1">
         <input id="narrator-name" placeholder="Nama narator" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <input id="narrator-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
@@ -538,28 +540,28 @@
           
         </div>
         <p class="text-[10px] text-slate-500">Rekaman disimpan di browser perangkat ini. File besar dapat memenuhi localStorage.</p>
-        <div class="flex justify-end gap-2"><button onclick="closeNarratorModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveNarrator()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="closeNarratorModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button type="button" onclick="saveNarrator()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
       </div>
     </div>
 
     <!-- Modal Emergency -->
     <div id="emergency-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
       <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
-        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="emergency-modal-title" class="text-sm font-bold text-white uppercase">Tambah Pengumuman</h3><button onclick="closeEmergencyModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="emergency-modal-title" class="text-sm font-bold text-white uppercase">Tambah Pengumuman</h3><button type="button" onclick="closeEmergencyModal()"><i class="fa-solid fa-xmark"></i></button></div>
         <input type="hidden" id="emergency-edit-index" value="-1">
         <input id="emergency-title" placeholder="Judul" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <input id="emergency-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <textarea id="emergency-script" rows="3" placeholder="Teks Indonesia" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
         <textarea id="emergency-script-en" rows="3" placeholder="Teks English" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
         <button type="button" onclick="autoTranslateEmergency()" class="text-[11px] text-amber-400 hover:underline text-left">Terjemahkan English otomatis</button>
-        <div class="flex justify-end gap-2"><button onclick="closeEmergencyModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveEmergency()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="closeEmergencyModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button type="button" onclick="saveEmergency()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
       </div>
     </div>
 
     <!-- Modal Chime -->
     <div id="chime-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
       <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
-        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="chime-modal-title" class="text-sm font-bold text-white uppercase">Tambah Chime</h3><button onclick="closeChimeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="chime-modal-title" class="text-sm font-bold text-white uppercase">Tambah Chime</h3><button type="button" onclick="closeChimeModal()"><i class="fa-solid fa-xmark"></i></button></div>
         <input type="hidden" id="chime-edit-index" value="-1">
         <input id="chime-id" placeholder="ID, contoh: nada_d" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <input id="chime-name" placeholder="Nama chime" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
@@ -574,7 +576,7 @@
           </div>
           <p id="chime-trim-info" class="text-[10px] text-amber-400 mt-1"></p>
         </div>
-        <div class="flex justify-end gap-2"><button onclick="closeChimeModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveChime()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="closeChimeModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button type="button" onclick="saveChime()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
       </div>
     </div>
 
@@ -592,12 +594,13 @@
         function esc(v=''){ return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
 
         let defaultTeksBaku = [
-            {id:uid('tpl'),kategori:'kedatangan',judul:'Kedatangan Standar',chimeIn:'nada_a',chimeOut:'nada_b',
-             isiID:'Perhatian kepada seluruh penumpang, {nama_ka} dengan nomor {no_ka} tujuan {tujuan}, {dari_arah}, sesaat lagi akan tiba di {jalur}. Rangkaian terdiri dari {sf_rangkaian}. Stasiun perhentian: {sta_perhentian}. Terima kasih.',
-             isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, from {dari_arah}, will shortly arrive on {jalur}. The train formation consists of {sf_rangkaian}. Stopping stations: {sta_perhentian}. Thank you.'},
-            {id:uid('tpl'),kategori:'keberangkatan',judul:'Keberangkatan Standar',chimeIn:'nada_a',chimeOut:'nada_b',
-             isiID:'Pengumuman untuk penumpang {nama_ka} nomor {no_ka} tujuan {tujuan}. Dipersilakan segera naik melalui {jalur}. Kereta akan diberangkatkan dalam waktu dekat. Terima kasih.',
-             isiEN:'Attention passengers of train {nama_ka}, number {no_ka}, bound for {tujuan}. Please board the train at {jalur}. The train will depart shortly. Thank you.'}
+            {id:uid('tpl'),kategori:'kedatangan',judul:'Kedatangan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, {nama_ka} dengan nomor {no_ka} tujuan {tujuan}, {dari_arah}, sesaat lagi akan tiba di {jalur}. Rangkaian terdiri dari {sf_rangkaian}. Stasiun perhentian: {st_perhentian}. Terima kasih.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, {dari_arah}, will shortly arrive on {jalur}. The train formation consists of {sf_rangkaian}. Stopping stations: {st_perhentian}. Thank you.'},
+            {id:uid('tpl'),kategori:'kedatangan',judul:'Kedatangan Penumpang',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang yang akan turun di {jalur}, mohon mempersiapkan diri. Kereta {nama_ka} dari {dari_arah} segera tiba di Stasiun Gombong. Terima kasih.',isiEN:'Attention to all passengers alighting at {jalur}, please prepare to leave the train. Train {nama_ka} from {dari_arah} will shortly arrive at Gombong Station. Thank you.'},
+            {id:uid('tpl'),kategori:'keberangkatan',judul:'Keberangkatan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Pengumuman untuk penumpang {nama_ka} nomor {no_ka} tujuan {tujuan}. Dipersilakan segera naik melalui {jalur}. Kereta akan diberangkatkan dalam waktu dekat. Terima kasih.',isiEN:'Attention passengers of train {nama_ka}, number {no_ka}, bound for {tujuan}. Please board the train at {jalur}. The train will depart shortly. Thank you.'},
+            {id:uid('tpl'),kategori:'keberangkatan',judul:'Kereta Melintas Langsung',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, kereta {nama_ka} nomor {no_ka} tujuan {tujuan}, {dari_arah}, akan melintas langsung di {jalur}. Mohon berdiri di belakang garis aman. Terima kasih.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, {dari_arah}, will pass through {jalur} without stopping. Please stand behind the safety line. Thank you.'},
+            {id:uid('tpl'),kategori:'ketersediaan',judul:'Ketersediaan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Kepada calon penumpang, kereta {nama_ka} nomor {no_ka} tujuan {tujuan} tersedia untuk perjalanan. Silakan melakukan persiapan keberangkatan sesuai jadwal. Terima kasih.',isiEN:'Attention prospective passengers, train {nama_ka}, number {no_ka}, bound for {tujuan}, is available for travel. Please prepare for departure according to the schedule. Thank you.'},
+            {id:uid('tpl'),kategori:'kelambatan',judul:'Kelambatan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, kereta {nama_ka} nomor {no_ka} tujuan {tujuan} mengalami kelambatan. Mohon menunggu informasi selanjutnya. Terima kasih atas pengertiannya.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, is experiencing a delay. Please wait for further information. Thank you for your understanding.'},
+            {id:uid('tpl'),kategori:'pembatalan',judul:'Pembatalan Perjalanan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, perjalanan kereta {nama_ka} nomor {no_ka} tujuan {tujuan} dibatalkan. Mohon menghubungi petugas untuk informasi dan pelayanan selanjutnya. Terima kasih.',isiEN:'Attention please, the journey of train {nama_ka}, number {no_ka}, bound for {tujuan}, has been cancelled. Please contact station staff for further information and assistance. Thank you.'}
         ];
         let defaultTrains = [
             {no:'142A',name:'Sawunggalih',route:'Pasar Senen',platform:'Jalur 2',direction:'Dari Arah Timur',track:'Jalur 2 Dari Arah Timur',sf:'Premium 1, Premium 2, Kereta Makan, Eksekutif 1',composition:'Premium 1, Premium 2, Kereta Makan, Eksekutif 1',stops:'Kutoarjo, Kutowinangun, Gombong, Kroya, Purwokerto'},
@@ -689,7 +692,7 @@
                 || '<option value="">Tidak ada kereta yang cocok</option>';
             if([...sel.options].some(o=>o.value===current)) sel.value=current;
             else if(sel.options.length) sel.selectedIndex=0;
-            onParameterChange();
+            onParameterChange(false);
         }
         function renderTeksBakuTable(){
             const tbody=document.getElementById('teksbaku-table-body'); if(!tbody)return;
@@ -725,15 +728,13 @@
             return String(text||'').replace(/\{([a-zA-Z0-9_]+)\}/g,(m,k)=>values[k]!==undefined?values[k]:m);
         }
         function syncGeneratorTrainData(){
-            const tr=getSelectedTrain();
-            const sel=document.getElementById('sel-jalur');
-            if(!sel||!tr)return;
-            const platform=String(tr.platform||'').trim() || String(tr.track||'').match(/Jalur\s*\d+/i)?.[0] || '';
-            const direction=String(tr.direction||'').trim() || '';
+            const tr=getSelectedTrain(); const sel=document.getElementById('sel-jalur'); if(!sel||!tr)return;
+            const rawTrack=String(tr.track||'');
+            const platform=String(tr.platform||'').trim() || (rawTrack.match(/Jalur\s*\d+/i)||[''])[0];
+            const direction=String(tr.direction||'').trim() || (rawTrack.match(/Dari Arah\s+(Timur|Barat)/i)||[]).slice(1)[0] || '';
             const dirWord=/timur|wetan/i.test(direction)?'Timur':/barat|kilen/i.test(direction)?'Barat':'';
-            const exact=[...sel.options].find(o=>o.value.toLowerCase()===`${platform} (${dirWord})`.toLowerCase());
-            const platformOnly=[...sel.options].find(o=>o.value.toLowerCase()===platform.toLowerCase());
-            if(exact)sel.value=exact.value; else if(platformOnly)sel.value=platformOnly.value;
+            const exact=[...sel.options].find(o=>String(o.value).toLowerCase()===`${platform} (${dirWord})`.toLowerCase());
+            if(exact) sel.value=exact.value;
         }
         function onTrainSelectionChange(){
             syncGeneratorTrainData();
@@ -754,13 +755,17 @@
             onParameterChange(false);
         }
         function onParameterChange(autoTrack=false){
-            const t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)];if(!t)return;
+            const t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)]; if(!t)return;
             if(autoTrack)syncGeneratorTrainData();
             const tr=getSelectedTrain();
-            const id=replaceVariables(t.isiID,tr);
-            document.getElementById('script-textarea').value=id;
-            document.getElementById('preview-id').textContent=id;
-            document.getElementById('preview-en').textContent=replaceVariables(t.isiEN||translateIdToEn(t.isiID),tr);
+            const jalurSel=document.getElementById('sel-jalur');
+            const jalurVal=jalurSel?.value||'';
+            const tempTrain={...tr,platform:(jalurVal.match(/Jalur\s*\d+/i)||[''])[0]||tr.platform,direction:(/\((Timur|Barat)\)/i.exec(jalurVal)||[])[1]?`Dari Arah ${(/\((Timur|Barat)\)/i.exec(jalurVal)||[])[1]}`:tr.direction,track:jalurVal};
+            const ta=document.getElementById('script-textarea');
+            if(document.activeElement!==ta || autoTrack || !ta.value.trim()) ta.value=replaceVariables(t.isiID,tempTrain);
+            const idText=ta.value;
+            document.getElementById('preview-id').textContent=replaceVariables(idText,tempTrain);
+            document.getElementById('preview-en').textContent=replaceVariables(t.isiEN||translateIdToEn(t.isiID),tempTrain);
         }
         function insertGeneratorVariable(variable){
             const ta=document.getElementById('script-textarea');
@@ -770,7 +775,7 @@
             ta.focus();ta.setSelectionRange(s+variable.length,s+variable.length);
             const tr=getSelectedTrain();
             document.getElementById('preview-id').textContent=replaceVariables(ta.value,tr);
-            document.getElementById('preview-en').textContent=translateIdToEn(ta.value);
+            document.getElementById('preview-en').textContent=replaceVariables(translateIdToEn(ta.value),getSelectedTrain());
             
         }
         function insertVariable(variable){
@@ -784,7 +789,7 @@
         function openTeksModal(index){
             document.getElementById('teks-modal').classList.remove('hidden');document.getElementById('edit-index').value=index;
             if(index>=0){const t=teksBakuList[index];document.getElementById('modal-title').textContent='Edit Teks Baku';document.getElementById('modal-kategori').value=t.kategori;document.getElementById('modal-judul').value=t.judul;document.getElementById('modal-chime-in').value=t.chimeIn;document.getElementById('modal-chime-out').value=t.chimeOut;document.getElementById('modal-isi').value=t.isiID;document.getElementById('modal-isi-en').value=t.isiEN;}
-            else{document.getElementById('modal-title').textContent='Tambah Teks Baku Baru';document.getElementById('modal-kategori').value='umum';document.getElementById('modal-judul').value='Template Baru';document.getElementById('modal-chime-in').value='nada_a';document.getElementById('modal-chime-out').value='nada_b';document.getElementById('modal-isi').value='';document.getElementById('modal-isi-en').value='';}
+            else{document.getElementById('modal-title').textContent='Tambah Teks Baku Baru';document.getElementById('modal-kategori').value='kedatangan';document.getElementById('modal-judul').value='Template Baru';document.getElementById('modal-chime-in').value='nada_a';document.getElementById('modal-chime-out').value='nada_b';document.getElementById('modal-isi').value='';document.getElementById('modal-isi-en').value='';}
         }
         function closeTeksModal(){document.getElementById('teks-modal').classList.add('hidden');}
         function saveTeksBaku(){
@@ -792,7 +797,7 @@
             if(!obj.isiEN){autoTranslateTemplate(true,obj);}
             if(i>=0)teksBakuList[i]=obj;else teksBakuList.push(obj);saveToStorage();closeTeksModal();renderTeksBakuTable();showToast('Teks baku tersimpan.');
         }
-        function deleteTeksBaku(i){if(confirm('Hapus teks baku ini?')){teksBakuList.splice(i,1);saveToStorage();renderTeksBakuTable();}}
+        function deleteTeksBaku(i){if(!Number.isInteger(i)||i<0||i>=teksBakuList.length)return;if(window.confirm('Hapus teks baku ini?')){teksBakuList.splice(i,1);saveToStorage();renderTeksBakuTable();updateGeneratorTeksBakuSelect();showToast('Teks baku dihapus.');}}
 
         function openTrainModal(i){
             document.getElementById('train-modal').classList.remove('hidden');document.getElementById('train-edit-index').value=i;
@@ -808,7 +813,7 @@
             const obj={no,name,route,platform,direction,track:`${platform} ${direction}`,sf,composition:sf,stops};
             if(i>=0)trainList[i]=obj;else trainList.push(obj);saveToStorage();closeTrainModal();renderTrainTable();showToast(i>=0?'Data kereta diperbarui.':'Kereta ditambahkan.');
         }
-        function deleteTrain(i){if(confirm('Hapus data kereta ini?')){trainList.splice(i,1);saveToStorage();renderTrainTable();showToast('Data kereta dihapus.');}}
+        function deleteTrain(i){if(!Number.isInteger(i)||i<0||i>=trainList.length)return;if(window.confirm('Hapus data kereta ini?')){trainList.splice(i,1);saveToStorage();renderTrainTable();updateGeneratorTrainSelect();showToast('Data kereta dihapus.');}}
 
         // Emergency CRUD
         function renderEmergencyList(){
@@ -848,7 +853,7 @@
             try{saveToStorage();}catch(e){showToast('Audio terlalu besar untuk penyimpanan browser. Gunakan file maksimal 4 MB.');return;}
             closeChimeModal();renderChimeList();refreshChimeSelects();showToast('Chime tersimpan.');
         }
-        function deleteChime(i){if(confirm('Hapus chime ini?')){chimeList.splice(i,1);saveToStorage();renderChimeList();refreshChimeSelects();}}
+        function deleteChime(i){if(!Number.isInteger(i)||i<0||i>=chimeList.length)return;if(window.confirm('Hapus chime ini?')){chimeList.splice(i,1);saveToStorage();renderChimeList();refreshChimeSelects();showToast('Chime dihapus.');}}
         function refreshChimeSelects(){['sel-chime-in','sel-chime-out','modal-chime-in','modal-chime-out'].forEach(id=>{const s=document.getElementById(id);if(s)s.innerHTML=chimeList.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')+`<option value="tanpa_chime">Tanpa Chime</option>`;});}
 
         // Narrator CRUD + upload audio (rekaman, bukan voice AI)
@@ -862,7 +867,7 @@
         function closeNarratorModal(){document.getElementById('narrator-modal').classList.add('hidden');}
         function fileToDataUrl(file){return new Promise((res,rej)=>{if(!file)return res('');if(file.size>8*1024*1024)return rej(new Error('Ukuran audio maksimal 8 MB per file.'));const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
         async function saveNarrator(){const i=Number(document.getElementById('narrator-edit-index').value),old=i>=0?narratorList[i]:{},x={id:old.id||uid('voice'),name:document.getElementById('narrator-name').value.trim(),description:document.getElementById('narrator-desc').value.trim(),audioId:old.audioId||'',audioEn:old.audioEn||''};if(!x.name){showToast('Nama narator wajib diisi.');return;}try{x.audioId=await fileToDataUrl(document.getElementById('narrator-audio-id').files[0])||x.audioId;x.audioEn=await fileToDataUrl(document.getElementById('narrator-audio-en').files[0])||x.audioEn;}catch(e){showToast(e.message);return;}if(i>=0)narratorList[i]=x;else{narratorList.push(x);activeNarratorIndex=narratorList.length-1;}saveToStorage();closeNarratorModal();renderNarratorList();updateNarratorSelect();showToast('Narator tersimpan.');}
-        function deleteNarrator(i){if(confirm('Hapus narator ini?')){narratorList.splice(i,1);if(activeNarratorIndex>=narratorList.length)activeNarratorIndex=0;saveToStorage();renderNarratorList();updateNarratorSelect();}}
+        function deleteNarrator(i){if(!Number.isInteger(i)||i<0||i>=narratorList.length)return;if(window.confirm('Hapus narator ini?')){narratorList.splice(i,1);if(activeNarratorIndex>=narratorList.length)activeNarratorIndex=Math.max(0,narratorList.length-1);saveToStorage();renderNarratorList();updateNarratorSelect();showToast('Narator dihapus.');}}
         function previewNarrator(i){const x=narratorList[i];if(!x)return;const u=x.audioId||x.audioEn||x.audioJv;if(u){stopAudio();activeAudio=new Audio(u);activeAudio.volume=masterVol;activeAudio.play().catch(()=>{});}}
         function stopAudio(){if(activeAudio){activeAudio.pause();activeAudio.currentTime=0;activeAudio=null;}synth.cancel();}
 
@@ -1023,6 +1028,13 @@
         function handleFileImport(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(j.teksbaku)teksBakuList=j.teksbaku;if(j.trains)trainList=j.trains;if(j.narrators)narratorList=j.narrators;if(j.emergencies)emergencyList=j.emergencies;if(j.chimes)chimeList=j.chimes;normalizeData();saveToStorage();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();showToast('Data cadangan berhasil dimuat.');}catch(err){showToast('File cadangan tidak valid.');}};r.readAsText(f);}
 
         function showToast(msg){const t=document.createElement('div');t.className='fixed bottom-6 right-6 bg-[#141e3d] border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-[100] text-xs font-medium';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
+
+        // Modal UX: tombol X, Batal, klik backdrop, dan Escape semuanya menutup modal.
+        document.addEventListener('click',e=>{
+            const ids=['teks-modal','train-modal','narrator-modal','emergency-modal','chime-modal'];
+            if(ids.includes(e.target?.id)) window[e.target.id.replace('-modal','')+'Modal']?.();
+        });
+        document.addEventListener('keydown',e=>{if(e.key==='Escape'){['closeTeksModal','closeTrainModal','closeNarratorModal','closeEmergencyModal','closeChimeModal'].forEach(fn=>window[fn]?.());}});
 
         window.onload=()=>{
             refreshChimeSelects();updateNarratorSelect();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();
