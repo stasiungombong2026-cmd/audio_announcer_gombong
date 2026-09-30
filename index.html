@@ -56,13 +56,13 @@
             
             <!-- Top Right Action Buttons -->
             <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
-                <button onclick="downloadBackup()" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-200 text-xs font-medium px-3.5 py-2 rounded-lg border border-[#1e2d5c] transition flex items-center gap-2 shadow-sm">
+                <button type="button" id="btn-download-backup" onclick="downloadBackup()" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-200 text-xs font-medium px-3.5 py-2 rounded-lg border border-[#1e2d5c] transition flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-download text-amber-400"></i> Unduh Cadangan Data
                 </button>
-                <button onclick="triggerLoadData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
+                <button type="button" id="btn-load-data" onclick="triggerLoadData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
                     <i class="fa-solid fa-upload"></i> Muat Data
                 </button>
-                <input type="file" id="file-input-backup" accept=".json" class="hidden" onchange="handleFileImport(event)">
+                <input type="file" id="file-input-backup" accept=".json,application/json" class="hidden" onchange="handleFileImport(event)">
             </div>
         </div>
     </header>
@@ -634,12 +634,12 @@
             {id:'ketinggalan',title:'Barang Tertinggal',description:'Pemanggilan pemilik barang tertinggal.',text:'Pengumuman kepada pemilik barang tertinggal di ruang tunggu Stasiun Gombong, silakan melapor ke petugas pusat informasi.',textEn:'Attention to the owner of an item left behind in the waiting room at Gombong Station, please report to the information desk officer.'},
             {id:'gempa',title:'Peringatan Gempa Bumi',description:'Instruksi keselamatan saat gempa.',text:'Peringatan gempa bumi! Kepada seluruh penumpang di dalam gedung Stasiun Gombong, harap berlindung di bawah kursi atau meja.',textEn:'Earthquake warning! All passengers inside Gombong Station, please take shelter under a chair or table.'},
             {id:'dokter',title:'Panggilan Tenaga Medis',description:'Panggilan bagi tenaga medis.',text:'Panggilan darurat bagi penumpang berprofesi medis di Stasiun Gombong, mohon segera menuju ke pos pelayanan kesehatan stasiun.',textEn:'Emergency call for passengers with medical training at Gombong Station, please proceed immediately to the station health service post.'}
-        ];
+        ]);
         let chimeList = loadStoredArray('gombong_chimes',[
             {id:'nada_a',name:'Nada A (Klasik KAI)',description:'Chime pembuka standar'},
             {id:'nada_b',name:'Nada B (Melodi Tinggi)',description:'Chime penutup standar'},
             {id:'nada_c',name:'Nada C (Gong Stasiun)',description:'Chime alternatif'}
-        ];
+        ]);
         let activeAudio = null;
 
         function normalizeData(){
@@ -1088,7 +1088,17 @@
 
         function getBackupData(){return {station:'Stasiun Gombong (GBG)',version:'4.0',timestamp:new Date().toISOString(),teksbaku:teksBakuList,trains:trainList,narrators:narratorList,emergencies:emergencyList,chimes:chimeList};}
         function downloadBackup(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(getBackupData(),null,2)],{type:'application/json'}));a.download='gombong-announcer-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
-        function triggerLoadData(){document.getElementById('file-input-backup').click();}
+        function triggerLoadData(){
+            const input=document.getElementById('file-input-backup');
+            if(!input){showToast('Pemilih file tidak ditemukan.');return;}
+            try{
+                input.value='';
+                input.click();
+            }catch(err){
+                console.error('Gagal membuka pemilih file:',err);
+                showToast('Pemilih file tidak dapat dibuka. Silakan coba lagi.');
+            }
+        }
 
         // Import selalu MERGE. Data lama dipertahankan; data dari file hanya ditambahkan
         // jika belum ada. Tidak ada penggantian massal dan tidak ada penghapusan otomatis.
@@ -1156,6 +1166,14 @@
         window.onload=()=>{
             setupReliableModalButtons();
             refreshChimeSelects();updateNarratorSelect();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();
+
+            // Handler langsung untuk Chrome Android. Tidak bergantung hanya pada inline onclick.
+            const loadBtn=document.getElementById('btn-load-data');
+            const backupInput=document.getElementById('file-input-backup');
+            const downloadBtn=document.getElementById('btn-download-backup');
+            if(loadBtn)loadBtn.addEventListener('click',e=>{e.preventDefault();triggerLoadData();});
+            if(downloadBtn)downloadBtn.addEventListener('click',e=>{e.preventDefault();downloadBackup();});
+            if(backupInput)backupInput.addEventListener('change',handleFileImport);
         };
     </script>
 </body>
