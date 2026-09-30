@@ -59,10 +59,10 @@
                 <button type="button" id="btn-download-backup" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-200 text-xs font-medium px-3.5 py-2 rounded-lg border border-[#1e2d5c] transition flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-download text-amber-400"></i> Unduh Cadangan Data
                 </button>
-                <button type="button" id="btn-load-data" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
+                <label for="file-input-backup" id="btn-load-data" class="cursor-pointer bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
                     <i class="fa-solid fa-upload"></i> Muat Data
                 </button>
-                <input type="file" id="file-input-backup" accept=".json,application/json,text/json" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0;">
+                <input type="file" id="file-input-backup" accept=".json,application/json,text/json" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;">
             </div>
         </div>
     </header>
@@ -150,6 +150,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1.5">Pilih Narrator / Suara Chime</label>
+                        <div class="text-[10px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 mb-2">Rekaman narator yang di-upload digunakan sebagai rekaman audio/preview. Untuk membuat teks baru dengan karakter suara yang sama (voice cloning/TTS), diperlukan mesin TTS/voice-cloning eksternal; SpeechSynthesis Chrome tidak dapat memakai file suara sebagai suara TTS.</div>
                         <select id="sel-narrator" onchange="activeNarratorIndex=Number(this.value)" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
                             <option value="tts_ibu">[TTS] Ibu Narator (TTS ID)</option>
                             <option value="tts_bapak">[TTS] Bapak Announcer (Standard ID)</option>
@@ -1105,13 +1106,14 @@
         function normalizeImportedBackup(j){
             if(Array.isArray(j)) return {trains:j};
             if(!j||typeof j!=='object') throw new Error('Format JSON tidak valid.');
-            // Mendukung nama field backup lama maupun baru.
+            const root=j.data&&typeof j.data==='object'?j.data:j;
+            const pick=(...keys)=>{for(const k of keys){if(Array.isArray(root[k]))return root[k];}return [];};
             return {
-                teksbaku:Array.isArray(j.teksbaku)?j.teksbaku:(Array.isArray(j.templates)?j.templates:[]),
-                trains:Array.isArray(j.trains)?j.trains:(Array.isArray(j.trainList)?j.trainList:[]),
-                narrators:Array.isArray(j.narrators)?j.narrators:(Array.isArray(j.voices)?j.voices:[]),
-                emergencies:Array.isArray(j.emergencies)?j.emergencies:(Array.isArray(j.emergencyList)?j.emergencyList:[]),
-                chimes:Array.isArray(j.chimes)?j.chimes:(Array.isArray(j.chimeList)?j.chimeList:[])
+                teksbaku:pick('teksbaku','templates','templateList','teksBakuList'),
+                trains:pick('trains','trainList','train','kereta'),
+                narrators:pick('narrators','voices','narratorList','voiceProfiles'),
+                emergencies:pick('emergencies','emergencyList','darurat'),
+                chimes:pick('chimes','chimeList','audioChimes')
             };
         }
 
@@ -1143,6 +1145,8 @@
                     let j;
                     try{j=JSON.parse(raw);}catch(err){throw new Error('File bukan JSON yang valid. Pastikan yang dipilih adalah file .json hasil Unduh Cadangan Data.');}
                     const data=normalizeImportedBackup(j);
+                    const totalIncoming=data.teksbaku.length+data.trains.length+data.narrators.length+data.emergencies.length+data.chimes.length;
+                    if(!totalIncoming) throw new Error('JSON terbaca, tetapi tidak berisi data yang dikenali. Gunakan file hasil "Unduh Cadangan Data" dari aplikasi ini.');
                     const a=mergeImportedList(teksBakuList,data.teksbaku,'template');
                     const b=mergeImportedList(trainList,data.trains,'train');
                     const c=mergeImportedList(narratorList,data.narrators,'narrator');
@@ -1179,7 +1183,6 @@
             const loadBtn=document.getElementById('btn-load-data');
             const backupInput=document.getElementById('file-input-backup');
             const downloadBtn=document.getElementById('btn-download-backup');
-            if(loadBtn)loadBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();triggerLoadData();});
             if(downloadBtn)downloadBtn.addEventListener('click',e=>{e.preventDefault();downloadBackup();});
             if(backupInput)backupInput.addEventListener('change',handleFileImport);
         };
