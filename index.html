@@ -63,6 +63,7 @@
                     <i class="fa-solid fa-upload"></i> Muat Data
                 </label>
                 <input type="file" id="file-input-backup" accept=".json,application/json,text/json" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+                <span id="data-status" class="hidden sm:inline text-[10px] text-slate-500"></span>
             </div>
         </div>
     </header>
@@ -669,11 +670,20 @@
         ensureDefaultTemplateCategories();
 
         function saveToStorage(){
-            localStorage.setItem('gombong_teksbaku',JSON.stringify(teksBakuList));
-            localStorage.setItem('gombong_trains',JSON.stringify(trainList));
-            localStorage.setItem('gombong_narrators',JSON.stringify(narratorList));
-            localStorage.setItem('gombong_emergencies',JSON.stringify(emergencyList));
-            localStorage.setItem('gombong_chimes',JSON.stringify(chimeList));
+            const items={
+                'gombong_teksbaku':teksBakuList,
+                'gombong_trains':trainList,
+                'gombong_narrators':narratorList,
+                'gombong_emergencies':emergencyList,
+                'gombong_chimes':chimeList
+            };
+            const failed=[];
+            Object.entries(items).forEach(([key,value])=>{
+                try{localStorage.setItem(key,JSON.stringify(value));}
+                catch(err){console.error('Storage gagal',key,err);failed.push(key);}
+            });
+            if(failed.length) throw new Error('Penyimpanan browser penuh/gagal pada: '+failed.join(', '));
+            return true;
         }
 
         function switchNavTab(tabName){
@@ -855,8 +865,10 @@
         function saveTeksBaku(){
             const i=Number(document.getElementById('edit-index').value), obj={id:i>=0&&teksBakuList[i]?teksBakuList[i].id:uid('tpl'),kategori:document.getElementById('modal-kategori').value.trim()||'umum',judul:document.getElementById('modal-judul').value.trim()||'Tanpa Judul',chimeIn:document.getElementById('modal-chime-in').value,chimeOut:document.getElementById('modal-chime-out').value,isiID:document.getElementById('modal-isi').value.trim(),isiEN:document.getElementById('modal-isi-en').value.trim()};
             if(!obj.isiID){showToast('Teks Indonesia wajib diisi.');return;} if(!obj.isiEN)obj.isiEN=translateIdToEn(obj.isiID);
+            const before=teksBakuList.slice();
             if(i>=0&&teksBakuList[i])teksBakuList[i]=obj;else teksBakuList.push(obj);
-            try{saveToStorage();}catch(e){console.error(e);showToast('Teks baku gagal disimpan di perangkat.');return;} renderTeksBakuTable();updateGeneratorTeksBakuSelect();closeTeksModal();showToast('Teks baku tersimpan.');
+            try{saveToStorage();}catch(e){teksBakuList=before;console.error(e);showToast('Teks baku GAGAL disimpan: '+e.message);return;}
+            renderTeksBakuTable();updateGeneratorTeksBakuSelect();closeTeksModal();showToast(i>=0?'Teks baku berhasil diperbarui.':'Teks baku berhasil ditambahkan.');
         }
         function deleteTeksBaku(i){
             if(i<0||i>=teksBakuList.length)return;
@@ -875,8 +887,11 @@
         function saveTrainData(){
             const i=Number(document.getElementById('train-edit-index').value),no=document.getElementById('train-modal-no').value.trim(),name=document.getElementById('train-modal-name').value.trim(),route=document.getElementById('train-modal-route').value.trim(),platform=document.getElementById('train-modal-jalur').value,direction=document.getElementById('train-modal-arah').value,sf=document.getElementById('train-modal-sf').value.trim(),stops=document.getElementById('train-modal-stops').value.trim();
             if(!no||!name||!route){showToast('Nomor, nama, dan tujuan wajib diisi.');return;}
-            const obj={no,name,route,platform,direction,track:`${platform} ${direction}`,sf,composition:sf,stops};
-            if(i>=0)trainList[i]=obj;else trainList.push(obj); try{saveToStorage();}catch(e){console.error(e);showToast('Data kereta gagal disimpan di perangkat.');return;} closeTrainModal();renderTrainTable();showToast(i>=0?'Data kereta diperbarui.':'Kereta ditambahkan.');
+            const obj={id:(i>=0&&trainList[i]&&trainList[i].id)||uid('train'),no,name,route,platform,direction,track:`${platform} ${direction}`,sf,composition:sf,stops};
+            const before=trainList.slice();
+            if(i>=0)trainList[i]=obj;else trainList.push(obj);
+            try{saveToStorage();}catch(e){trainList=before;console.error(e);showToast('Data kereta GAGAL disimpan: '+e.message);return;}
+            closeTrainModal();renderTrainTable();showToast(i>=0?'Data kereta berhasil diperbarui.':'Kereta berhasil ditambahkan.');
         }
         function deleteTrain(i){if(confirm('Hapus data kereta ini?')){trainList.splice(i,1);saveToStorage();renderTrainTable();showToast('Data kereta dihapus.');}}
 
@@ -1159,14 +1174,20 @@
             }
         }
         async function handleFileImport(e){
-            const input=e&&e.target,f=input&&input.files&&input.files[0];if(!f)return;
+            const input=e&&e.target,f=input&&input.files&&input.files[0];
+            const status=document.getElementById('data-status');
+            const setStatus=(msg,ok=false)=>{if(status){status.textContent=msg;status.className='text-[10px] '+(ok?'text-emerald-400':'text-amber-400');}};
+            if(!f){setStatus('Tidak ada file dipilih.');return;}
+            setStatus('Membaca '+f.name+'...');
             try{
-                const raw=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('File tidak dapat dibaca.'));r.readAsText(f,'UTF-8');});
-                const clean=raw.replace(/^\uFEFF/,'').trim();if(!clean)throw new Error('File JSON kosong.');
+                if(f.size>15*1024*1024)throw new Error('Ukuran JSON maksimal 15 MB.');
+                const raw=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('File tidak dapat dibaca oleh browser.'));r.readAsText(f);});
+                const clean=raw.replace(/^\uFEFF/,'').trim();
+                if(!clean)throw new Error('File JSON kosong.');
                 let j;try{j=JSON.parse(clean);}catch(err){throw new Error('File bukan JSON yang valid.');}
                 const data=normalizeImportedBackup(j);
-                data.teksbaku=data.teksbaku.map((x,i)=>({...x,id:x.id||uid('tpl_import_'+i),kategori:x.kategori||x.category||'umum',judul:x.judul||x.title||'Template Import',isiID:x.isiID??x.isi??x.text??'',isiEN:x.isiEN??x.textEn??x.textEnglish??'',chimeIn:x.chimeIn||'nada_a',chimeOut:x.chimeOut||'nada_b'}));
-                data.trains=data.trains.map((x,i)=>({...x,id:x.id||uid('train_import_'+i),no:String(x.no??x.number??x.nomor??''),name:String(x.name??x.nama??x.nama_ka??''),route:String(x.route??x.tujuan??x.destination??''),platform:x.platform||x.jalur||'Jalur 2',direction:x.direction||x.dari_arah||'Dari Arah Timur',track:x.track||`${x.platform||x.jalur||'Jalur 2'} ${x.direction||x.dari_arah||'Dari Arah Timur'}`,sf:x.sf||x.composition||x.sf_rangkaian||'',composition:x.composition||x.sf||x.sf_rangkaian||'',stops:x.stops||x.st_perhentian||x.sta_perhentian||''}));
+                data.teksbaku=(data.teksbaku||[]).map((x,i)=>({...x,id:x.id||uid('tpl_import_'+i),kategori:x.kategori||x.category||'umum',judul:x.judul||x.title||'Template Import',isiID:x.isiID??x.isi??x.text??'',isiEN:x.isiEN??x.textEn??x.textEnglish??'',chimeIn:x.chimeIn||'nada_a',chimeOut:x.chimeOut||'nada_b'}));
+                data.trains=(data.trains||[]).map((x,i)=>({...x,id:x.id||uid('train_import_'+i),no:String(x.no??x.number??x.nomor??''),name:String(x.name??x.nama??x.nama_ka??''),route:String(x.route??x.tujuan??x.destination??''),platform:x.platform||x.jalur||'Jalur 2',direction:x.direction||x.dari_arah||'Dari Arah Timur',track:x.track||`${x.platform||x.jalur||'Jalur 2'} ${x.direction||x.dari_arah||'Dari Arah Timur'}`,sf:x.sf||x.composition||x.sf_rangkaian||'',composition:x.composition||x.sf||x.sf_rangkaian||'',stops:x.stops||x.st_perhentian||x.sta_perhentian||''}));
                 const total=data.teksbaku.length+data.trains.length+data.narrators.length+data.emergencies.length+data.chimes.length;
                 if(!total)throw new Error('JSON terbaca tetapi tidak berisi data yang dikenali.');
                 const a=mergeImportedList(teksBakuList,data.teksbaku,'template'),b=mergeImportedList(trainList,data.trains,'train'),c=mergeImportedList(narratorList,data.narrators,'narrator'),d=mergeImportedList(emergencyList,data.emergencies,'emergency'),z=mergeImportedList(chimeList,data.chimes,'chime');
@@ -1175,12 +1196,14 @@
                 normalizeData();ensureDefaultTemplateCategories();saveToStorage();
                 renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();
                 const added=a.added+b.added+c.added+d.added+z.added,skipped=a.skipped+b.skipped+c.skipped+d.skipped+z.skipped;
-                showToast(`Data berhasil dimuat: ${added} baru${skipped?' · '+skipped+' data lama/duplikat dilewati':''}.`);
-            }catch(err){console.error('IMPORT ERROR:',err);showToast('Muat data gagal: '+(err.message||'file tidak dapat dibaca.'));}
-            finally{if(input)input.value='';}
+                const msg=`Berhasil memuat ${added} data baru${skipped?' · '+skipped+' data duplikat dilewati':''}.`;
+                setStatus(msg,true);showToast(msg);
+            }catch(err){
+                console.error('IMPORT ERROR:',err);const msg='Muat data gagal: '+(err.message||'file tidak dapat dibaca.');setStatus(msg,false);showToast(msg);
+            }finally{if(input)input.value='';}
         }
 
-        function showToast(msg){const t=document.createElement('div');t.className='fixed bottom-6 right-6 bg-[#141e3d] border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-[100] text-xs font-medium';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
+        function showToast(msg){const t=document.createElement('div');t.className='fixed bottom-6 right-6 bg-[#141e3d] border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-[100] text-xs font-medium';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),5000);}
 
 
         function setupReliableModalButtons(){
