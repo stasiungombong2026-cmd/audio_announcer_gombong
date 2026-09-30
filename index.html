@@ -402,6 +402,7 @@
                         <option value="ketersediaan kereta">Ketersediaan Kereta</option>
                         <option value="kelambatan kereta">Kelambatan Kereta</option>
                         <option value="pembatalan perjalanan kereta">Pembatalan Perjalanan Kereta</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Judul Template</label>
@@ -536,7 +537,7 @@
     <!-- Modal Narator -->
     <div id="narrator-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
       <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="narrator-modal-title" class="text-sm font-bold text-white uppercase">Tambah Narator</h3><button onclick="closeNarratorModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="narrator-modal-title" class="text-sm font-bold text-white uppercase">Tambah Narator</h3><button type="button" onclick="closeNarratorModal()"><i class="fa-solid fa-xmark"></i></button></div>
         <input type="hidden" id="narrator-edit-index" value="-1">
         <input id="narrator-name" placeholder="Nama narator" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <input id="narrator-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
@@ -545,22 +546,22 @@
           <label class="text-xs text-slate-400">Rekaman English</label><input id="narrator-audio-en" type="file" accept="audio/*" class="w-full text-xs text-slate-300">
           
         </div>
-        <p class="text-[10px] text-slate-500">Rekaman disimpan di browser perangkat ini. File besar dapat memenuhi localStorage.</p>
-        <div class="flex justify-end gap-2"><button onclick="closeNarratorModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveNarrator()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+        <p class="text-[10px] text-slate-500">Rekaman disimpan di penyimpanan audio browser (IndexedDB), terpisah dari data teks.</p>
+        <div class="flex justify-end gap-2"><button type="button" onclick="closeNarratorModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button type="button" onclick="saveNarrator()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
       </div>
     </div>
 
     <!-- Modal Emergency -->
     <div id="emergency-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
       <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
-        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="emergency-modal-title" class="text-sm font-bold text-white uppercase">Tambah Pengumuman</h3><button onclick="closeEmergencyModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="emergency-modal-title" class="text-sm font-bold text-white uppercase">Tambah Pengumuman</h3><button type="button" onclick="closeEmergencyModal()"><i class="fa-solid fa-xmark"></i></button></div>
         <input type="hidden" id="emergency-edit-index" value="-1">
         <input id="emergency-title" placeholder="Judul" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <input id="emergency-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <textarea id="emergency-script" rows="3" placeholder="Teks Indonesia" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
         <textarea id="emergency-script-en" rows="3" placeholder="Teks English" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
         <button type="button" onclick="autoTranslateEmergency()" class="text-[11px] text-amber-400 hover:underline text-left">Terjemahkan English otomatis</button>
-        <div class="flex justify-end gap-2"><button onclick="closeEmergencyModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveEmergency()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="closeEmergencyModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button type="button" onclick="saveEmergency()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
       </div>
     </div>
 
@@ -855,7 +856,7 @@
             const i=Number(document.getElementById('edit-index').value), obj={id:i>=0&&teksBakuList[i]?teksBakuList[i].id:uid('tpl'),kategori:document.getElementById('modal-kategori').value.trim()||'umum',judul:document.getElementById('modal-judul').value.trim()||'Tanpa Judul',chimeIn:document.getElementById('modal-chime-in').value,chimeOut:document.getElementById('modal-chime-out').value,isiID:document.getElementById('modal-isi').value.trim(),isiEN:document.getElementById('modal-isi-en').value.trim()};
             if(!obj.isiID){showToast('Teks Indonesia wajib diisi.');return;} if(!obj.isiEN)obj.isiEN=translateIdToEn(obj.isiID);
             if(i>=0&&teksBakuList[i])teksBakuList[i]=obj;else teksBakuList.push(obj);
-            saveToStorage();renderTeksBakuTable();updateGeneratorTeksBakuSelect();closeTeksModal();showToast('Teks baku tersimpan.');
+            try{saveToStorage();}catch(e){console.error(e);showToast('Teks baku gagal disimpan di perangkat.');return;} renderTeksBakuTable();updateGeneratorTeksBakuSelect();closeTeksModal();showToast('Teks baku tersimpan.');
         }
         function deleteTeksBaku(i){
             if(i<0||i>=teksBakuList.length)return;
@@ -875,7 +876,7 @@
             const i=Number(document.getElementById('train-edit-index').value),no=document.getElementById('train-modal-no').value.trim(),name=document.getElementById('train-modal-name').value.trim(),route=document.getElementById('train-modal-route').value.trim(),platform=document.getElementById('train-modal-jalur').value,direction=document.getElementById('train-modal-arah').value,sf=document.getElementById('train-modal-sf').value.trim(),stops=document.getElementById('train-modal-stops').value.trim();
             if(!no||!name||!route){showToast('Nomor, nama, dan tujuan wajib diisi.');return;}
             const obj={no,name,route,platform,direction,track:`${platform} ${direction}`,sf,composition:sf,stops};
-            if(i>=0)trainList[i]=obj;else trainList.push(obj);saveToStorage();closeTrainModal();renderTrainTable();showToast(i>=0?'Data kereta diperbarui.':'Kereta ditambahkan.');
+            if(i>=0)trainList[i]=obj;else trainList.push(obj); try{saveToStorage();}catch(e){console.error(e);showToast('Data kereta gagal disimpan di perangkat.');return;} closeTrainModal();renderTrainTable();showToast(i>=0?'Data kereta diperbarui.':'Kereta ditambahkan.');
         }
         function deleteTrain(i){if(confirm('Hapus data kereta ini?')){trainList.splice(i,1);saveToStorage();renderTrainTable();showToast('Data kereta dihapus.');}}
 
@@ -1105,7 +1106,7 @@
                 try{if(n.audioEn&&!String(n.audioEn).startsWith('data:'))copy.audioEnData=await blobToDataUrl(await getNarratorAudio(n.audioEn));else if(String(n.audioEn||'').startsWith('data:'))copy.audioEnData=n.audioEn;}catch(e){console.warn('Backup audio EN gagal:',e);}
                 narrators.push(copy);
             }
-            return {station:'Stasiun Gombong (GBG)',version:'5.0',timestamp:new Date().toISOString(),teksbaku:teksBakuList,trains:trainList,narrators,emergencies:emergencyList,chimes:chimeList};
+            return {station:'Stasiun Gombong (GBG)',version:'6.0',timestamp:new Date().toISOString(),teksbaku:teksBakuList,trains:trainList,narrators,emergencies:emergencyList,chimes:chimeList};
         }
         async function downloadBackup(){
             try{
@@ -1129,7 +1130,7 @@
             if(!j||typeof j!=='object')throw new Error('Format JSON tidak valid.');
             const root=j.data&&typeof j.data==='object'?j.data:j;
             const pick=(...keys)=>{for(const k of keys){if(Array.isArray(root[k]))return root[k];}return [];};
-            return {teksbaku:pick('teksbaku','templates','templateList','teksBakuList'),trains:pick('trains','trainList','train','kereta'),narrators:pick('narrators','voices','narratorList','voiceProfiles'),emergencies:pick('emergencies','emergencyList','darurat'),chimes:pick('chimes','chimeList','audioChimes')};
+            return {teksbaku:pick('teksbaku','teksBaku','templates','templateList','teksBakuList','announcementTemplates'),trains:pick('trains','trainList','train','kereta','daftarKereta','daftar_kereta'),narrators:pick('narrators','voices','narratorList','voiceProfiles','daftarNarator'),emergencies:pick('emergencies','emergencyList','darurat','informasiDarurat'),chimes:pick('chimes','chimeList','audioChimes','daftarChime')};
         }
         function mergeImportedList(current,incoming,type){
             if(!Array.isArray(incoming))return {list:Array.isArray(current)?current.slice():[],added:0,skipped:0,items:[]};
@@ -1163,7 +1164,10 @@
                 const raw=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('File tidak dapat dibaca.'));r.readAsText(f,'UTF-8');});
                 const clean=raw.replace(/^\uFEFF/,'').trim();if(!clean)throw new Error('File JSON kosong.');
                 let j;try{j=JSON.parse(clean);}catch(err){throw new Error('File bukan JSON yang valid.');}
-                const data=normalizeImportedBackup(j),total=data.teksbaku.length+data.trains.length+data.narrators.length+data.emergencies.length+data.chimes.length;
+                const data=normalizeImportedBackup(j);
+                data.teksbaku=data.teksbaku.map((x,i)=>({...x,id:x.id||uid('tpl_import_'+i),kategori:x.kategori||x.category||'umum',judul:x.judul||x.title||'Template Import',isiID:x.isiID??x.isi??x.text??'',isiEN:x.isiEN??x.textEn??x.textEnglish??'',chimeIn:x.chimeIn||'nada_a',chimeOut:x.chimeOut||'nada_b'}));
+                data.trains=data.trains.map((x,i)=>({...x,id:x.id||uid('train_import_'+i),no:String(x.no??x.number??x.nomor??''),name:String(x.name??x.nama??x.nama_ka??''),route:String(x.route??x.tujuan??x.destination??''),platform:x.platform||x.jalur||'Jalur 2',direction:x.direction||x.dari_arah||'Dari Arah Timur',track:x.track||`${x.platform||x.jalur||'Jalur 2'} ${x.direction||x.dari_arah||'Dari Arah Timur'}`,sf:x.sf||x.composition||x.sf_rangkaian||'',composition:x.composition||x.sf||x.sf_rangkaian||'',stops:x.stops||x.st_perhentian||x.sta_perhentian||''}));
+                const total=data.teksbaku.length+data.trains.length+data.narrators.length+data.emergencies.length+data.chimes.length;
                 if(!total)throw new Error('JSON terbaca tetapi tidak berisi data yang dikenali.');
                 const a=mergeImportedList(teksBakuList,data.teksbaku,'template'),b=mergeImportedList(trainList,data.trains,'train'),c=mergeImportedList(narratorList,data.narrators,'narrator'),d=mergeImportedList(emergencyList,data.emergencies,'emergency'),z=mergeImportedList(chimeList,data.chimes,'chime');
                 teksBakuList=a.list;trainList=b.list;narratorList=c.list;emergencyList=d.list;chimeList=z.list;
