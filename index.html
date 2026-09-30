@@ -135,17 +135,17 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1.5">Jalur & Arah Penempatan</label>
-                        <select id="sel-jalur" onchange="onParameterChange(false)" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
-                            <option value="Jalur 1 (Barat)">Jalur 1 (Barat)</option>
-                            <option value="Jalur 1 (Timur)">Jalur 1 (Timur)</option>
-                            <option value="Jalur 2 (Barat)" selected>Jalur 2 (Barat)</option>
-                            <option value="Jalur 2 (Timur)">Jalur 2 (Timur)</option>
-                            <option value="Jalur 3 (Barat)">Jalur 3 (Barat)</option>
-                            <option value="Jalur 3 (Timur)">Jalur 3 (Timur)</option>
-                            <option value="Jalur 4 (Barat)">Jalur 4 (Barat)</option>
-                            <option value="Jalur 4 (Timur)">Jalur 4 (Timur)</option>
-                            <option value="Jalur 5 (Barat)">Jalur 5 (Barat)</option>
-                            <option value="Jalur 5 (Timur)">Jalur 5 (Timur)</option>
+                        <select id="sel-jalur" onchange="onParameterChange()" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                            <option value="Jalur 1 Dari Arah Barat">Jalur 1 Dari Arah Barat</option>
+                            <option value="Jalur 1 Dari Arah Timur">Jalur 1 Dari Arah Timur</option>
+                            <option value="Jalur 2 Dari Arah Barat">Jalur 2 Dari Arah Barat</option>
+                            <option value="Jalur 2 Dari Arah Timur" selected>Jalur 2 Dari Arah Timur</option>
+                            <option value="Jalur 3 Dari Arah Barat">Jalur 3 Dari Arah Barat</option>
+                            <option value="Jalur 3 Dari Arah Timur">Jalur 3 Dari Arah Timur</option>
+                            <option value="Jalur 4 Dari Arah Barat">Jalur 4 Dari Arah Barat</option>
+                            <option value="Jalur 4 Dari Arah Timur">Jalur 4 Dari Arah Timur</option>
+                            <option value="Jalur 5 Dari Arah Barat">Jalur 5 Dari Arah Barat</option>
+                            <option value="Jalur 5 Dari Arah Timur">Jalur 5 Dari Arah Timur</option>
                         </select>
                     </div>
                     <div>
@@ -394,8 +394,13 @@
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Kategori Jenis</label>
                     <select id="modal-kategori" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
-<option value="kedatangan">Kedatangan</option><option value="keberangkatan">Keberangkatan</option><option value="ketersediaan">Ketersediaan Kereta</option><option value="kelambatan">Kelambatan Kereta</option><option value="pembatalan">Pembatalan Perjalanan Kereta</option>
-</select>
+                        <option value="kedatangan kereta">Kedatangan - Kereta</option>
+                        <option value="kedatangan penumpang">Kedatangan - Penumpang</option>
+                        <option value="keberangkatan kereta">Keberangkatan - Kereta</option>
+                        <option value="kereta melintas langsung">Keberangkatan - Kereta Melintas Langsung</option>
+                        <option value="ketersediaan kereta">Ketersediaan Kereta</option>
+                        <option value="kelambatan kereta">Kelambatan Kereta</option>
+                        <option value="pembatalan perjalanan kereta">Pembatalan Perjalanan Kereta</option>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Judul Template</label>
@@ -530,7 +535,7 @@
     <!-- Modal Narator -->
     <div id="narrator-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
       <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="narrator-modal-title" class="text-sm font-bold text-white uppercase">Tambah Narator</h3><button type="button" onclick="closeNarratorModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="narrator-modal-title" class="text-sm font-bold text-white uppercase">Tambah Narator</h3><button onclick="closeNarratorModal()"><i class="fa-solid fa-xmark"></i></button></div>
         <input type="hidden" id="narrator-edit-index" value="-1">
         <input id="narrator-name" placeholder="Nama narator" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <input id="narrator-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
@@ -540,21 +545,21 @@
           
         </div>
         <p class="text-[10px] text-slate-500">Rekaman disimpan di browser perangkat ini. File besar dapat memenuhi localStorage.</p>
-        <div class="flex justify-end gap-2"><button type="button" onclick="closeNarratorModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button type="button" onclick="saveNarrator()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+        <div class="flex justify-end gap-2"><button onclick="closeNarratorModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveNarrator()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
       </div>
     </div>
 
     <!-- Modal Emergency -->
     <div id="emergency-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
       <div class="bg-[#101935] border border-[#1e2d5c] rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
-        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="emergency-modal-title" class="text-sm font-bold text-white uppercase">Tambah Pengumuman</h3><button type="button" onclick="closeEmergencyModal()"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="flex items-center justify-between border-b border-[#1e2d5c] pb-3"><h3 id="emergency-modal-title" class="text-sm font-bold text-white uppercase">Tambah Pengumuman</h3><button onclick="closeEmergencyModal()"><i class="fa-solid fa-xmark"></i></button></div>
         <input type="hidden" id="emergency-edit-index" value="-1">
         <input id="emergency-title" placeholder="Judul" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <input id="emergency-desc" placeholder="Keterangan" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3 py-2.5 text-xs text-white">
         <textarea id="emergency-script" rows="3" placeholder="Teks Indonesia" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
         <textarea id="emergency-script-en" rows="3" placeholder="Teks English" class="w-full bg-[#070b19] border border-[#1e2d5c] rounded-xl p-3 text-xs text-white"></textarea>
         <button type="button" onclick="autoTranslateEmergency()" class="text-[11px] text-amber-400 hover:underline text-left">Terjemahkan English otomatis</button>
-        <div class="flex justify-end gap-2"><button type="button" onclick="closeEmergencyModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button type="button" onclick="saveEmergency()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
+        <div class="flex justify-end gap-2"><button onclick="closeEmergencyModal()" class="bg-[#141e3d] px-4 py-2 rounded-xl text-xs">Batal</button><button onclick="saveEmergency()" class="bg-amber-500 text-slate-950 px-5 py-2 rounded-xl text-xs font-bold">Simpan</button></div>
       </div>
     </div>
 
@@ -594,29 +599,43 @@
         function esc(v=''){ return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
 
         let defaultTeksBaku = [
-            {id:uid('tpl'),kategori:'kedatangan',judul:'Kedatangan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, {nama_ka} dengan nomor {no_ka} tujuan {tujuan}, {dari_arah}, sesaat lagi akan tiba di {jalur}. Rangkaian terdiri dari {sf_rangkaian}. Stasiun perhentian: {st_perhentian}. Terima kasih.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, {dari_arah}, will shortly arrive on {jalur}. The train formation consists of {sf_rangkaian}. Stopping stations: {st_perhentian}. Thank you.'},
-            {id:uid('tpl'),kategori:'kedatangan',judul:'Kedatangan Penumpang',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang yang akan turun di {jalur}, mohon mempersiapkan diri. Kereta {nama_ka} dari {dari_arah} segera tiba di Stasiun Gombong. Terima kasih.',isiEN:'Attention to all passengers alighting at {jalur}, please prepare to leave the train. Train {nama_ka} from {dari_arah} will shortly arrive at Gombong Station. Thank you.'},
-            {id:uid('tpl'),kategori:'keberangkatan',judul:'Keberangkatan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Pengumuman untuk penumpang {nama_ka} nomor {no_ka} tujuan {tujuan}. Dipersilakan segera naik melalui {jalur}. Kereta akan diberangkatkan dalam waktu dekat. Terima kasih.',isiEN:'Attention passengers of train {nama_ka}, number {no_ka}, bound for {tujuan}. Please board the train at {jalur}. The train will depart shortly. Thank you.'},
-            {id:uid('tpl'),kategori:'keberangkatan',judul:'Kereta Melintas Langsung',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, kereta {nama_ka} nomor {no_ka} tujuan {tujuan}, {dari_arah}, akan melintas langsung di {jalur}. Mohon berdiri di belakang garis aman. Terima kasih.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, {dari_arah}, will pass through {jalur} without stopping. Please stand behind the safety line. Thank you.'},
-            {id:uid('tpl'),kategori:'ketersediaan',judul:'Ketersediaan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Kepada calon penumpang, kereta {nama_ka} nomor {no_ka} tujuan {tujuan} tersedia untuk perjalanan. Silakan melakukan persiapan keberangkatan sesuai jadwal. Terima kasih.',isiEN:'Attention prospective passengers, train {nama_ka}, number {no_ka}, bound for {tujuan}, is available for travel. Please prepare for departure according to the schedule. Thank you.'},
-            {id:uid('tpl'),kategori:'kelambatan',judul:'Kelambatan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, kereta {nama_ka} nomor {no_ka} tujuan {tujuan} mengalami kelambatan. Mohon menunggu informasi selanjutnya. Terima kasih atas pengertiannya.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, is experiencing a delay. Please wait for further information. Thank you for your understanding.'},
-            {id:uid('tpl'),kategori:'pembatalan',judul:'Pembatalan Perjalanan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, perjalanan kereta {nama_ka} nomor {no_ka} tujuan {tujuan} dibatalkan. Mohon menghubungi petugas untuk informasi dan pelayanan selanjutnya. Terima kasih.',isiEN:'Attention please, the journey of train {nama_ka}, number {no_ka}, bound for {tujuan}, has been cancelled. Please contact station staff for further information and assistance. Thank you.'}
+            {id:uid('tpl'),kategori:'kedatangan kereta',judul:'Kedatangan Kereta Standar',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang, {nama_ka} nomor {no_ka} tujuan {tujuan}, {dari_arah}, sesaat lagi akan tiba di {jalur}. Terima kasih.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, {dari_arah}, will shortly arrive on {jalur}. Thank you.'},
+            {id:uid('tpl'),kategori:'kedatangan penumpang',judul:'Kedatangan Penumpang',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang yang akan tiba di Stasiun Gombong, harap menyiapkan barang bawaan dan mengikuti arahan petugas. Terima kasih.',isiEN:'Attention to all passengers arriving at Gombong Station, please prepare your belongings and follow the instructions of station staff. Thank you.'},
+            {id:uid('tpl'),kategori:'keberangkatan kereta',judul:'Keberangkatan Kereta Standar',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Pengumuman untuk penumpang {nama_ka} nomor {no_ka} tujuan {tujuan}. Dipersilakan segera naik melalui {jalur}. Kereta akan diberangkatkan dalam waktu dekat. Terima kasih.',isiEN:'Attention passengers of train {nama_ka}, number {no_ka}, bound for {tujuan}. Please board the train at {jalur}. The train will depart shortly. Thank you.'},
+            {id:uid('tpl'),kategori:'kereta melintas langsung',judul:'Kereta Melintas Langsung',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Perhatian kepada seluruh penumpang dan pengunjung, {nama_ka} nomor {no_ka} akan melintas langsung melalui {jalur}. Mohon tidak mendekati jalur kereta dan tetap berada di tempat yang aman. Terima kasih.',isiEN:'Attention to all passengers and visitors, train {nama_ka}, number {no_ka}, will pass through directly on {jalur}. Please keep away from the railway track and remain in a safe area. Thank you.'},
+            {id:uid('tpl'),kategori:'ketersediaan kereta',judul:'Ketersediaan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Informasi perjalanan {nama_ka} nomor {no_ka} tujuan {tujuan}. Kereta tersedia untuk melayani perjalanan penumpang. Silakan mengikuti informasi dan arahan petugas. Terima kasih.',isiEN:'Information for train {nama_ka}, number {no_ka}, bound for {tujuan}. The train is available for passenger service. Please follow the information and instructions from station staff. Thank you.'},
+            {id:uid('tpl'),kategori:'kelambatan kereta',judul:'Kelambatan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Mohon perhatian, perjalanan {nama_ka} nomor {no_ka} tujuan {tujuan} mengalami kelambatan. Kami mohon maaf atas ketidaknyamanan yang ditimbulkan. Terima kasih.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, is delayed. We apologize for the inconvenience. Thank you.'},
+            {id:uid('tpl'),kategori:'pembatalan perjalanan kereta',judul:'Pembatalan Perjalanan Kereta',chimeIn:'nada_a',chimeOut:'nada_b',isiID:'Mohon perhatian, perjalanan {nama_ka} nomor {no_ka} tujuan {tujuan} dibatalkan. Kami mohon maaf atas ketidaknyamanan yang ditimbulkan. Silakan menghubungi petugas untuk informasi lebih lanjut. Terima kasih.',isiEN:'Attention please, train {nama_ka}, number {no_ka}, bound for {tujuan}, has been cancelled. We apologize for the inconvenience. Please contact station staff for further information. Thank you.'}
         ];
         let defaultTrains = [
             {no:'142A',name:'Sawunggalih',route:'Pasar Senen',platform:'Jalur 2',direction:'Dari Arah Timur',track:'Jalur 2 Dari Arah Timur',sf:'Premium 1, Premium 2, Kereta Makan, Eksekutif 1',composition:'Premium 1, Premium 2, Kereta Makan, Eksekutif 1',stops:'Kutoarjo, Kutowinangun, Gombong, Kroya, Purwokerto'},
             {no:'67',name:'Malabar',route:'Bandung',platform:'Jalur 2',direction:'Dari Arah Barat',track:'Jalur 2 Dari Arah Barat',sf:'Eksekutif 1, Eksekutif 2, Kereta Makan, Pembangkit',composition:'Eksekutif 1, Eksekutif 2, Kereta Makan, Pembangkit',stops:'Kroya, Kebumen, Kutoarjo'},
             {no:'112',name:'Brantas',route:'Pasar Senen',platform:'Jalur 1',direction:'Dari Arah Timur',track:'Jalur 1 Dari Arah Timur',sf:'Premium 1, Ekonomi 1, Kereta Makan',composition:'Premium 1, Ekonomi 1, Kereta Makan',stops:'Sumpiuh, Kroya, Gombong'}
         ];
-        let teksBakuList = JSON.parse(localStorage.getItem('gombong_teksbaku')) || defaultTeksBaku;
-        let trainList = JSON.parse(localStorage.getItem('gombong_trains')) || defaultTrains;
-        let narratorList = JSON.parse(localStorage.getItem('gombong_narrators')) || [];
-        let emergencyList = JSON.parse(localStorage.getItem('gombong_emergencies')) || [
+        // Penyimpanan aman: data yang sudah ada tidak pernah dianggap hilang hanya karena
+        // file kosong, data baru, atau proses migrasi. Array kosong yang memang tersimpan
+        // tetap dipertahankan sebagai pilihan pengguna.
+        function loadStoredArray(key,fallback){
+            try{
+                const raw=localStorage.getItem(key);
+                if(raw===null)return Array.isArray(fallback)?fallback:[];
+                const parsed=JSON.parse(raw);
+                return Array.isArray(parsed)?parsed:(Array.isArray(fallback)?fallback:[]);
+            }catch(e){
+                console.warn('Data lokal tidak dapat dibaca:',key,e);
+                return Array.isArray(fallback)?fallback:[];
+            }
+        }
+        let teksBakuList = loadStoredArray('gombong_teksbaku',defaultTeksBaku);
+        let trainList = loadStoredArray('gombong_trains',defaultTrains);
+        let narratorList = loadStoredArray('gombong_narrators',[]);
+        let emergencyList = loadStoredArray('gombong_emergencies',[
             {id:'evakuasi',title:'Evakuasi Darurat',description:'Evakuasi penumpang menuju titik kumpul aman.',text:'Perhatian darurat kepada seluruh penumpang dan pengunjung Stasiun Gombong, harap segera keluar menuju titik kumpul evakuasi terdekat.',textEn:'Emergency attention to all passengers and visitors at Gombong Station, please proceed immediately to the nearest evacuation assembly point.'},
             {id:'ketinggalan',title:'Barang Tertinggal',description:'Pemanggilan pemilik barang tertinggal.',text:'Pengumuman kepada pemilik barang tertinggal di ruang tunggu Stasiun Gombong, silakan melapor ke petugas pusat informasi.',textEn:'Attention to the owner of an item left behind in the waiting room at Gombong Station, please report to the information desk officer.'},
             {id:'gempa',title:'Peringatan Gempa Bumi',description:'Instruksi keselamatan saat gempa.',text:'Peringatan gempa bumi! Kepada seluruh penumpang di dalam gedung Stasiun Gombong, harap berlindung di bawah kursi atau meja.',textEn:'Earthquake warning! All passengers inside Gombong Station, please take shelter under a chair or table.'},
             {id:'dokter',title:'Panggilan Tenaga Medis',description:'Panggilan bagi tenaga medis.',text:'Panggilan darurat bagi penumpang berprofesi medis di Stasiun Gombong, mohon segera menuju ke pos pelayanan kesehatan stasiun.',textEn:'Emergency call for passengers with medical training at Gombong Station, please proceed immediately to the station health service post.'}
         ];
-        let chimeList = JSON.parse(localStorage.getItem('gombong_chimes')) || [
+        let chimeList = loadStoredArray('gombong_chimes',[
             {id:'nada_a',name:'Nada A (Klasik KAI)',description:'Chime pembuka standar'},
             {id:'nada_b',name:'Nada B (Melodi Tinggi)',description:'Chime penutup standar'},
             {id:'nada_c',name:'Nada C (Gong Stasiun)',description:'Chime alternatif'}
@@ -632,12 +651,20 @@
                     track:track,sf:t.sf||t.composition||'',composition:t.composition||t.sf||'',stops:t.stops||t.sta_perhentian||''};
             });
             teksBakuList=teksBakuList.map(t=>{
+                const legacy=String(t.kategori||'umum').toLowerCase();
+                const catMap={'kedatangan':'kedatangan kereta','keberangkatan':'keberangkatan kereta','melintas':'kereta melintas langsung','keterlambatan':'kelambatan kereta'};
+                const kategori=catMap[legacy]||legacy;
                 const id=String(t.isiID??t.isi??'');
-                return {...t,id:t.id||uid('tpl'),isiID:id,isiEN:t.isiEN??''};
+                return {...t,id:t.id||uid('tpl'),kategori,isiID:id,isiEN:t.isiEN??''};
             });
-            emergencyList=emergencyList.map(x=>({...x,text:String(x.text??''),textEn:String(x.textEn??''),textEn:String(x.textEn??'')}));
+            emergencyList=emergencyList.map(x=>({...x,text:String(x.text??''),textEn:String(x.textEn??'')}));
         }
         normalizeData();
+        function ensureDefaultTemplateCategories(){
+            const cats=new Set(teksBakuList.map(t=>String(t.kategori||'').toLowerCase()));
+            defaultTeksBaku.forEach(t=>{if(!cats.has(t.kategori.toLowerCase()))teksBakuList.push({...t,id:uid('tpl')});});
+        }
+        ensureDefaultTemplateCategories();
 
         function saveToStorage(){
             localStorage.setItem('gombong_teksbaku',JSON.stringify(teksBakuList));
@@ -692,7 +719,7 @@
                 || '<option value="">Tidak ada kereta yang cocok</option>';
             if([...sel.options].some(o=>o.value===current)) sel.value=current;
             else if(sel.options.length) sel.selectedIndex=0;
-            onParameterChange(false);
+            onParameterChange();
         }
         function renderTeksBakuTable(){
             const tbody=document.getElementById('teksbaku-table-body'); if(!tbody)return;
@@ -728,17 +755,30 @@
             return String(text||'').replace(/\{([a-zA-Z0-9_]+)\}/g,(m,k)=>values[k]!==undefined?values[k]:m);
         }
         function syncGeneratorTrainData(){
-            const tr=getSelectedTrain(); const sel=document.getElementById('sel-jalur'); if(!sel||!tr)return;
-            const rawTrack=String(tr.track||'');
-            const platform=String(tr.platform||'').trim() || (rawTrack.match(/Jalur\s*\d+/i)||[''])[0];
-            const direction=String(tr.direction||'').trim() || (rawTrack.match(/Dari Arah\s+(Timur|Barat)/i)||[]).slice(1)[0] || '';
-            const dirWord=/timur|wetan/i.test(direction)?'Timur':/barat|kilen/i.test(direction)?'Barat':'';
-            const exact=[...sel.options].find(o=>String(o.value).toLowerCase()===`${platform} (${dirWord})`.toLowerCase());
-            if(exact) sel.value=exact.value;
+            const tr=getSelectedTrain(), sel=document.getElementById('sel-jalur'); if(!sel||!tr)return;
+            const exact=String(tr.track||`${tr.platform||''} ${tr.direction||''}`).replace(/\s+/g,' ').trim();
+            if(!exact)return;
+            let opt=[...sel.options].find(o=>o.value.toLowerCase()===exact.toLowerCase());
+            if(!opt){opt=document.createElement('option');opt.value=exact;opt.textContent=exact;sel.appendChild(opt);}
+            sel.value=opt.value;
+        }
+        function getGeneratorTrainData(){
+            const tr={...getSelectedTrain()};
+            const j=document.getElementById('sel-jalur')?.value||'';
+            const m=j.match(/^(Jalur\s*\d+)\s+(?:Dari\s+Arah\s+)?(Barat|Timur)$/i);
+            if(m){tr.platform=m[1];tr.direction='Dari Arah '+(m[2].charAt(0).toUpperCase()+m[2].slice(1).toLowerCase());tr.track=j;}
+            return tr;
+        }
+        function getGeneratorTrainData(){
+            const tr={...getSelectedTrain()};
+            const j=document.getElementById('sel-jalur')?.value||'';
+            const m=j.match(/^(Jalur\s*\d+)\s*\((Barat|Timur)\)$/i);
+            if(m){tr.platform=m[1];tr.direction='Dari Arah '+(m[2].charAt(0).toUpperCase()+m[2].slice(1).toLowerCase());tr.track=j;}
+            return tr;
         }
         function onTrainSelectionChange(){
             syncGeneratorTrainData();
-            onParameterChange(true);
+            onParameterChange(false);
         }
         function onTeksBakuSelect(index){
             const t=teksBakuList[Number(index)];if(!t)return;
@@ -747,25 +787,41 @@
             const jenis=document.getElementById('sel-jenis');
             if(jenis){
                 const raw=String(t.kategori||'umum').trim(), key=raw.toLowerCase();
-                const map={keberangkatan:'pemberangkatan',pemberangkatan:'pemberangkatan',kedatangan:'kedatangan',melintas:'melintas','melintas langsung':'melintas',keterlambatan:'keterlambatan'};
+                const map={'kedatangan kereta':'kedatangan','kedatangan penumpang':'kedatangan','keberangkatan kereta':'pemberangkatan','kereta melintas langsung':'melintas','ketersediaan kereta':'ketersediaan','kelambatan kereta':'keterlambatan','pembatalan perjalanan kereta':'pembatalan'};
                 const val=map[key]||key||'umum';
-                if(![...jenis.options].some(o=>o.value===val)){const opt=document.createElement('option');opt.value=val;opt.textContent=raw.charAt(0).toUpperCase()+raw.slice(1);jenis.appendChild(opt);}
+                if(![...jenis.options].some(o=>o.value===val)){const opt=document.createElement('option');opt.value=val;opt.textContent=raw;jenis.appendChild(opt);}
                 jenis.value=val;
             }
             onParameterChange(false);
         }
-        function onParameterChange(autoTrack=false){
-            const t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)]; if(!t)return;
-            if(autoTrack)syncGeneratorTrainData();
-            const tr=getSelectedTrain();
-            const jalurSel=document.getElementById('sel-jalur');
-            const jalurVal=jalurSel?.value||'';
-            const tempTrain={...tr,platform:(jalurVal.match(/Jalur\s*\d+/i)||[''])[0]||tr.platform,direction:(/\((Timur|Barat)\)/i.exec(jalurVal)||[])[1]?`Dari Arah ${(/\((Timur|Barat)\)/i.exec(jalurVal)||[])[1]}`:tr.direction,track:jalurVal};
+        function onParameterChange(){
+            const t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)];if(!t)return;
+            const tr=getGeneratorTrainData();
             const ta=document.getElementById('script-textarea');
-            if(document.activeElement!==ta || autoTrack || !ta.value.trim()) ta.value=replaceVariables(t.isiID,tempTrain);
-            const idText=ta.value;
-            document.getElementById('preview-id').textContent=replaceVariables(idText,tempTrain);
-            document.getElementById('preview-en').textContent=replaceVariables(t.isiEN||translateIdToEn(t.isiID),tempTrain);
+            const id=replaceVariables(ta?.value && ta.dataset.manual==='1' ? ta.value : t.isiID,tr);
+            if(ta){
+                if(ta.dataset.manual!=='1') ta.value=t.isiID;
+                ta.value=replaceVariables(ta.value,tr);
+                ta.dataset.manual='0';
+                ta.oninput=()=>{ta.dataset.manual='1';updateGeneratorPreviews();};
+            }
+            updateGeneratorPreviews();
+        }
+        function updateGeneratorPreviews(){
+            const ta=document.getElementById('script-textarea'), tr=getGeneratorTrainData(); if(!ta)return;
+            const id=replaceVariables(ta.value,tr);
+            document.getElementById('preview-id').textContent=id;
+            document.getElementById('preview-en').textContent=replaceVariables(getSelectedTemplateEnglishText(ta.value),tr);
+        }
+        function getSelectedTemplateEnglishText(idText){
+            const t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)];
+            if(t && t.isiID===idText) return t.isiEN||translateIdToEn(idText);
+            return translateIdToEn(idText);
+        }
+        function insertGeneratorVariable(variable){
+            const ta=document.getElementById('script-textarea'); if(!ta)return;
+            const s=ta.selectionStart??ta.value.length,e=ta.selectionEnd??ta.value.length;
+            ta.value=ta.value.slice(0,s)+variable+ta.value.slice(e);ta.dataset.manual='1';ta.focus();ta.setSelectionRange(s+variable.length,s+variable.length);updateGeneratorPreviews();
         }
         function insertGeneratorVariable(variable){
             const ta=document.getElementById('script-textarea');
@@ -775,7 +831,7 @@
             ta.focus();ta.setSelectionRange(s+variable.length,s+variable.length);
             const tr=getSelectedTrain();
             document.getElementById('preview-id').textContent=replaceVariables(ta.value,tr);
-            document.getElementById('preview-en').textContent=replaceVariables(translateIdToEn(ta.value),getSelectedTrain());
+            document.getElementById('preview-en').textContent=translateIdToEn(ta.value);
             
         }
         function insertVariable(variable){
@@ -787,17 +843,24 @@
         }
 
         function openTeksModal(index){
-            document.getElementById('teks-modal').classList.remove('hidden');document.getElementById('edit-index').value=index;
-            if(index>=0){const t=teksBakuList[index];document.getElementById('modal-title').textContent='Edit Teks Baku';document.getElementById('modal-kategori').value=t.kategori;document.getElementById('modal-judul').value=t.judul;document.getElementById('modal-chime-in').value=t.chimeIn;document.getElementById('modal-chime-out').value=t.chimeOut;document.getElementById('modal-isi').value=t.isiID;document.getElementById('modal-isi-en').value=t.isiEN;}
-            else{document.getElementById('modal-title').textContent='Tambah Teks Baku Baru';document.getElementById('modal-kategori').value='kedatangan';document.getElementById('modal-judul').value='Template Baru';document.getElementById('modal-chime-in').value='nada_a';document.getElementById('modal-chime-out').value='nada_b';document.getElementById('modal-isi').value='';document.getElementById('modal-isi-en').value='';}
+            const m=document.getElementById('teks-modal'); if(!m)return;
+            m.classList.remove('hidden'); document.getElementById('edit-index').value=index;
+            const cat=document.getElementById('modal-kategori');
+            if(index>=0){const t=teksBakuList[index];document.getElementById('modal-title').textContent='Edit Teks Baku';cat.value=t.kategori||'kedatangan kereta';document.getElementById('modal-judul').value=t.judul||'';document.getElementById('modal-chime-in').value=t.chimeIn||'nada_a';document.getElementById('modal-chime-out').value=t.chimeOut||'nada_b';document.getElementById('modal-isi').value=t.isiID||'';document.getElementById('modal-isi-en').value=t.isiEN||'';}
+            else{document.getElementById('modal-title').textContent='Tambah Teks Baku Baru';cat.value='kedatangan kereta';document.getElementById('modal-judul').value='';document.getElementById('modal-chime-in').value='nada_a';document.getElementById('modal-chime-out').value='nada_b';document.getElementById('modal-isi').value='';document.getElementById('modal-isi-en').value='';}
         }
-        function closeTeksModal(){document.getElementById('teks-modal').classList.add('hidden');}
+        function closeTeksModal(){document.getElementById('teks-modal')?.classList.add('hidden');}
         function saveTeksBaku(){
-            const i=Number(document.getElementById('edit-index').value),obj={id:i>=0?teksBakuList[i].id:uid('tpl'),kategori:document.getElementById('modal-kategori').value.trim()||'umum',judul:document.getElementById('modal-judul').value.trim()||'Tanpa Judul',chimeIn:document.getElementById('modal-chime-in').value,chimeOut:document.getElementById('modal-chime-out').value,isiID:document.getElementById('modal-isi').value.trim(),isiEN:document.getElementById('modal-isi-en').value.trim()};
-            if(!obj.isiEN){autoTranslateTemplate(true,obj);}
-            if(i>=0)teksBakuList[i]=obj;else teksBakuList.push(obj);saveToStorage();closeTeksModal();renderTeksBakuTable();showToast('Teks baku tersimpan.');
+            const i=Number(document.getElementById('edit-index').value), obj={id:i>=0&&teksBakuList[i]?teksBakuList[i].id:uid('tpl'),kategori:document.getElementById('modal-kategori').value.trim()||'umum',judul:document.getElementById('modal-judul').value.trim()||'Tanpa Judul',chimeIn:document.getElementById('modal-chime-in').value,chimeOut:document.getElementById('modal-chime-out').value,isiID:document.getElementById('modal-isi').value.trim(),isiEN:document.getElementById('modal-isi-en').value.trim()};
+            if(!obj.isiID){showToast('Teks Indonesia wajib diisi.');return;} if(!obj.isiEN)obj.isiEN=translateIdToEn(obj.isiID);
+            if(i>=0&&teksBakuList[i])teksBakuList[i]=obj;else teksBakuList.push(obj);
+            saveToStorage();renderTeksBakuTable();updateGeneratorTeksBakuSelect();closeTeksModal();showToast('Teks baku tersimpan.');
         }
-        function deleteTeksBaku(i){if(!Number.isInteger(i)||i<0||i>=teksBakuList.length)return;if(window.confirm('Hapus teks baku ini?')){teksBakuList.splice(i,1);saveToStorage();renderTeksBakuTable();updateGeneratorTeksBakuSelect();showToast('Teks baku dihapus.');}}
+        function deleteTeksBaku(i){
+            if(i<0||i>=teksBakuList.length)return;
+            if(!window.confirm('Hapus teks baku ini?'))return;
+            teksBakuList.splice(i,1);saveToStorage();renderTeksBakuTable();updateGeneratorTeksBakuSelect();showToast('Teks baku dihapus.');
+        }
 
         function openTrainModal(i){
             document.getElementById('train-modal').classList.remove('hidden');document.getElementById('train-edit-index').value=i;
@@ -813,7 +876,7 @@
             const obj={no,name,route,platform,direction,track:`${platform} ${direction}`,sf,composition:sf,stops};
             if(i>=0)trainList[i]=obj;else trainList.push(obj);saveToStorage();closeTrainModal();renderTrainTable();showToast(i>=0?'Data kereta diperbarui.':'Kereta ditambahkan.');
         }
-        function deleteTrain(i){if(!Number.isInteger(i)||i<0||i>=trainList.length)return;if(window.confirm('Hapus data kereta ini?')){trainList.splice(i,1);saveToStorage();renderTrainTable();updateGeneratorTrainSelect();showToast('Data kereta dihapus.');}}
+        function deleteTrain(i){if(confirm('Hapus data kereta ini?')){trainList.splice(i,1);saveToStorage();renderTrainTable();showToast('Data kereta dihapus.');}}
 
         // Emergency CRUD
         function renderEmergencyList(){
@@ -853,7 +916,7 @@
             try{saveToStorage();}catch(e){showToast('Audio terlalu besar untuk penyimpanan browser. Gunakan file maksimal 4 MB.');return;}
             closeChimeModal();renderChimeList();refreshChimeSelects();showToast('Chime tersimpan.');
         }
-        function deleteChime(i){if(!Number.isInteger(i)||i<0||i>=chimeList.length)return;if(window.confirm('Hapus chime ini?')){chimeList.splice(i,1);saveToStorage();renderChimeList();refreshChimeSelects();showToast('Chime dihapus.');}}
+        function deleteChime(i){if(confirm('Hapus chime ini?')){chimeList.splice(i,1);saveToStorage();renderChimeList();refreshChimeSelects();}}
         function refreshChimeSelects(){['sel-chime-in','sel-chime-out','modal-chime-in','modal-chime-out'].forEach(id=>{const s=document.getElementById(id);if(s)s.innerHTML=chimeList.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')+`<option value="tanpa_chime">Tanpa Chime</option>`;});}
 
         // Narrator CRUD + upload audio (rekaman, bukan voice AI)
@@ -867,7 +930,7 @@
         function closeNarratorModal(){document.getElementById('narrator-modal').classList.add('hidden');}
         function fileToDataUrl(file){return new Promise((res,rej)=>{if(!file)return res('');if(file.size>8*1024*1024)return rej(new Error('Ukuran audio maksimal 8 MB per file.'));const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
         async function saveNarrator(){const i=Number(document.getElementById('narrator-edit-index').value),old=i>=0?narratorList[i]:{},x={id:old.id||uid('voice'),name:document.getElementById('narrator-name').value.trim(),description:document.getElementById('narrator-desc').value.trim(),audioId:old.audioId||'',audioEn:old.audioEn||''};if(!x.name){showToast('Nama narator wajib diisi.');return;}try{x.audioId=await fileToDataUrl(document.getElementById('narrator-audio-id').files[0])||x.audioId;x.audioEn=await fileToDataUrl(document.getElementById('narrator-audio-en').files[0])||x.audioEn;}catch(e){showToast(e.message);return;}if(i>=0)narratorList[i]=x;else{narratorList.push(x);activeNarratorIndex=narratorList.length-1;}saveToStorage();closeNarratorModal();renderNarratorList();updateNarratorSelect();showToast('Narator tersimpan.');}
-        function deleteNarrator(i){if(!Number.isInteger(i)||i<0||i>=narratorList.length)return;if(window.confirm('Hapus narator ini?')){narratorList.splice(i,1);if(activeNarratorIndex>=narratorList.length)activeNarratorIndex=Math.max(0,narratorList.length-1);saveToStorage();renderNarratorList();updateNarratorSelect();showToast('Narator dihapus.');}}
+        function deleteNarrator(i){if(confirm('Hapus narator ini?')){narratorList.splice(i,1);if(activeNarratorIndex>=narratorList.length)activeNarratorIndex=0;saveToStorage();renderNarratorList();updateNarratorSelect();}}
         function previewNarrator(i){const x=narratorList[i];if(!x)return;const u=x.audioId||x.audioEn||x.audioJv;if(u){stopAudio();activeAudio=new Audio(u);activeAudio.volume=masterVol;activeAudio.play().catch(()=>{});}}
         function stopAudio(){if(activeAudio){activeAudio.pause();activeAudio.currentTime=0;activeAudio=null;}synth.cancel();}
 
@@ -1023,20 +1086,75 @@
         function resetWaveBars(){const d=[12,28,16,40,48,32,20,36,16];document.querySelectorAll('#audio-waves div').forEach((b,i)=>{b.style.height=d[i]+'px';b.className='w-1.5 bg-slate-700 rounded-full transition-all duration-150'});}
         function updateMasterVolume(v){masterVol=Number(v)/100;document.getElementById('vol-display').textContent=v+'%';if(activeAudio)activeAudio.volume=masterVol;}
 
-        function downloadBackup(){const data={station:'Stasiun Gombong (GBG)',version:'3.0',timestamp:new Date().toISOString(),teksbaku:teksBakuList,trains:trainList,narrators:narratorList,emergencies:emergencyList,chimes:chimeList};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='gombong-announcer-backup.json';a.click();}
+        function getBackupData(){return {station:'Stasiun Gombong (GBG)',version:'4.0',timestamp:new Date().toISOString(),teksbaku:teksBakuList,trains:trainList,narrators:narratorList,emergencies:emergencyList,chimes:chimeList};}
+        function downloadBackup(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(getBackupData(),null,2)],{type:'application/json'}));a.download='gombong-announcer-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
         function triggerLoadData(){document.getElementById('file-input-backup').click();}
-        function handleFileImport(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(j.teksbaku)teksBakuList=j.teksbaku;if(j.trains)trainList=j.trains;if(j.narrators)narratorList=j.narrators;if(j.emergencies)emergencyList=j.emergencies;if(j.chimes)chimeList=j.chimes;normalizeData();saveToStorage();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();showToast('Data cadangan berhasil dimuat.');}catch(err){showToast('File cadangan tidak valid.');}};r.readAsText(f);}
+
+        // Import selalu MERGE. Data lama dipertahankan; data dari file hanya ditambahkan
+        // jika belum ada. Tidak ada penggantian massal dan tidak ada penghapusan otomatis.
+        function mergeImportedList(current,incoming,type){
+            if(!Array.isArray(incoming))return {list:current,added:0,skipped:0};
+            const list=Array.isArray(current)?current.slice():[];
+            const keyOf=(x)=>{
+                if(type==='train')return String(x.id||('train:'+String(x.no||'')+'|'+String(x.name||'').toLowerCase())).trim().toLowerCase();
+                if(type==='template')return String(x.id||('template:'+String(x.kategori||'').toLowerCase()+'|'+String(x.judul||'').toLowerCase())).trim().toLowerCase();
+                if(type==='narrator')return String(x.id||('narrator:'+String(x.name||'').toLowerCase())).trim().toLowerCase();
+                if(type==='emergency')return String(x.id||('emergency:'+String(x.title||'').toLowerCase())).trim().toLowerCase();
+                if(type==='chime')return String(x.id||('chime:'+String(x.name||'').toLowerCase())).trim().toLowerCase();
+                return JSON.stringify(x).toLowerCase();
+            };
+            const existing=new Set(list.map(keyOf));
+            let added=0,skipped=0;
+            incoming.forEach(item=>{
+                if(!item||typeof item!=='object'){skipped++;return;}
+                const key=keyOf(item);
+                if(existing.has(key)){skipped++;return;}
+                list.push(item);existing.add(key);added++;
+            });
+            return {list,added,skipped};
+        }
+
+        function handleFileImport(e){
+            const f=e.target.files[0];
+            if(!f)return;
+            const r=new FileReader();
+            r.onload=()=>{
+                try{
+                    const j=JSON.parse(r.result);
+                    if(!j||typeof j!=='object')throw new Error('Format tidak valid');
+                    const a=mergeImportedList(teksBakuList,j.teksbaku,'template');
+                    const b=mergeImportedList(trainList,j.trains,'train');
+                    const c=mergeImportedList(narratorList,j.narrators,'narrator');
+                    const d=mergeImportedList(emergencyList,j.emergencies,'emergency');
+                    const z=mergeImportedList(chimeList,j.chimes,'chime');
+                    teksBakuList=a.list;trainList=b.list;narratorList=c.list;emergencyList=d.list;chimeList=z.list;
+                    normalizeData();
+                    ensureDefaultTemplateCategories();
+                    saveToStorage();
+                    renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();
+                    const added=a.added+b.added+c.added+d.added+z.added;
+                    const skipped=a.skipped+b.skipped+c.skipped+d.skipped+z.skipped;
+                    showToast(`Data dimuat tanpa menghapus data lama. ${added} data baru ditambahkan${skipped?` · ${skipped} data yang sudah ada dilewati`:''}.`);
+                }catch(err){
+                    console.error(err);
+                    showToast('File cadangan tidak valid atau tidak dapat dibaca. Data lama tetap aman.');
+                }finally{
+                    e.target.value='';
+                }
+            };
+            r.onerror=()=>{e.target.value='';showToast('File tidak dapat dibaca. Data lama tetap aman.');};
+            r.readAsText(f);
+        }
 
         function showToast(msg){const t=document.createElement('div');t.className='fixed bottom-6 right-6 bg-[#141e3d] border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-[100] text-xs font-medium';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
 
-        // Modal UX: tombol X, Batal, klik backdrop, dan Escape semuanya menutup modal.
-        document.addEventListener('click',e=>{
-            const ids=['teks-modal','train-modal','narrator-modal','emergency-modal','chime-modal'];
-            if(ids.includes(e.target?.id)) window[e.target.id.replace('-modal','')+'Modal']?.();
-        });
-        document.addEventListener('keydown',e=>{if(e.key==='Escape'){['closeTeksModal','closeTrainModal','closeNarratorModal','closeEmergencyModal','closeChimeModal'].forEach(fn=>window[fn]?.());}});
 
+        function setupReliableModalButtons(){
+            document.querySelectorAll('#teks-modal button, #train-modal button, #chime-modal button, #narrator-modal button, #emergency-modal button').forEach(b=>b.addEventListener('click',()=>{},true));
+            ['teks-modal','train-modal','chime-modal','narrator-modal','emergency-modal'].forEach(id=>{const m=document.getElementById(id);if(m)m.addEventListener('click',e=>{if(e.target===m)m.classList.add('hidden');});});
+        }
         window.onload=()=>{
+            setupReliableModalButtons();
             refreshChimeSelects();updateNarratorSelect();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();
         };
     </script>
