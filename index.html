@@ -62,7 +62,7 @@
                 <label for="file-input-backup" id="btn-load-data" class="cursor-pointer bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
                     <i class="fa-solid fa-upload"></i> Muat Data
                 </label>
-                <input type="file" id="file-input-backup" accept=".json,application/json,text/json">
+                <input type="file" id="file-input-backup" accept=".json,application/json,text/json" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
             </div>
         </div>
     </header>
@@ -1192,8 +1192,11 @@
             const backupInput=document.getElementById('file-input-backup');
             const downloadBtn=document.getElementById('btn-download-backup');
             if(downloadBtn)downloadBtn.addEventListener('click',e=>{e.preventDefault();downloadBackup();});
-            if(loadBtn)loadBtn.addEventListener('click',e=>{e.preventDefault();triggerLoadData();});
+            // PENTING: tombol Muat Data adalah <label for=file-input-backup>.
+            // Jangan memanggil preventDefault() pada label karena itu membatalkan
+            // file picker native Android. Label dibiarkan bekerja secara native.
             if(backupInput)backupInput.addEventListener('change',handleFileImport);
+            if(loadBtn)loadBtn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();backupInput&&backupInput.click();}});
         };
     </script>
 </body>
