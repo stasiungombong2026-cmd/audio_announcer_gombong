@@ -62,7 +62,7 @@
                 <button type="button" id="btn-load-data" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
                     <i class="fa-solid fa-upload"></i> Muat Data
                 </button>
-                <input type="file" id="file-input-backup" accept=".json,application/json,text/json" style="position:fixed;left:-9999px;width:1px;height:1px;opacity:0;">
+                <input type="file" id="file-input-backup" accept=".json,application/json,text/json" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0;">
             </div>
         </div>
     </header>
@@ -1097,10 +1097,10 @@
         function triggerLoadData(){
             const input=document.getElementById('file-input-backup');
             if(!input){showToast('Pemilih file tidak ditemukan.');return;}
-            input.value='';
-            try{input.click();}
-            catch(err){console.error(err);showToast('Tidak dapat membuka pemilih file. Gunakan tombol Muat Data lagi.');}
+            try{ input.value=''; input.click(); }
+            catch(err){ console.error(err); showToast('Tidak dapat membuka pemilih file.'); }
         }
+
 
         function normalizeImportedBackup(j){
             if(Array.isArray(j)) return {trains:j};
@@ -1132,32 +1132,37 @@
             return {list,added,skipped};
         }
 
-        async function handleFileImport(e){
-            const input=e.target, f=input?.files?.[0];
+        function handleFileImport(e){
+            const input=e&&e.target, f=input&&input.files&&input.files[0];
             if(!f)return;
-            try{
-                if(!/\.json$/i.test(f.name) && f.type && !/json/i.test(f.type)) throw new Error('Pilih file backup JSON.');
-                const text=await f.text();
-                if(!text.trim())throw new Error('File JSON kosong.');
-                let j;
-                try{j=JSON.parse(text);}catch(parseErr){throw new Error('Isi file bukan JSON yang valid.');}
-                const data=normalizeImportedBackup(j);
-                const a=mergeImportedList(teksBakuList,data.teksbaku,'template');
-                const b=mergeImportedList(trainList,data.trains,'train');
-                const c=mergeImportedList(narratorList,data.narrators,'narrator');
-                const d=mergeImportedList(emergencyList,data.emergencies,'emergency');
-                const z=mergeImportedList(chimeList,data.chimes,'chime');
-                teksBakuList=a.list; trainList=b.list; narratorList=c.list; emergencyList=d.list; chimeList=z.list;
-                normalizeData(); ensureDefaultTemplateCategories(); saveToStorage();
-                renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();
-                const added=a.added+b.added+c.added+d.added+z.added;
-                const skipped=a.skipped+b.skipped+c.skipped+d.skipped+z.skipped;
-                showToast(`Data berhasil dimuat. ${added} data baru ditambahkan${skipped?` · ${skipped} data yang sudah ada dilewati`:''}. Data lama tetap aman.`);
-            }catch(err){
-                console.error('IMPORT ERROR:',err);
-                showToast('Muat data gagal: '+(err.message||'file tidak dapat dibaca'));
-            }finally{if(input)input.value='';}
+            const reader=new FileReader();
+            reader.onload=function(){
+                try{
+                    const raw=String(reader.result||'').replace(/^\uFEFF/,'').trim();
+                    if(!raw)throw new Error('File JSON kosong.');
+                    let j;
+                    try{j=JSON.parse(raw);}catch(err){throw new Error('File bukan JSON yang valid. Pastikan yang dipilih adalah file .json hasil Unduh Cadangan Data.');}
+                    const data=normalizeImportedBackup(j);
+                    const a=mergeImportedList(teksBakuList,data.teksbaku,'template');
+                    const b=mergeImportedList(trainList,data.trains,'train');
+                    const c=mergeImportedList(narratorList,data.narrators,'narrator');
+                    const d=mergeImportedList(emergencyList,data.emergencies,'emergency');
+                    const z=mergeImportedList(chimeList,data.chimes,'chime');
+                    teksBakuList=a.list; trainList=b.list; narratorList=c.list; emergencyList=d.list; chimeList=z.list;
+                    normalizeData(); ensureDefaultTemplateCategories(); saveToStorage();
+                    renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();
+                    const added=a.added+b.added+c.added+d.added+z.added;
+                    const skipped=a.skipped+b.skipped+c.skipped+d.skipped+z.skipped;
+                    showToast(`Data berhasil dimuat: ${added} data baru ditambahkan${skipped?` · ${skipped} data yang sudah ada dilewati`:''}. Data lama tetap aman.`);
+                }catch(err){
+                    console.error('IMPORT ERROR:',err);
+                    showToast('Muat data gagal: '+(err.message||'file tidak dapat dibaca'));
+                }finally{ if(input)input.value=''; }
+            };
+            reader.onerror=function(){ if(input)input.value=''; showToast('File tidak dapat dibaca oleh browser.'); };
+            reader.readAsText(f,'UTF-8');
         }
+
 
         function showToast(msg){const t=document.createElement('div');t.className='fixed bottom-6 right-6 bg-[#141e3d] border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-[100] text-xs font-medium';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
 
@@ -1174,7 +1179,7 @@
             const loadBtn=document.getElementById('btn-load-data');
             const backupInput=document.getElementById('file-input-backup');
             const downloadBtn=document.getElementById('btn-download-backup');
-            if(loadBtn)loadBtn.addEventListener('click',e=>{e.preventDefault();triggerLoadData();});
+            if(loadBtn)loadBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();triggerLoadData();});
             if(downloadBtn)downloadBtn.addEventListener('click',e=>{e.preventDefault();downloadBackup();});
             if(backupInput)backupInput.addEventListener('change',handleFileImport);
         };
