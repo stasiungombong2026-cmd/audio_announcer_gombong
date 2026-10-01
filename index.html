@@ -1097,15 +1097,30 @@
         }
 
         function startBroadcast(){
+            if(broadcastRunning){showToast('Pengumuman sedang diputar.');return;}
             const train=getSelectedTrain(),t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)];
             if(!t){showToast('Teks baku belum tersedia.');return;}
             const generatorText=document.getElementById('script-textarea')?.value?.trim()||t.isiID||'';
-            const seq=[{label:'INDONESIA',lang:'id-ID',text:generatorText},{label:'ENGLISH',lang:'en-US',text:replaceVariables(t.isiEN||translateIdToEn(t.isiID),train)}];
+            // Satu kali pelafalan: sebelumnya fungsi ini selalu menjalankan Indonesia lalu English,
+            // sehingga satu pengumuman terdengar dua kali. Sekarang default hanya satu pengumuman Indonesia.
+            const seq=[{label:'INDONESIA',lang:'id-ID',text:generatorText}];
             const cin=document.getElementById('sel-chime-in').value,cout=document.getElementById('sel-chime-out').value;
-            synth.cancel();document.getElementById('player-status-label').textContent='MEMUTAR CHIME...';startWaveAnimation();
-            const go=()=>{if(cin!=='tanpa_chime')playChimeTone(cin);setTimeout(()=>playSequence(seq,train,cout),cin==='tanpa_chime'?0:1400);};go();
-            // closing chime after the audio sequence is handled by a small wrapper
-            setTimeout(()=>{},0);
+            broadcastRunning=true;
+            synth.cancel();
+            document.getElementById('player-status-label').textContent='MEMUTAR CHIME...';
+            startWaveAnimation();
+            const finish=()=>{broadcastRunning=false;};
+            const go=()=>{
+                if(cin!=='tanpa_chime'){
+                    playChimeTone(cin,()=>playSequence(seq,train,cout,finish));
+                    setTimeout(()=>{},0);
+                }else{
+                    playSequence(seq,train,cout);
+                    // reset guard after the selected sequence has had time to finish
+                    setTimeout(finish,Math.max(1500,generatorText.length*75));
+                }
+            };
+            go();
         }
 
         function playEmergencyBroadcast(){const id=document.getElementById('emergency-textarea').value.trim(),en=document.getElementById('emergency-textarea-en').value.trim();if(!id)return;stopAudio();document.getElementById('player-status-label').textContent='SIARAN DARURAT...';startWaveAnimation();playSequence([{label:'INDONESIA',lang:'id-ID',text:id},{label:'ENGLISH',lang:'en-US',text:en||translateIdToEn(id)}],getSelectedTrain(),'tanpa_chime');}
@@ -1113,7 +1128,7 @@
         function getAudioContext(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
         function playOsc(ctx,dest,f,start,d){const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f;g.gain.setValueAtTime(.0,start);g.gain.linearRampToValueAtTime(.4,start+.05);g.gain.exponentialRampToValueAtTime(.001,start+d);o.connect(g);g.connect(dest);o.start(start);o.stop(start+d);}
         function playBell(ctx,dest,f,start,d){const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0,start);g.gain.linearRampToValueAtTime(.6,start+.02);g.gain.exponentialRampToValueAtTime(.001,start+d);o.connect(g);g.connect(dest);o.start(start);o.stop(start+d);}
-        function stopBroadcast(){stopAudio();stopBroadcastResetUI();showToast('Pengumuman dihentikan.');}
+        function stopBroadcast(){broadcastRunning=false;stopAudio();stopBroadcastResetUI();showToast('Pengumuman dihentikan.');}
         function stopBroadcastResetUI(){if(waveInterval)clearInterval(waveInterval);waveInterval=null;document.getElementById('player-status-label').textContent='SIAP DIPUTAR';document.getElementById('player-subtext').textContent='Sistem PA Stasiun Gombong aktif';resetWaveBars();}
         function startWaveAnimation(){if(waveInterval)clearInterval(waveInterval);const bars=document.querySelectorAll('#audio-waves div');waveInterval=setInterval(()=>bars.forEach(b=>{b.style.height=(8+Math.random()*50)+'px';b.className='w-1.5 bg-emerald-500 rounded-full transition-all duration-150'}),120);}
         function stopWaveAnimation(){if(waveInterval){clearInterval(waveInterval);waveInterval=null;}}
