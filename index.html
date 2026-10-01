@@ -1150,6 +1150,38 @@
             input.value='';
             input.click();
         }
+        function normalizeImportedBackup(j){
+            const src=(j&&typeof j==='object')?j:{};
+            const pickArray=(...keys)=>{for(const k of keys){if(Array.isArray(src[k]))return src[k];}return [];};
+            const teks=pickArray('teksbaku','teksBaku','templates','templateList','teks_baku');
+            const trains=pickArray('trains','trainList','daftarKereta','kereta','train');
+            const narrators=pickArray('narrators','narratorList','daftarNarator','voices');
+            const emergencies=pickArray('emergencies','emergencyList','darurat','informasiDarurat');
+            const chimes=pickArray('chimes','chimeList','daftarChime','nada');
+            return {teksbaku:teks,trains:trains,narrators:narrators,emergencies:emergencies,chimes:chimes};
+        }
+        function mergeImportedList(current,incoming,type){
+            const list=Array.isArray(current)?current.slice():[];
+            if(!Array.isArray(incoming))return {list,added:0,skipped:0};
+            const keyOf=(x)=>{
+                if(!x||typeof x!=='object')return '';
+                if(type==='train')return String(x.id||('train|'+String(x.no||x.nomor||'')+'|'+String(x.name||x.nama||'').toLowerCase())).trim().toLowerCase();
+                if(type==='template')return String(x.id||('template|'+String(x.kategori||'').toLowerCase()+'|'+String(x.judul||'').toLowerCase())).trim().toLowerCase();
+                if(type==='narrator')return String(x.id||('narrator|'+String(x.name||x.nama||'').toLowerCase())).trim().toLowerCase();
+                if(type==='emergency')return String(x.id||('emergency|'+String(x.title||x.judul||'').toLowerCase())).trim().toLowerCase();
+                if(type==='chime')return String(x.id||('chime|'+String(x.name||x.nama||'').toLowerCase())).trim().toLowerCase();
+                return JSON.stringify(x).toLowerCase();
+            };
+            const existing=new Set(list.map(keyOf));let added=0,skipped=0;
+            for(const item of incoming){
+                if(!item||typeof item!=='object'){skipped++;continue;}
+                const key=keyOf(item);
+                if(existing.has(key)){skipped++;continue;}
+                list.push(item);existing.add(key);added++;
+            }
+            return {list,added,skipped};
+        }
+
         function handleFileImport(e){
             const input=e&&e.target;
             const f=input&&input.files&&input.files[0];
