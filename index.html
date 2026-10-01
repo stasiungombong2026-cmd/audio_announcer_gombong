@@ -59,10 +59,12 @@
                 <button type="button" id="btn-download-backup" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-200 text-xs font-medium px-3.5 py-2 rounded-lg border border-[#1e2d5c] transition flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-download text-amber-400"></i> Unduh Cadangan Data
                 </button>
-                <label for="file-input-backup" id="btn-load-data" class="cursor-pointer bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
-                    <i class="fa-solid fa-upload"></i> Muat Data
-                </label>
-                <input type="file" id="file-input-backup" accept=".json,application/json,text/json" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+                <div id="load-data-wrap" class="relative inline-flex">
+                    <button type="button" id="btn-load-data" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
+                        <i class="fa-solid fa-upload"></i> Muat Data
+                    </button>
+                    <input type="file" id="file-input-backup" accept=".json,application/json,text/json" aria-label="Pilih file cadangan JSON" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:20;">
+                </div>
                 <span id="data-status" class="hidden sm:inline text-[10px] text-slate-500"></span>
             </div>
         </div>
@@ -669,11 +671,22 @@
         }
         ensureDefaultTemplateCategories();
 
+        function narratorMetadataForStorage(){
+            return narratorList.map(n=>{
+                const x={...n};
+                if(String(x.audioId||'').startsWith('data:')) x.audioId='';
+                if(String(x.audioEn||'').startsWith('data:')) x.audioEn='';
+                delete x.audioIdData; delete x.audioEnData;
+                return x;
+            });
+        }
         function saveToStorage(){
+            // Audio narator TIDAK disimpan di localStorage karena Base64 dapat memenuhi kuota browser.
+            // File audio berada di IndexedDB; localStorage hanya menyimpan metadata narator.
             const items={
                 'gombong_teksbaku':teksBakuList,
                 'gombong_trains':trainList,
-                'gombong_narrators':narratorList,
+                'gombong_narrators':narratorMetadataForStorage(),
                 'gombong_emergencies':emergencyList,
                 'gombong_chimes':chimeList
             };
@@ -1134,11 +1147,9 @@
             }catch(e){console.error(e);showToast('Gagal membuat cadangan: '+(e.message||'penyimpanan audio bermasalah.'));}
         }
         function triggerLoadData(){
+            // Dipertahankan untuk kompatibilitas; file input sekarang berada langsung di atas tombol.
             const input=document.getElementById('file-input-backup');
-            if(!input){showToast('Input file tidak ditemukan.');return;}
-            input.value='';
-            if(typeof input.showPicker==='function'){try{input.showPicker();return;}catch(e){console.warn('showPicker:',e);}}
-            input.click();
+            if(input) input.focus();
         }
         function normalizeImportedBackup(j){
             if(Array.isArray(j))return {trains:j};
@@ -1196,7 +1207,8 @@
                 normalizeData();ensureDefaultTemplateCategories();saveToStorage();
                 renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();
                 const added=a.added+b.added+c.added+d.added+z.added,skipped=a.skipped+b.skipped+c.skipped+d.skipped+z.skipped;
-                const msg=`Berhasil memuat ${added} data baru${skipped?' · '+skipped+' data duplikat dilewati':''}.`;
+                const counts=`JSON: ${data.teksbaku.length} teks baku, ${data.trains.length} kereta, ${data.narrators.length} narator, ${data.emergencies.length} darurat, ${data.chimes.length} chime`;
+                const msg=`Berhasil memuat ${added} data baru${skipped?' · '+skipped+' data duplikat dilewati':''}. ${counts}`;
                 setStatus(msg,true);showToast(msg);
             }catch(err){
                 console.error('IMPORT ERROR:',err);const msg='Muat data gagal: '+(err.message||'file tidak dapat dibaca.');setStatus(msg,false);showToast(msg);
@@ -1215,15 +1227,11 @@
             refreshChimeSelects();updateNarratorSelect();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();
 
             // Handler langsung untuk Chrome Android. Tidak bergantung hanya pada inline onclick.
-            const loadBtn=document.getElementById('btn-load-data');
             const backupInput=document.getElementById('file-input-backup');
             const downloadBtn=document.getElementById('btn-download-backup');
             if(downloadBtn)downloadBtn.addEventListener('click',e=>{e.preventDefault();downloadBackup();});
-            // PENTING: tombol Muat Data adalah <label for=file-input-backup>.
-            // Jangan memanggil preventDefault() pada label karena itu membatalkan
-            // file picker native Android. Label dibiarkan bekerja secara native.
+            // Input file asli berada tepat di atas tombol. Android membuka picker secara native.
             if(backupInput)backupInput.addEventListener('change',handleFileImport);
-            if(loadBtn)loadBtn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();backupInput&&backupInput.click();}});
         };
     </script>
 </body>
