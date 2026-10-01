@@ -59,12 +59,10 @@
                 <button type="button" id="btn-download-backup" class="bg-[#141e3d] hover:bg-[#1e2d5c] text-slate-200 text-xs font-medium px-3.5 py-2 rounded-lg border border-[#1e2d5c] transition flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-download text-amber-400"></i> Unduh Cadangan Data
                 </button>
-                <div id="load-data-wrap" class="relative inline-flex">
-                    <button type="button" id="btn-load-data" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
-                        <i class="fa-solid fa-upload"></i> Muat Data
-                    </button>
-                    <input type="file" id="file-input-backup" accept=".json,application/json,text/json" aria-label="Pilih file cadangan JSON" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:20;">
-                </div>
+                <button type="button" id="btn-load-data" onclick="triggerLoadData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md shadow-amber-500/20">
+                    <i class="fa-solid fa-upload"></i> Muat Data
+                </button>
+                <input type="file" id="file-input-backup" accept=".json" class="hidden" onchange="handleFileImport(event)">
                 <span id="data-status" class="hidden sm:inline text-[10px] text-slate-500"></span>
             </div>
         </div>
@@ -1147,72 +1145,49 @@
             }catch(e){console.error(e);showToast('Gagal membuat cadangan: '+(e.message||'penyimpanan audio bermasalah.'));}
         }
         function triggerLoadData(){
-            // Dipertahankan untuk kompatibilitas; file input sekarang berada langsung di atas tombol.
             const input=document.getElementById('file-input-backup');
-            if(input) input.focus();
+            if(!input){showToast('Pemilih file tidak ditemukan.');return;}
+            input.value='';
+            input.click();
         }
-        function normalizeImportedBackup(j){
-            if(Array.isArray(j))return {trains:j};
-            if(!j||typeof j!=='object')throw new Error('Format JSON tidak valid.');
-            const root=j.data&&typeof j.data==='object'?j.data:j;
-            const pick=(...keys)=>{for(const k of keys){if(Array.isArray(root[k]))return root[k];}return [];};
-            return {teksbaku:pick('teksbaku','teksBaku','templates','templateList','teksBakuList','announcementTemplates'),trains:pick('trains','trainList','train','kereta','daftarKereta','daftar_kereta'),narrators:pick('narrators','voices','narratorList','voiceProfiles','daftarNarator'),emergencies:pick('emergencies','emergencyList','darurat','informasiDarurat'),chimes:pick('chimes','chimeList','audioChimes','daftarChime')};
-        }
-        function mergeImportedList(current,incoming,type){
-            if(!Array.isArray(incoming))return {list:Array.isArray(current)?current.slice():[],added:0,skipped:0,items:[]};
-            const list=Array.isArray(current)?current.slice():[],items=[];
-            const keyOf=x=>{
-                if(type==='train')return String(x.id||('train:'+String(x.no||x.number||'')+'|'+String(x.name||x.nama||'').toLowerCase())).trim().toLowerCase();
-                if(type==='template')return String(x.id||('template:'+String(x.kategori||x.category||'').toLowerCase()+'|'+String(x.judul||x.title||'').toLowerCase())).trim().toLowerCase();
-                if(type==='narrator')return String(x.id||('narrator:'+String(x.name||x.nama||'').toLowerCase())).trim().toLowerCase();
-                if(type==='emergency')return String(x.id||('emergency:'+String(x.title||x.judul||'').toLowerCase())).trim().toLowerCase();
-                if(type==='chime')return String(x.id||('chime:'+String(x.name||x.nama||'').toLowerCase())).trim().toLowerCase();
-                return JSON.stringify(x).toLowerCase();
-            };
-            const existing=new Set(list.map(keyOf));let added=0,skipped=0;
-            incoming.forEach(item=>{if(!item||typeof item!=='object'){skipped++;return;}const key=keyOf(item);if(existing.has(key)){skipped++;return;}list.push(item);existing.add(key);items.push(item);added++;});
-            return {list,added,skipped,items};
-        }
-        async function importNarratorAudioRecords(items){
-            if(!Array.isArray(items))return;
-            for(const n of items){
-                if(!n||!n.id)continue;
-                try{
-                    if(n.audioIdData&&String(n.audioIdData).startsWith('data:')){const blob=await (await fetch(n.audioIdData)).blob();await putNarratorAudio(n.id+'_id',blob);n.audioId=n.id+'_id';}
-                    if(n.audioEnData&&String(n.audioEnData).startsWith('data:')){const blob=await (await fetch(n.audioEnData)).blob();await putNarratorAudio(n.id+'_en',blob);n.audioEn=n.id+'_en';}
-                    delete n.audioIdData;delete n.audioEnData;
-                }catch(e){console.warn('Audio narator impor gagal:',n.name,e);}
-            }
-        }
-        async function handleFileImport(e){
-            const input=e&&e.target,f=input&&input.files&&input.files[0];
+        function handleFileImport(e){
+            const input=e&&e.target;
+            const f=input&&input.files&&input.files[0];
+            if(!f)return;
             const status=document.getElementById('data-status');
-            const setStatus=(msg,ok=false)=>{if(status){status.textContent=msg;status.className='text-[10px] '+(ok?'text-emerald-400':'text-amber-400');}};
-            if(!f){setStatus('Tidak ada file dipilih.');return;}
+            const setStatus=(msg,ok=false)=>{if(status){status.textContent=msg;status.className='hidden sm:inline text-[10px] '+(ok?'text-emerald-400':'text-amber-400');}};
             setStatus('Membaca '+f.name+'...');
-            try{
-                if(f.size>15*1024*1024)throw new Error('Ukuran JSON maksimal 15 MB.');
-                const raw=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('File tidak dapat dibaca oleh browser.'));r.readAsText(f);});
-                const clean=raw.replace(/^\uFEFF/,'').trim();
-                if(!clean)throw new Error('File JSON kosong.');
-                let j;try{j=JSON.parse(clean);}catch(err){throw new Error('File bukan JSON yang valid.');}
-                const data=normalizeImportedBackup(j);
-                data.teksbaku=(data.teksbaku||[]).map((x,i)=>({...x,id:x.id||uid('tpl_import_'+i),kategori:x.kategori||x.category||'umum',judul:x.judul||x.title||'Template Import',isiID:x.isiID??x.isi??x.text??'',isiEN:x.isiEN??x.textEn??x.textEnglish??'',chimeIn:x.chimeIn||'nada_a',chimeOut:x.chimeOut||'nada_b'}));
-                data.trains=(data.trains||[]).map((x,i)=>({...x,id:x.id||uid('train_import_'+i),no:String(x.no??x.number??x.nomor??''),name:String(x.name??x.nama??x.nama_ka??''),route:String(x.route??x.tujuan??x.destination??''),platform:x.platform||x.jalur||'Jalur 2',direction:x.direction||x.dari_arah||'Dari Arah Timur',track:x.track||`${x.platform||x.jalur||'Jalur 2'} ${x.direction||x.dari_arah||'Dari Arah Timur'}`,sf:x.sf||x.composition||x.sf_rangkaian||'',composition:x.composition||x.sf||x.sf_rangkaian||'',stops:x.stops||x.st_perhentian||x.sta_perhentian||''}));
-                const total=data.teksbaku.length+data.trains.length+data.narrators.length+data.emergencies.length+data.chimes.length;
-                if(!total)throw new Error('JSON terbaca tetapi tidak berisi data yang dikenali.');
-                const a=mergeImportedList(teksBakuList,data.teksbaku,'template'),b=mergeImportedList(trainList,data.trains,'train'),c=mergeImportedList(narratorList,data.narrators,'narrator'),d=mergeImportedList(emergencyList,data.emergencies,'emergency'),z=mergeImportedList(chimeList,data.chimes,'chime');
-                teksBakuList=a.list;trainList=b.list;narratorList=c.list;emergencyList=d.list;chimeList=z.list;
-                await importNarratorAudioRecords(c.items);
-                normalizeData();ensureDefaultTemplateCategories();saveToStorage();
-                renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();
-                const added=a.added+b.added+c.added+d.added+z.added,skipped=a.skipped+b.skipped+c.skipped+d.skipped+z.skipped;
-                const counts=`JSON: ${data.teksbaku.length} teks baku, ${data.trains.length} kereta, ${data.narrators.length} narator, ${data.emergencies.length} darurat, ${data.chimes.length} chime`;
-                const msg=`Berhasil memuat ${added} data baru${skipped?' · '+skipped+' data duplikat dilewati':''}. ${counts}`;
-                setStatus(msg,true);showToast(msg);
-            }catch(err){
-                console.error('IMPORT ERROR:',err);const msg='Muat data gagal: '+(err.message||'file tidak dapat dibaca.');setStatus(msg,false);showToast(msg);
-            }finally{if(input)input.value='';}
+            const r=new FileReader();
+            r.onload=function(){
+                try{
+                    const raw=String(r.result||'').replace(/^\uFEFF/,'').trim();
+                    if(!raw)throw new Error('File JSON kosong.');
+                    const j=JSON.parse(raw);
+                    const data=normalizeImportedBackup(j);
+                    if(!data.teksbaku.length&&!data.trains.length&&!data.narrators.length&&!data.emergencies.length&&!data.chimes.length)throw new Error('File terbaca tetapi tidak berisi data yang dikenali.');
+                    const a=mergeImportedList(teksBakuList,data.teksbaku,'template');
+                    const b=mergeImportedList(trainList,data.trains,'train');
+                    const c=mergeImportedList(narratorList,data.narrators,'narrator');
+                    const d=mergeImportedList(emergencyList,data.emergencies,'emergency');
+                    const z=mergeImportedList(chimeList,data.chimes,'chime');
+                    teksBakuList=a.list;trainList=b.list;narratorList=c.list;emergencyList=d.list;chimeList=z.list;
+                    normalizeData();
+                    ensureDefaultTemplateCategories();
+                    saveToStorage();
+                    renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();updateNarratorSelect();refreshChimeSelects();
+                    const added=a.added+b.added+c.added+d.added+z.added;
+                    const skipped=a.skipped+b.skipped+c.skipped+d.skipped+z.skipped;
+                    const msg='Data cadangan berhasil dimuat. '+added+' data baru ditambahkan'+(skipped?' · '+skipped+' data yang sudah ada dilewati':'')+'.';
+                    setStatus(msg,true);showToast(msg);
+                }catch(err){
+                    console.error('IMPORT ERROR:',err);
+                    const msg='File cadangan tidak valid: '+(err.message||'format tidak dikenali.');
+                    setStatus(msg,false);showToast(msg);
+                }
+                input.value='';
+            };
+            r.onerror=function(){input.value='';setStatus('File tidak dapat dibaca.');showToast('File tidak dapat dibaca oleh browser.');};
+            r.readAsText(f);
         }
 
         function showToast(msg){const t=document.createElement('div');t.className='fixed bottom-6 right-6 bg-[#141e3d] border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl z-[100] text-xs font-medium';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),5000);}
@@ -1226,12 +1201,8 @@
             setupReliableModalButtons();
             refreshChimeSelects();updateNarratorSelect();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();
 
-            // Handler langsung untuk Chrome Android. Tidak bergantung hanya pada inline onclick.
-            const backupInput=document.getElementById('file-input-backup');
             const downloadBtn=document.getElementById('btn-download-backup');
-            if(downloadBtn)downloadBtn.addEventListener('click',e=>{e.preventDefault();downloadBackup();});
-            // Input file asli berada tepat di atas tombol. Android membuka picker secara native.
-            if(backupInput)backupInput.addEventListener('change',handleFileImport);
+            if(downloadBtn)downloadBtn.onclick=downloadBackup;
         };
     </script>
 </body>
