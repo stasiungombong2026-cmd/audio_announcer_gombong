@@ -151,8 +151,15 @@
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1.5">Pilih Narrator / Suara Chime</label>
-                        <div class="text-[10px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 mb-2">Rekaman narator yang di-upload digunakan sebagai rekaman audio/preview. Untuk membuat teks baru dengan karakter suara yang sama (voice cloning/TTS), diperlukan mesin TTS/voice-cloning eksternal; SpeechSynthesis Chrome tidak dapat memakai file suara sebagai suara TTS.</div>
+                        <div class="text-[10px] text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3 py-2 mb-2">Narator Sistem v35 menggunakan Voice Cloning. Teks Indonesia dan English akan dibuat menjadi audio baru dengan voice clone yang sama.</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                          <button type="button" onclick="cloneSystemNarratorFromPackagedSample()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl px-3 py-2.5 text-xs">🎙️ Jadikan MP3 Contoh sebagai Narator Sistem</button>
+                          <button type="button" onclick="openSystemVoiceFilePicker()" class="bg-[#172448] hover:bg-[#20315f] text-white border border-[#2b3b6b] rounded-xl px-3 py-2.5 text-xs">📁 Upload Suara untuk Voice Clone</button>
+                        </div>
+                        <input id="system-voice-file" type="file" accept="audio/mpeg,audio/wav,audio/x-wav,audio/ogg,audio/mp4,audio/*" class="hidden" onchange="cloneSystemNarratorFromUpload(event)">
+                        <div id="voice-clone-status" class="text-[10px] text-slate-400">Status Voice Clone: belum diaktifkan.</div>
                         <select id="sel-narrator" onchange="activeNarratorIndex=Number(this.value)" class="w-full bg-[#0b1329] border border-[#1e2d5c] rounded-xl px-3.5 py-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                            <option value="system_clone">[VOICE CLONE] Narator Sistem Stasiun Gombong</option>
                             <option value="tts_ibu">[TTS] Ibu Narator (TTS ID)</option>
                             <option value="tts_bapak">[TTS] Bapak Announcer (Standard ID)</option>
                             <option value="tts_local">[Lokal] Stasiun Gombong Voice AI</option>
@@ -545,6 +552,7 @@
         <div class="space-y-2">
           <label class="text-xs text-slate-400">Rekaman Bahasa Indonesia (MP3/WAV/M4A/OGG)</label><input id="narrator-audio-id" type="file" accept="audio/*" class="w-full text-xs text-slate-300">
           <label class="text-xs text-slate-400">Rekaman English</label><input id="narrator-audio-en" type="file" accept="audio/*" class="w-full text-xs text-slate-300">
+          <div class="text-[10px] text-slate-500 mt-1">Untuk voice cloning dinamis, gunakan tombol Voice Clone di Generator. API key disimpan aman di Vercel Environment Variables.</div>
           
         </div>
         <p class="text-[10px] text-slate-500">Rekaman disimpan di penyimpanan audio browser (IndexedDB), terpisah dari data teks.</p>
@@ -1034,42 +1042,48 @@
             if(narrator&&narrator.voiceNames){const wanted=narrator.voiceNames[code];if(wanted){const exact=voices.find(v=>v.name===wanted);if(exact)return exact;}}
             return voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(code))||null;
         }
-        function speakWithStationNames(text,lang,train,onDone){
-            const names=stationNamesFromTrain(train), narrator=resolveNarrator(), prepared=prepareSpeechText(text,train,lang);
-            if(!('speechSynthesis' in window)){showToast('TTS browser tidak tersedia.');onDone&&onDone();return;}
-            try{ synth.resume(); }catch(e){}
-            // Koma = jeda 1 ketukan (±0,5 detik), titik = jeda 2 ketukan (±1 detik).
-            const tokens=prepared.split(/([,.])/).map(x=>x.trim()).filter(Boolean);
-            let tokenIndex=0;
-            const speakToken=()=>{
-                if(tokenIndex>=tokens.length){onDone&&onDone();return;}
-                const token=tokens[tokenIndex++];
-                if(token===','){setTimeout(speakToken,500);return;}
-                if(token==='.'){setTimeout(speakToken,1000);return;}
-                const pattern=names.length?new RegExp('('+names.map(n=>n.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')).join('|')+')','gi'):null;
-                const parts=pattern?token.split(pattern).filter(Boolean):[token];
-                let i=0;
-                const nextPart=()=>{
-                    if(i>=parts.length){speakToken();return;}
-                    const part=parts[i++],isStation=names.some(n=>n.toLowerCase()===part.toLowerCase());
-                    // Mode English: kalimat tetap dibacakan TTS English, tetapi nama stasiun
-                    // sengaja dialihkan ke TTS Indonesia agar aksennya tetap Indonesia dan jelas.
-                    // Nama stasiun tidak diterjemahkan dan teks yang tampil tetap nama aslinya.
-                    const stationSpeech = part;
-                    const speechLang = (isStation && lang.startsWith('en')) ? 'id-ID' : lang;
-                    const u=new SpeechSynthesisUtterance(stationSpeech);
-                    u.lang=speechLang;
-                    u.voice=getSpeechVoice(speechLang,narrator);
-                    u.rate=.78;
-                    u.pitch=.68;
-                    u.volume=masterVol;
-                    u.onend=nextPart;u.onerror=()=>{try{ synth.resume(); }catch(e){};nextPart();};
-                    try{ synth.resume(); }catch(e){}
-                    synth.speak(u);
-                };
-                nextPart();
-            };
-            speakToken();
+        async function speakWithStationNames(text,lang,train,onDone){
+            const voiceId=getSystemVoiceId();
+            if(!voiceId){showToast('Narator Sistem belum aktif. Klik "Jadikan MP3 Contoh sebagai Narator Sistem" atau upload suara untuk Voice Clone.');onDone&&onDone(false);return;}
+            const prepared=prepareSpeechText(text,train,lang);
+            if(!prepared.trim()){onDone&&onDone(false);return;}
+            try{
+                const r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({voiceId,text:prepared,modelId:'eleven_multilingual_v2',lang})});
+                if(!r.ok){let d={};try{d=await r.json();}catch(e){}throw new Error(d.error||'Server TTS gagal.');}
+                const blob=await r.blob();
+                await playBlobOnce(blob);
+                onDone&&onDone(true);
+            }catch(e){console.error(e);showToast('Voice Clone gagal: '+(e.message||'periksa API ElevenLabs/Vercel.'));onDone&&onDone(false);}
+        }
+        function playBlobOnce(blob){return new Promise((resolve,reject)=>{
+            stopAudio();
+            const url=URL.createObjectURL(blob), audio=new Audio(url);
+            activeAudio=audio; audio.volume=masterVol;
+            let done=false;
+            const finish=(err)=>{if(done)return;done=true;try{audio.pause();}catch(e){};if(activeAudio===audio)activeAudio=null;URL.revokeObjectURL(url);err?reject(err):resolve();};
+            audio.onended=()=>finish(); audio.onerror=()=>finish(new Error('Audio hasil TTS tidak dapat diputar.'));
+            audio.play().catch(finish);
+        });}
+        function getSystemVoiceId(){return localStorage.getItem('gombong_system_voice_id')||'';}
+        function setSystemVoiceId(id){if(id)localStorage.setItem('gombong_system_voice_id',id);else localStorage.removeItem('gombong_system_voice_id');updateVoiceCloneStatus();}
+        function updateVoiceCloneStatus(){const el=document.getElementById('voice-clone-status');if(el)el.textContent=getSystemVoiceId()?'Status Voice Clone: AKTIF — pengumuman memakai suara narator sistem.':'Status Voice Clone: belum diaktifkan.';}
+        function openSystemVoiceFilePicker(){const el=document.getElementById('system-voice-file');if(el){el.value='';el.click();}}
+        async function fileToBase64(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error||new Error('Gagal membaca audio.'));r.readAsDataURL(file);});}
+        async function cloneSystemNarrator(file,name){
+            if(!file){showToast('File suara belum dipilih.');return;}
+            if(file.size>20*1024*1024){showToast('Audio maksimal 20 MB.');return;}
+            const status=document.getElementById('voice-clone-status');if(status)status.textContent='Status Voice Clone: sedang membuat clone...';
+            try{
+                const data=await fileToBase64(file);
+                const r=await fetch('/api/clone',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({audioBase64:data,name:name||'Narator Sistem Stasiun Gombong',description:'Narator sistem pengumuman Stasiun Gombong',fileName:file.name,mimeType:file.type||'audio/mpeg'})});
+                let d={};try{d=await r.json();}catch(e){}
+                if(!r.ok||!d.voice_id)throw new Error(d.error||'Voice clone gagal dibuat.');
+                setSystemVoiceId(d.voice_id);updateVoiceCloneStatus();showToast('Voice Clone berhasil dibuat dan dijadikan Narator Sistem.');
+            }catch(e){console.error(e);if(status)status.textContent='Status Voice Clone: gagal.';showToast('Voice Clone gagal: '+(e.message||'periksa API ElevenLabs/Vercel.'));}
+        }
+        async function cloneSystemNarratorFromUpload(e){const f=e.target.files&&e.target.files[0];if(f)await cloneSystemNarrator(f,'Narator Sistem Stasiun Gombong');e.target.value='';}
+        async function cloneSystemNarratorFromPackagedSample(){
+            try{const r=await fetch('/contoh-text-to-speech.mp3');if(!r.ok)throw new Error('File contoh tidak ditemukan di deployment.');const b=await r.blob();const f=new File([b],'contoh-text-to-speech.mp3',{type:'audio/mpeg'});await cloneSystemNarrator(f,'Narator Sistem Stasiun Gombong');}catch(e){console.error(e);showToast('Audio contoh tidak dapat diambil: '+e.message);}
         }
         function indonesianNameForEnglishTTS(name){
             // Dipertahankan untuk kompatibilitas data lama.
@@ -1080,42 +1094,32 @@
         function spellCharacters(v){return spellTrainNumber(v,'id');}
 
         function playSequence(templateList,train,closingTone='tanpa_chime'){
-            stopAudio();
-            let idx=0;
-            const narrator=resolveNarrator();
+            stopAudio(); let idx=0;
             const run=()=>{
                 if(idx>=templateList.length){
-                    if(closingTone!=='tanpa_chime') playChimeTone(closingTone,()=>document.getElementById('player-status-label').textContent='SELESAI');
+                    if(closingTone!=='tanpa_chime')playChimeTone(closingTone,()=>document.getElementById('player-status-label').textContent='SELESAI');
                     else document.getElementById('player-status-label').textContent='SELESAI';
-                    stopWaveAnimation();
-                    return;
+                    stopWaveAnimation(); return;
                 }
                 const item=templateList[idx],text=replaceVariables(item.text,train);
                 document.getElementById('player-status-label').textContent=`MEMUTAR ${item.label}`;
-                if('speechSynthesis' in window){
-                    speakWithStationNames(text,item.lang,train,()=>{idx++;setTimeout(run,400)});
-                }else{idx++;run();}
-            };run();
+                speakWithStationNames(text,item.lang,train,ok=>{if(!ok)return;idx++;setTimeout(run,500);});
+            }; run();
         }
-
         function startBroadcast(){
             const train=getSelectedTrain(),t=teksBakuList[Number(document.getElementById('sel-teksbaku')?.value||0)];
             if(!t){showToast('Teks baku belum tersedia.');return;}
             const generatorText=document.getElementById('script-textarea')?.value?.trim()||t.isiID||'';
             if(!generatorText){showToast('Teks pengumuman masih kosong.');return;}
-            // Hanya satu pelafalan: Bahasa Indonesia. Jangan jalankan Indonesia + English bersamaan.
-            const seq=[{label:'INDONESIA',lang:'id-ID',text:generatorText}];
+            const enText=replaceVariables(getSelectedTemplateEnglishText(document.getElementById('script-textarea')?.value||generatorText),train);
+            if(!getSystemVoiceId()){showToast('Narator Sistem belum aktif. Aktifkan Voice Clone terlebih dahulu.');return;}
             const cin=document.getElementById('sel-chime-in').value,cout=document.getElementById('sel-chime-out').value;
-            broadcastRunning=false;
-            try{ synth.cancel(); synth.resume(); }catch(e){}
+            try{if('speechSynthesis' in window)speechSynthesis.cancel();}catch(e){}
             document.getElementById('player-status-label').textContent=cin!=='tanpa_chime'?'MEMUTAR CHIME...':'MEMUTAR INDONESIA';
             startWaveAnimation();
+            const seq=[{label:'INDONESIA',lang:'id-ID',text:generatorText},{label:'ENGLISH',lang:'en-US',text:enText}];
             const runSpeech=()=>playSequence(seq,train,cout);
-            if(cin!=='tanpa_chime'){
-                playChimeTone(cin,runSpeech);
-            }else{
-                runSpeech();
-            }
+            if(cin!=='tanpa_chime')playChimeTone(cin,runSpeech);else runSpeech();
         }
         function playEmergencyBroadcast(){const id=document.getElementById('emergency-textarea').value.trim(),en=document.getElementById('emergency-textarea-en').value.trim();if(!id)return;stopAudio();document.getElementById('player-status-label').textContent='SIARAN DARURAT...';startWaveAnimation();playSequence([{label:'INDONESIA',lang:'id-ID',text:id},{label:'ENGLISH',lang:'en-US',text:en||translateIdToEn(id)}],getSelectedTrain(),'tanpa_chime');}
         function playChimeTone(type,cb){const custom=chimeList.find(x=>x.id===type&&x.audio);if(custom){stopAudio();activeAudio=new Audio(custom.audio);activeAudio.volume=masterVol;let done=false;const finish=()=>{if(done)return;done=true;activeAudio=null;cb&&cb();};activeAudio.onloadedmetadata=()=>{const st=Math.max(0,Number(custom.audioStart)||0),en=Number(custom.audioEnd)||0;try{if(st>0)activeAudio.currentTime=Math.min(st,Math.max(0,activeAudio.duration-0.05));}catch(e){} if(en>st&&en<=activeAudio.duration){activeAudio.ontimeupdate=()=>{if(activeAudio&&activeAudio.currentTime>=en){activeAudio.pause();finish();}};}};activeAudio.onended=finish;activeAudio.onerror=finish;activeAudio.play().catch(finish);return;}const ctx=getAudioContext(),now=ctx.currentTime,gain=ctx.createGain();gain.gain.setValueAtTime(masterVol,now);gain.connect(ctx.destination);if(type==='nada_a'){playOsc(ctx,gain,783.99,now,.7);playOsc(ctx,gain,659.25,now+.8,1)}else if(type==='nada_b'){playOsc(ctx,gain,880,now,.5);playOsc(ctx,gain,1108.73,now+.4,.8)}else if(type==='nada_c'){playBell(ctx,gain,1300,now,.4);playBell(ctx,gain,980,now+.3,.6)}setTimeout(()=>cb&&cb(),1300);}
@@ -1239,6 +1243,7 @@
             ['teks-modal','train-modal','chime-modal','narrator-modal','emergency-modal'].forEach(id=>{const m=document.getElementById(id);if(m)m.addEventListener('click',e=>{if(e.target===m)m.classList.add('hidden');});});
         }
         window.onload=()=>{
+            updateVoiceCloneStatus();
             setupReliableModalButtons();
             refreshChimeSelects();updateNarratorSelect();renderTrainTable();renderTeksBakuTable();renderEmergencyList();renderChimeList();renderNarratorList();
 
