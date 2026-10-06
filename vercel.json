@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/clone.js": { "maxDuration": 60 },
+    "api/tts.js": { "maxDuration": 60 },
+    "api/health.js": { "maxDuration": 10 }
+  }
+}
