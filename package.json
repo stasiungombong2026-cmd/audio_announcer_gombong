@@ -1,8 +1,0 @@
-{
-  "name": "stasiun-gombong-voice-clone",
-  "private": true,
-  "version": "1.0.0",
-  "engines": {
-    "node": "24.x"
-  }
-}
